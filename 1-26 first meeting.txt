@@ -1,0 +1,50 @@
+django (vs flask or bottle)
+supports database cnx
+mvc design pattern model view controller
+can use variables
+pseudo html
+mvt 
+
+requirements
+packages
+sets up virtual environment
+
+
+SCRUM MEETING - repo
+involved: 
+where/how:
+what was discussed:
+issues proposed:
+issues fixed:
+plan:
+steps:
+whos responsible with what?:
+
+
+uploads.downloads
+
+commit:
+descriptive!
+no bunch of files in one commit
+step by step
+everything referenced
+descriptions for each branch
+
+create issue - fix issue - reference
+
+issue:
+discussion
+whats good whats not
+just comment it
+each task assigned to dif person
+
+
+SHOW UP
+
+
+joyzeng555@gmail.com
+
+
+acceptance test
+
+can propose special features
