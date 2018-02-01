@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SA3 QA Website Index</title>
+    <style>
+        table, th, td {
+            border: 1px solid black
+        }
+    </style>
+</head>
+<body>
+<h1>Temporary Index Page for SOEN341 W18 group SA3.</h1>
+
+{% if posts %}
+<table>
+    <tr>
+        <th>Post ID</th>
+        <th>Content</th>
+        <th>Owner</th>
+        <th>Creation Date</th>
+    </tr>
+    {% for post in posts %}
+    <tr>
+        <td>{{ post.id }}</td>
+        <td>{{ post.content }}</td>
+        <td>{{ post.owner }}</td>
+        <td>{{ post.creation_date.date }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>
+    No posts to display.
+</p>
+{% endif %}
+<p>Head over to the <a href="./admin">admin page</a> to add more posts.</p>
+</body>
+</html>

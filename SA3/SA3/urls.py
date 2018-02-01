@@ -20,6 +20,10 @@ from login import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^$', views.index),
-    url(r'^login/', views.index),
+
+    path('', include('qa_web.urls')),
+
+    url(r'^login/', views.index)
 ]
+
+
