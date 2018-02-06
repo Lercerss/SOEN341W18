@@ -1,0 +1,3 @@
+language: python
+python: "3.6"
+script: python SA3/manage.py test SA3/qa_web/
