@@ -1,19 +1,21 @@
-from django.shortcuts import render
 from .models import Post
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
 from .forms import LoginForm
 from django.http import HttpResponseRedirect
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
 
 
 def index(request):
     return render(request, 'qa_web/index.html', context={'posts': Post.objects.all()})
 
 
-@csrf_exempt
-def user_login(request):
-    return render_to_response('qa_web/login.html')
+# def signup_test(request):
+#     form = UserCreationForm()
+#     return render_to_response('qa_web/sign_up.html', context={'form': form})  # for testing login page.
 
 
 @csrf_exempt
@@ -37,3 +39,19 @@ def login(request):
                 return render_to_response('qa_web/login.html', context={'form': form, 'password_is_wrong': True})
         else:
             return render_to_response('qa_web/login.html', context={'form': form})
+
+
+@csrf_exempt
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            auth.login(request, user)
+            return HttpResponseRedirect('/')
+    else:
+        form = UserCreationForm()
+    return render(request, 'qa_web/sign_up.html', {'form': form})
