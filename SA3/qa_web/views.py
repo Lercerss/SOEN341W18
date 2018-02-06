@@ -17,7 +17,6 @@ def index(request):
 #     form = UserCreationForm()
 #     return render_to_response('qa_web/sign_up.html', context={'form': form})  # for testing login page.
 
-
 @csrf_exempt
 def login(request):
     if request.method == 'GET':
