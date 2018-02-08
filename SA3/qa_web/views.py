@@ -54,3 +54,10 @@ def signup(request):
     else:
         form = UserCreationForm()
     return render(request, 'qa_web/sign_up.html', {'form': form})
+
+
+def questions(request):
+    return render(request, 'qa_web/questionspage.html', context={})
+
+def answers(request):
+    return render(request, 'qa_web/answerspage.html', context={})

@@ -1,0 +1,56 @@
+
+
+<html>
+  <head>
+  
+	<meta charset="UTF-8">
+    <title>SA3 QA Website Questions</title>
+	{% load static %}
+    <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
+    <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
+    <script src="{% static 'js/Markdown.Sanitizer.min.js' %}"></script>
+
+    <link rel="stylesheet" href="pagedown.css" />
+
+    <style>
+      .wmd-button > span {
+        background-image: url('wmd-buttons.svg');
+        background-repeat: no-repeat;
+        background-position: 0px 0px;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+      }
+      #wmd-input {
+        padding: 10px;
+        background-color: white;
+        max-width: 660px;
+        min-width: 660px;
+      }
+      .wmd-spacer {
+        background-color: white;
+        width: 0;
+      }
+      #wmd-button-bar {
+        height: 44px;
+        padding: 0 12px;
+        width: 660px;
+        border: 1px solid #c8ccd0;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+  
+	<h1>got Questions?!</h1>
+    <div id="wmd-button-bar"></div>
+    <textarea id="wmd-input" class="wmd-input"></textarea>
+    <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+
+    <script>
+      var converter = Markdown.getSanitizingConverter();
+      var editor = new Markdown.Editor(converter);
+      editor.run();
+    </script>
+  </body>
+</html>
