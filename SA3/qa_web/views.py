@@ -57,13 +57,6 @@ def signup(request):
 
 
 def questions(request):
-    # REceive get request
-
-    # Take care of post requests
-    content = '' # retrieve from request
-    title = ''
-    question = Questions(content, title)
-    question.save()
     return render(request, 'qa_web/questionspage.html', context={})
 
 def answers(request):
