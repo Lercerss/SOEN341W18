@@ -1,4 +1,4 @@
-from .models import Post
+from .models import Post, Questions
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
@@ -57,6 +57,13 @@ def signup(request):
 
 
 def questions(request):
+    # REceive get request
+
+    # Take care of post requests
+    content = '' # retrieve from request
+    title = ''
+    question = Questions(content, title)
+    question.save()
     return render(request, 'qa_web/questionspage.html', context={})
 
 def answers(request):
