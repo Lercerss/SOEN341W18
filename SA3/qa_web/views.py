@@ -54,3 +54,8 @@ def signup(request):
     else:
         form = UserCreationForm()
     return render(request, 'qa_web/sign_up.html', {'form': form})
+
+#Home Page
+def homepage(request):
+    return render(request, "qa_web/home.html")
+    
