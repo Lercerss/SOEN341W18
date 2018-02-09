@@ -57,7 +57,7 @@ def signup(request):
     return render(request, 'qa_web/sign_up.html', {'form': form})
 
 
-@login_required
+@login_required(login_url='/login/')
 def questions(request):
     if request.method == 'GET':
         return render(request, 'qa_web/questionspage.html', context={})
@@ -70,6 +70,8 @@ def questions(request):
             q = Questions(content=content, title=title, owner=owner)
             q.save()
             return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
+        else:
+            return render(request, 'qa_web/questionspage.html', context={})
 
 
 def answers(request, id):
