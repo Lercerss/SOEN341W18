@@ -1,6 +1,7 @@
 __author__ = 'jet'
 
 from django import forms
+from django.db import models
 
 
 class LoginForm(forms.Form):
@@ -24,18 +25,11 @@ class LoginForm(forms.Form):
 
 
 class Questions(forms.Form):
-    title = forms.CharField(
+    question = forms.CharField(
         required=True,
         label='title',
-        error_messages={'required': u'please submit a question'},
+        error_messages={'required': 'please submit a question'},
     )
 
 
-
-class Answers(forms.Form):
-    title = forms.CharField(
-        required=True,
-        label='title',
-        error_messages={'required': u'please submit a question'},
-    )
 

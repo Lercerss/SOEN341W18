@@ -60,4 +60,6 @@ def questions(request):
     return render(request, 'qa_web/questionspage.html', context={})
 
 def answers(request):
+
     return render(request, 'qa_web/answerspage.html', context={})
+

@@ -12,7 +12,7 @@ class Questions(Post):
     def __str__(self):
         return self.title
 
-class Answers(Post):
+class Answers(models.Model):
     title = models.TextField()
     description = models.TextField()
     def __str__(self):
