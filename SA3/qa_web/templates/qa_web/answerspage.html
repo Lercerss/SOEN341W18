@@ -41,7 +41,8 @@
   </head>
   <body>
   <h1>{{ currentQuestion.title }}</h1>
-  <h2>{{currentQuestion.content }}</h2>
+  <p>{{ currentQuestion.content }}</p>
+  <h2>Question by {{ currentQuestion.owner }}</h2>
     <div id="wmd-button-bar"></div>
     <textarea id="wmd-input" class="wmd-input"></textarea>
     <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
