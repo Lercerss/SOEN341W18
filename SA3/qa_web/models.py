@@ -12,3 +12,8 @@ class Questions(Post):
     def __str__(self):
         return self.title
 
+class Answers(Post):
+    title = models.TextField()
+    description = models.TextField()
+    def __str__(self):
+        return self.title

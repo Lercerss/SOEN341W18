@@ -1,19 +1,19 @@
 
-{% load static %}
+
 <html>
   <head>
 	<meta charset="UTF-8">
-	
+	{% load static %}
     <title>SA3 QA Website Answers</title>
-    <script src="{% static 'Markdown.Converter.min.js' %}"></script>
-    <script src="{% static 'Markdown.Editor.min.js' %}"></script>
-    <script src="{% static 'Markdown.Sanitizer.min.js'%}"></script>
+    <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
+    <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
+    <script src="{% static 'js/Markdown.Sanitizer.min.js'%}"></script>
 
-    <link rel="stylesheet" href="pagedown.css" />
+    <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
 
     <style>
       .wmd-button > span {
-        background-image: url('wmd-buttons.svg');
+        background-image: url("{% static 'img/wmd-buttons.svg' %}");
         background-repeat: no-repeat;
         background-position: 0px 0px;
         width: 20px;
@@ -40,9 +40,18 @@
     </style>
   </head>
   <body>
+
   <h1>fetch Q</h1>
   <h2>got Answer?!</h2>
+
+    {% if not_logged_in %}
+        <div class="alert alert-error">
+            <h5>Please log in first!</h5>
+        </div>
+    {% endif %}
+
     <div id="wmd-button-bar"></div>
+
     <textarea id="wmd-input" class="wmd-input"></textarea>
     <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
 

@@ -21,3 +21,21 @@ class LoginForm(forms.Form):
             raise forms.ValidationError("username and password are required")
         else:
             cleaned_data = super(LoginForm, self).clean()
+
+
+class Questions(forms.Form):
+    title = forms.CharField(
+        required=True,
+        label='title',
+        error_messages={'required': u'please submit a question'},
+    )
+
+
+
+class Answers(forms.Form):
+    title = forms.CharField(
+        required=True,
+        label='title',
+        error_messages={'required': u'please submit a question'},
+    )
+
