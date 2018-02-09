@@ -1,12 +1,13 @@
-from .models import Post
+from .models import Post, Questions
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
-from .forms import LoginForm
-from django.http import HttpResponseRedirect
+from .forms import LoginForm, QuestionsForm
+from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -54,3 +55,26 @@ def signup(request):
     else:
         form = UserCreationForm()
     return render(request, 'qa_web/sign_up.html', {'form': form})
+
+
+@login_required(login_url='/login/')
+def questions(request):
+    if request.method == 'GET':
+        return render(request, 'qa_web/questionspage.html', context={})
+    else:
+        form = QuestionsForm(request.POST)
+        if form.is_valid():
+            content = request.POST['content']
+            title = request.POST['title']
+            owner = request.user
+            q = Questions(content=content, title=title, owner=owner)
+            q.save()
+            return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
+        else:
+            return render(request, 'qa_web/questionspage.html', context={})
+
+
+def answers(request, id):
+        q = get_object_or_404(Questions, pk=id)
+        return render(request, 'qa_web/answerspage.html', {'currentQuestion': q})
+
