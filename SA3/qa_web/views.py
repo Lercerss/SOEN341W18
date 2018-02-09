@@ -55,7 +55,7 @@ def signup(request):
     else:
         form = UserCreationForm()
     return render(request, 'qa_web/sign_up.html', {'form': form})
-
+    
 
 @login_required(login_url='/login/')
 def questions(request):
@@ -78,3 +78,7 @@ def answers(request, id):
         q = get_object_or_404(Questions, pk=id)
         return render(request, 'qa_web/answerspage.html', {'currentQuestion': q})
 
+#Home Page
+def homepage(request):
+    return render(request, "qa_web/home.html")
+    
