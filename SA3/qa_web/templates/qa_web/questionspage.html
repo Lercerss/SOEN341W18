@@ -41,12 +41,14 @@
     </style>
   </head>
   <body>
-  
-	<h1>got Questions?!</h1>
-    <div id="wmd-button-bar"></div>
-    <textarea id="wmd-input" class="wmd-input"></textarea>
-    <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
-
+    <form method="post">
+	  <h1>got Questions?!</h1>
+      <input id="title" name = "title" type="text" placeholder="question title" required/>
+      <div id="wmd-button-bar"></div>
+      <textarea id="wmd-input" name="content" class="wmd-input" placeholder="type your description here" required></textarea>
+      <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+      <input type="button" value="Submit" onclick="location.href='/questions/'"/>
+    </form>
     <script>
       var converter = Markdown.getSanitizingConverter();
       var editor = new Markdown.Editor(converter);

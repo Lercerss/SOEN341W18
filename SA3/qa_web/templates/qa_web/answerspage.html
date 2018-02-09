@@ -40,13 +40,12 @@
     </style>
   </head>
   <body>
-  <h1>fetch Q</h1>
-  <h2>got Answer?!</h2>
+  <h1>{{ currentQuestion.title }}</h1>
+  <h2>{{currentQuestion.content }}</h2>
     <div id="wmd-button-bar"></div>
     <textarea id="wmd-input" class="wmd-input"></textarea>
     <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
-
-    <script>
+  <script>
       var converter = Markdown.getSanitizingConverter();
       var editor = new Markdown.Editor(converter);
       editor.run();
