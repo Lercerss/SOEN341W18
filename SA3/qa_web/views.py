@@ -11,7 +11,8 @@ from django.contrib.auth.decorators import login_required
 
 
 def index(request):
-    return render(request, 'qa_web/index.html', context={'posts': Post.objects.all()})
+    # return render(request, 'qa_web/index.html', context={'posts': Post.objects.all()})
+    return render(request, 'qa_web/index.html', context={'questions': Questions.objects.all()})
 
 
 # def signup_test(request):

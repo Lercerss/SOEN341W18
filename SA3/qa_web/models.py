@@ -6,13 +6,16 @@ class Post(models.Model):
     """
     Parent meta class that describes a post as a publication on the website with certain content
     created by a certain owner
-    This will be used for multi-table inheritance
+    This will be used for inheritance
     """
     content = models.TextField(null=True)
     owner = models.ForeignKey(User, null= True, on_delete=models.SET_NULL)
     creation_date = models.DateTimeField(auto_now_add=True)
     upvotes = models.IntegerField(default=0)
     downvotes = models.IntegerField(default=0)
+    
+    class Meta:
+        abstract = True
 
 class Questions(Post):
     """
@@ -24,7 +27,7 @@ class Questions(Post):
     
     def __str__(self):
         return self.title
-
+    
 class Answers(Post):
     """
     The answer is a proposed solution to a certain question
@@ -48,3 +51,4 @@ class Tags(models.Model):
     """
     question = models.ForeignKey(Questions, null= True, on_delete=models.CASCADE)
     category = models.CharField(max_length=50, null=True)
+    
