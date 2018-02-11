@@ -1,7 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 
-
+class User(AbstractUser):
+    pass
+    
 class Post(models.Model):
     """
     Parent meta class that describes a post as a publication on the website with certain content
@@ -9,7 +12,7 @@ class Post(models.Model):
     This will be used for inheritance
     """
     content = models.TextField(null=True)
-    owner = models.ForeignKey(User, null= True, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, null= True, on_delete=models.SET_NULL)
     creation_date = models.DateTimeField(auto_now_add=True)
     upvotes = models.IntegerField(default=0)
     downvotes = models.IntegerField(default=0)
