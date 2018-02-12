@@ -79,18 +79,24 @@ def questions(request):
 
 def answers(request, id_):
     q = get_object_or_404(Questions, pk=id_)
-    q_answers = Answers.objects.filter(question=q, correct_answer=False)
-    q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
-    if request.method == 'POST' and 'answer_form' in request.POST:
+    if request.method == 'POST' and 'answer_form' in request.POST: #Update's database when somebody answers a question
         form = AnswersForm(request.POST)
         if form.is_valid(): 
             Answers.objects.create(content=request.POST['content'], owner=request.user, question=q)
-    else:
+    elif request.method == 'POST' and 'deselect' in request.POST:  #Update's database when somebody deselects best answer.
+        updateAnswer = Answers.objects.get(correct_answer=True)
+        updateAnswer.correct_answer = False;
+        updateAnswer.save();
+    else:                                                          #Update's database when somebody selects a best answer.
+        q_answers = Answers.objects.filter(question=q, correct_answer=False)
         for answer in q_answers:
             if request.method == 'POST' and 'select_'+str(answer.id) in request.POST:
                 updateAnswer = Answers.objects.get(id = answer.id)
                 updateAnswer.correct_answer = True;
                 updateAnswer.save();
+    #Get updated answer data.
+    q_answers = Answers.objects.filter(question=q, correct_answer=False)
+    q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
     return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer})
 
 
