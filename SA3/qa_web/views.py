@@ -83,8 +83,9 @@ def answers(request, id_):
         form = AnswersForm(request.POST)
         if form.is_valid():
             Answers.objects.create(content=request.POST['content'], owner=request.user, question=q)
-    q_answers = Answers.objects.filter(question=q)
-    return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers})
+    q_answers = Answers.objects.filter(question=q, correct_answer=False)
+    q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
+    return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer})
 
 
 # Home Page

@@ -48,14 +48,29 @@
   </div>
   <div id="answers">
   <!-- Display the answers -->
-    {% for answer in answers %}
-        <div id="answer_{{ answer.id }}">
-            <p>{{ answer.content }}</p>
-            <h3>Answer by {{ answer.owner }} on {{ answer.creation_date }}</h3>
-        </div>
-    {% empty %}
-      <h3>Be the first to answer this question!</h3>
-    {% endfor %}
+  {% for answer in bestAnswer %}
+      <p>{{ currentQuestion.owner }} has selected this as the best answer!</p>
+      <div id="answer_{{ answer.id }}">
+          <p>{{ answer.content }}</p>
+          {% if user.is_authenticated and user == currentQuestion.owner %}
+              <button type = "button">Deselect as Best Answer</button>
+          {% endif %}
+          <h3>Answer by {{ answer.owner }} on {{ answer.creation_date }}</h3>
+      </div>
+  {% endfor %}
+  {% for answer in answers %}
+      <div id="answer_{{ answer.id }}">
+          <p>{{ answer.content }}</p>
+          <p>{{ user.username }}</p>
+          <p>{{ currentQuestion.owner }}</p>
+          {% if user.is_authenticated and user == currentQuestion.owner %}
+             <button type = "button">Select as Best Answer</button>
+          {% endif %}
+          <h3>Answer by {{ answer.owner }} on {{ answer.creation_date }}</h3>
+      </div>
+  {% empty %}
+    <h3>Be the first to answer this question!</h3>
+  {% endfor %}
   </div>
   <!-- Display the answering form for logged in users -->
   {% if user.is_authenticated %}
