@@ -81,9 +81,6 @@ def answers(request, id_):
     q = get_object_or_404(Questions, pk=id_)
     if request.method == 'POST':
         form = AnswersForm(request.POST)
-        import logging
-        logging.info(request.POST['content'])
-        logging.info(request.user)
         if form.is_valid():
             Answers.objects.create(content=request.POST['content'], owner=request.user, question=q)
     q_answers = Answers.objects.filter(question=q)
