@@ -57,18 +57,22 @@
       <h3>Be the first to answer this question!</h3>
     {% endfor %}
   </div>
-  <!-- Display the answering form-->
-  <form id="answer_form" method="post">
-      {% csrf_token %}
-      <div id="wmd-button-bar"></div>
-      <textarea id="wmd-input" name="content" class="wmd-input"></textarea>
-      <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
-      <input type="submit" value="Submit your answer"/>
-      <script>
-          var converter = Markdown.getSanitizingConverter();
-          var editor = new Markdown.Editor(converter);
-          editor.run();
-      </script>
-  </form>
+  <!-- Display the answering form for logged in users -->
+  {% if user.is_authenticated %}
+    <form id="answer_form" method="post">
+        {% csrf_token %}
+        <div id="wmd-button-bar"></div>
+        <textarea id="wmd-input" name="content" class="wmd-input"></textarea>
+        <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+        <input type="submit" value="Submit your answer"/>
+        <script>
+            var converter = Markdown.getSanitizingConverter();
+            var editor = new Markdown.Editor(converter);
+            editor.run();
+        </script>
+    </form>
+  {% else %}
+   <p>To answer this question, <a href="/login">login</a> or <a href="/signup">sign up</a>!</p>
+  {% endif %}
   </body>
 </html>
