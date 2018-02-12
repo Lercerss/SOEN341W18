@@ -1,8 +1,8 @@
-from .models import Post, Questions, User
+from .models import Answers, Questions, User
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
-from .forms import LoginForm, QuestionsForm
+from .forms import LoginForm, QuestionsForm, AnswersForm
 from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -11,14 +11,15 @@ from django.contrib.auth.decorators import login_required
 
 
 class CustomUserCreationForm(UserCreationForm):
-
     class Meta(UserCreationForm.Meta):
         model = User
         fields = UserCreationForm.Meta.fields
 
+
 def index(request):
     # return render(request, 'qa_web/index.html', context={'posts': Post.objects.all()})
     return render(request, 'qa_web/index.html', context={'questions': Questions.objects.all()})
+
 
 @csrf_exempt
 def login(request):
@@ -57,7 +58,7 @@ def signup(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'qa_web/sign_up.html', {'form': form})
-    
+
 
 @login_required(login_url='/login/')
 def questions(request):
@@ -76,11 +77,19 @@ def questions(request):
             return render(request, 'qa_web/questionspage.html', context={})
 
 
-def answers(request, id):
-        q = get_object_or_404(Questions, pk=id)
-        return render(request, 'qa_web/answerspage.html', {'currentQuestion': q})
+def answers(request, id_):
+    q = get_object_or_404(Questions, pk=id_)
+    if request.method == 'POST':
+        form = AnswersForm(request.POST)
+        import logging
+        logging.info(request.POST['content'])
+        logging.info(request.user)
+        if form.is_valid():
+            Answers.objects.create(content=request.POST['content'], owner=request.user, question=q)
+    q_answers = Answers.objects.filter(question=q)
+    return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers})
 
-#Home Page
+
+# Home Page
 def homepage(request):
     return render(request, "qa_web/home.html")
-    

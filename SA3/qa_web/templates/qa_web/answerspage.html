@@ -5,15 +5,15 @@
 	<meta charset="UTF-8">
 	
     <title>SA3 QA Website Answers</title>
-    <script src="{% static 'Markdown.Converter.min.js' %}"></script>
-    <script src="{% static 'Markdown.Editor.min.js' %}"></script>
-    <script src="{% static 'Markdown.Sanitizer.min.js'%}"></script>
+    <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
+    <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
+    <script src="{% static 'js/Markdown.Sanitizer.min.js'%}"></script>
 
-    <link rel="stylesheet" href="pagedown.css" />
+    <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
 
     <style>
       .wmd-button > span {
-        background-image: url('wmd-buttons.svg');
+        background-image: url("{% static 'img/wmd-buttons.svg' %}");
         background-repeat: no-repeat;
         background-position: 0px 0px;
         width: 20px;
@@ -40,16 +40,35 @@
     </style>
   </head>
   <body>
-  <h1>{{ currentQuestion.title }}</h1>
-  <p>{{ currentQuestion.content }}</p>
-  <h2>Question by {{ currentQuestion.owner }}</h2>
-    <div id="wmd-button-bar"></div>
-    <textarea id="wmd-input" class="wmd-input"></textarea>
-    <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
-  <script>
-      var converter = Markdown.getSanitizingConverter();
-      var editor = new Markdown.Editor(converter);
-      editor.run();
-    </script>
+  <!-- Display the question's data -->
+  <div id="question">
+      <h1>{{ currentQuestion.title }}</h1>
+      <p>{{ currentQuestion.content }}</p>
+      <h2>Question by {{ currentQuestion.owner }} on {{ currentQuestion.creation_date }}</h2>
+  </div>
+  <div id="answers">
+  <!-- Display the answers -->
+    {% for answer in answers %}
+        <div id="answer_{{ answer.id }}">
+            <p>{{ answer.content }}</p>
+            <h3>Answer by {{ answer.owner }} on {{ answer.creation_date }}</h3>
+        </div>
+    {% empty %}
+      <h3>Be the first to answer this question!</h3>
+    {% endfor %}
+  </div>
+  <!-- Display the answering form-->
+  <form id="answer_form" method="post">
+      {% csrf_token %}
+      <div id="wmd-button-bar"></div>
+      <textarea id="wmd-input" name="content" class="wmd-input"></textarea>
+      <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+      <input type="submit" value="Submit your answer"/>
+      <script>
+          var converter = Markdown.getSanitizingConverter();
+          var editor = new Markdown.Editor(converter);
+          editor.run();
+      </script>
+  </form>
   </body>
 </html>
