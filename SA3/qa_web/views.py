@@ -79,12 +79,18 @@ def questions(request):
 
 def answers(request, id_):
     q = get_object_or_404(Questions, pk=id_)
-    if request.method == 'POST':
-        form = AnswersForm(request.POST)
-        if form.is_valid():
-            Answers.objects.create(content=request.POST['content'], owner=request.user, question=q)
     q_answers = Answers.objects.filter(question=q, correct_answer=False)
     q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
+    if request.method == 'POST' and 'answer_form' in request.POST:
+        form = AnswersForm(request.POST)
+        if form.is_valid(): 
+            Answers.objects.create(content=request.POST['content'], owner=request.user, question=q)
+    else:
+        for answer in q_answers:
+            if request.method == 'POST' and 'select_'+str(answer.id) in request.POST:
+                updateAnswer = Answers.objects.get(id = answer.id)
+                updateAnswer.correct_answer = True;
+                updateAnswer.save();
     return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer})
 
 
