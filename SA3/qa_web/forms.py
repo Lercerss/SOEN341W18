@@ -30,6 +30,8 @@ class QuestionsForm(forms.Form):
         error_messages={'required': 'please input question title'},
     )
 
-    content = forms.Textarea(
-    )
+    content = forms.Textarea()
 
+
+class AnswersForm(forms.Form):
+    content = forms.Textarea()
