@@ -84,10 +84,10 @@ def answers(request, id_):
         if form.is_valid(): 
             Answers.objects.create(content=request.POST['content'], owner=request.user, question=q)
     elif request.method == 'POST' and 'deselect' in request.POST:  #Update's database when somebody deselects best answer.
-        updateAnswer = Answers.objects.get(correct_answer=True)
+        updateAnswer = Answers.objects.filter(question=q, correct_answer=True).last()
         updateAnswer.correct_answer = False;
         updateAnswer.save();
-    else:                                                          #Update's database when somebody selects a best answer.
+    else: #Update's database when somebody selects a best answer.
         q_answers = Answers.objects.filter(question=q, correct_answer=False)
         for answer in q_answers:
             if request.method == 'POST' and 'select_'+str(answer.id) in request.POST:

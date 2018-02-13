@@ -10,7 +10,7 @@
     <script src="{% static 'js/Markdown.Sanitizer.min.js'%}"></script>
 
     <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
-
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     <style>
       .wmd-button > span {
         background-image: url("{% static 'img/wmd-buttons.svg' %}");
@@ -45,6 +45,7 @@
       <h1>{{ currentQuestion.title }}</h1>
       <p>{{ currentQuestion.content }}</p>
       <h2>Question by {{ currentQuestion.owner }} on {{ currentQuestion.creation_date }}</h2>
+      <hr>
   </div>
   <div id="answers">
   <!-- Display the answers -->
@@ -52,9 +53,9 @@
       <form id="deselect{{ answer.id }}_form" method="post">
           {% csrf_token %}
           {% if user == currentQuestion.owner %}
-              <h3>You have selected this as the best answer!</h3>
+              <h3 class="good_answer">You have selected this as the best answer!</h3>
           {% else %}
-              <h3>{{currentQuestion.owner}} has selected this as the best answer!</h3>
+              <h3 class="good_answer">{{currentQuestion.owner}} has selected this as the best answer!</h3>
           {% endif %}
           <p>{{ answer.content }}</p>
           <!--Allow one to deselect the best answer if user is logged in and is the user who asked the question-->
@@ -62,6 +63,7 @@
               <input type = "submit" name="deselect", value="Deselect as Best Answer"></button>
           {% endif %}
           <h4>Answer by {{ answer.owner }} on {{ answer.creation_date }}</h4>
+          <hr>
       </form>
       <h3>Other answers:</h3>
   {% endfor %}
@@ -74,6 +76,7 @@
              <input type = "submit" name="select_{{ answer.id }}" value="Select as Best Answer"></input>
           {% endif %}
           <h4>Answer by {{ answer.owner }} on {{ answer.creation_date }}</h4>
+          <hr>
       </form>
   {% empty %}
     <h3>Be the first to answer this question!</h3>
