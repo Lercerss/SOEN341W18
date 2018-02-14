@@ -93,9 +93,9 @@
             </script>
          </form>
       {% endif %}
+      <h3>Other answers:</h3>
+      <hr>
   {% endfor %}
-  <hr>
-  <h3>Other answers:</h3>
   {% for answer in answers %}
       <form id="select{{ answer.id }}_form" method="post">
           {% csrf_token %}

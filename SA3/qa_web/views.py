@@ -126,27 +126,28 @@ def questions(request):
 
 def answers(request, id_):
     q = get_object_or_404(Questions, pk=id_)
+    print(request.POST)
     if request.method == 'POST' and 'answer_form' in request.POST: #Update's database when somebody answers a question
         form = AnswersForm(request.POST)
         if form.is_valid():
             Answers.objects.create(content=request.POST['content'], owner=request.user, question=q)
     elif request.method == 'POST' and 'deselect' in request.POST:  #Update's database when somebody deselects best answer.
         updateAnswer = Answers.objects.filter(question=q, correct_answer=True).last()
-        updateAnswer.correct_answer = False;
-        updateAnswer.save();
-    elif request.method == 'POST' and 'select_' in request.POST: #Update's database when somebody selects a best answer.
+        updateAnswer.correct_answer = False
+        updateAnswer.save()
+    elif request.method == 'POST' and 'select_' in request.POST: #Update's database when somebody selects a best answer.   
+        print("Worked")
         q_answers = Answers.objects.filter(question=q, correct_answer=False)
         for answer in q_answers:
             if request.method == 'POST' and 'select_'+str(answer.id) in request.POST:
                 updateAnswer = Answers.objects.get(id = answer.id)
-                updateAnswer.correct_answer = True;
-                updateAnswer.save();
+                updateAnswer.correct_answer = True
+                updateAnswer.save()
     else:
         q_answers = Answers.objects.filter(question=q, correct_answer=False)
         q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
         for answer in q_best_answer:
             if request.method == 'POST' and 'comment_form_'+str(answer.id) in request.POST:
-                print("Worked")
                 Comments.objects.create(content=request.POST['content'], owner=request.user, question=q, answer=answer)
         for answer in q_answers:
             if request.method == 'POST' and 'comment_form_'+str(answer.id) in request.POST:
