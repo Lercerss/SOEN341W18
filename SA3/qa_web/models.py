@@ -20,6 +20,10 @@ class Post(models.Model):
     class Meta:
         abstract = True
 
+    @property
+    def score(self):
+        return self.upvotes - self.downvotes
+
 class Questions(Post):
     """
     The question (or thread) initiates the interaction between users' answers,
@@ -27,7 +31,8 @@ class Questions(Post):
     """
     title = models.CharField(max_length=300, null=True)
     visits = models.IntegerField(default=0)
-    
+    voters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='q_voters', through='Vote')
+
     def __str__(self):
         return self.title
     
@@ -38,6 +43,7 @@ class Answers(Post):
     """
     question = models.ForeignKey(Questions, null=True, on_delete=models.CASCADE)
     correct_answer = models.BooleanField(default = False)
+    voters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='a_voters', through='Vote')
 
 class Comments(Post):
     """
@@ -46,7 +52,8 @@ class Comments(Post):
     """
     question = models.ForeignKey(Questions, null=True, on_delete=models.CASCADE)
     answer = models.ForeignKey(Answers, null=True, on_delete=models.CASCADE)
-    
+    voters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='c_voters', through='Vote')
+
 class Tags(models.Model):
     """
     One or multiple tags can be assigned to a question, in order to classify the question
@@ -54,4 +61,13 @@ class Tags(models.Model):
     """
     question = models.ForeignKey(Questions, null= True, on_delete=models.CASCADE)
     category = models.CharField(max_length=50, null=True)
-    
+
+class Vote(models.Model):
+    """
+    Defines the relationship between a user voting and the post
+    """
+    question = models.ForeignKey(Questions, on_delete=models.CASCADE, null=True)
+    answer = models.ForeignKey(Answers, on_delete=models.CASCADE, null=True)
+    comment = models.ForeignKey(Comments, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    positive = models.BooleanField()
