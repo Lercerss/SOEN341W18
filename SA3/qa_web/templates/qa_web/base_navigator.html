@@ -1,0 +1,48 @@
+{% load staticfiles %}
+<div class="topbar"></div>
+<div class="container">
+<title>QA_WEB</title>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<link href='http://fonts.googleapis.com/css?family=Nanum+Brush+Script' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Oxygen:300' rel='stylesheet' type='text/css'>
+
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="{% static 'css/qa.css' %}" rel="stylesheet"/>
+
+<div class="page-header">
+    <a class="btn btn-default pull-right" href="{% url 'qa_index' %}">
+        <span class="glyphicon glyphicon-plus-sign" aria-hidden="false"></span>
+        Ask Question
+    </a>
+    <h1><a href="{% url 'qa_index' %}"><blue>QA_WEB</blue> </a></h1>
+</div>
+<div class="container">
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+    {% endfor %}
+</ul>
+{% endif %}
+{% block content %}
+
+{% endblock content %}
+ <div id="search">
+   <button type="button" class="close">×</button>
+   <form method="GET" action="{% url 'qa_search' %}">
+     <input type="search" value="" name="word" placeholder="type keyword(s) here" />
+     <input class="btn btn-lg btn-warning" type="submit" value="Find" />
+   </form>
+   
+ </div>
+</div>
+<hr>
+<center>
+  <a href="http://www.djangoproject.com/"><green>Django</green></a> ·
+  <a href="https://github.com/Lercerss/SOEN341W18">Github</a> ·
+  <small><a href="/admin">Admin Panel</a></small></center>
+ <br/><br/>
+</div>
+
+
