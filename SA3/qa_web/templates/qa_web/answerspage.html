@@ -1,4 +1,3 @@
-
 {% load static %}
 <html>
   <head>
@@ -8,7 +7,9 @@
     <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
     <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
     <script src="{% static 'js/Markdown.Sanitizer.min.js'%}"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="{% static 'js/base.js'%}"></script>
+    
     <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     <style>
@@ -50,7 +51,7 @@
   <div id="answers">
   <!-- Display the answers -->
   {% if bestAnswer %}
-      <form id="deselect{{ answer.id }}_form" method="post">
+      <form id="deselect_form" method="post">
           {% csrf_token %}
           {% if user == currentQuestion.owner %}
               <h3 class="good_answer">You have selected this as the best answer!</h3>
@@ -90,11 +91,6 @@
         <textarea id="wmd-input" name="content" class="wmd-input"></textarea>
         <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
         <input type="submit" name="answer_form" value="Submit your answer"/>
-        <script>
-            var converter = Markdown.getSanitizingConverter();
-            var editor = new Markdown.Editor(converter);
-            editor.run();
-        </script>
     </form>
   {% else %}
    <p>To answer this question, <a href="/login">login</a> or <a href="/signup">sign up</a>!</p>

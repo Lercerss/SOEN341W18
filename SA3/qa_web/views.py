@@ -87,7 +87,7 @@ def answers(request, id_):
         updateAnswer = Answers.objects.get(question=q, correct_answer=True)
         updateAnswer.correct_answer = False;
         updateAnswer.save();
-    else: #Update's database when somebody selects a best answer.
+    elif request.method == 'POST': #Update's database when somebody selects a best answer.
         answer_id = [int(key.replace('select_', '')) for key in request.POST.keys() if key.startswith('select_')]
         if answer_id:
             updateAnswer = Answers.objects.get(id = answer_id[0])
