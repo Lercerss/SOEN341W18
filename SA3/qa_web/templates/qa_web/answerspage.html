@@ -49,7 +49,7 @@
   </div>
   <div id="answers">
   <!-- Display the answers -->
-  {% for answer in bestAnswer %}
+  {% if bestAnswer %}
       <form id="deselect{{ answer.id }}_form" method="post">
           {% csrf_token %}
           {% if user == currentQuestion.owner %}
@@ -57,22 +57,22 @@
           {% else %}
               <h3 class="good_answer">{{currentQuestion.owner}} has selected this as the best answer!</h3>
           {% endif %}
-          <p>{{ answer.content }}</p>
+          <p>{{ bestAnswer.content }}</p>
           <!--Allow one to deselect the best answer if user is logged in and is the user who asked the question-->
           {% if user.is_authenticated and user == currentQuestion.owner %}
               <input type = "submit" name="deselect", value="Deselect as Best Answer"></button>
           {% endif %}
-          <h4>Answer by {{ answer.owner }} on {{ answer.creation_date }}</h4>
+          <h4>Answer by {{ bestAnswer.owner }} on {{ bestAnswer.creation_date }}</h4>
           <hr>
       </form>
       <h3>Other answers:</h3>
-  {% endfor %}
+  {% endif %}
   {% for answer in answers %}
       <form id="select{{ answer.id }}_form" method="post">
           {% csrf_token %}
           <p>{{ answer.content }}</p>
           <!--Allow one to select best answers if user is logged in, is the user who asked the question and a best answer doesn't exist already-->
-          {% if user.is_authenticated and user == currentQuestion.owner and bestAnswer.count == 0 %} 
+          {% if user.is_authenticated and user == currentQuestion.owner and not bestAnswer %} 
              <input type = "submit" name="select_{{ answer.id }}" value="Select as Best Answer"></input>
           {% endif %}
           <h4>Answer by {{ answer.owner }} on {{ answer.creation_date }}</h4>

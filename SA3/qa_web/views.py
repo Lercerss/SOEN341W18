@@ -84,19 +84,21 @@ def answers(request, id_):
         if form.is_valid(): 
             Answers.objects.create(content=request.POST['content'], owner=request.user, question=q)
     elif request.method == 'POST' and 'deselect' in request.POST:  #Update's database when somebody deselects best answer.
-        updateAnswer = Answers.objects.filter(question=q, correct_answer=True).last()
+        updateAnswer = Answers.objects.get(question=q, correct_answer=True)
         updateAnswer.correct_answer = False;
         updateAnswer.save();
     else: #Update's database when somebody selects a best answer.
-        q_answers = Answers.objects.filter(question=q, correct_answer=False)
-        for answer in q_answers:
-            if request.method == 'POST' and 'select_'+str(answer.id) in request.POST:
-                updateAnswer = Answers.objects.get(id = answer.id)
-                updateAnswer.correct_answer = True;
-                updateAnswer.save();
+        answer_id = [int(key.replace('select_', '')) for key in request.POST.keys() if key.startswith('select_')]
+        if answer_id:
+            updateAnswer = Answers.objects.get(id = answer_id[0])
+            updateAnswer.correct_answer = True;
+            updateAnswer.save();
     #Get updated answer data.
     q_answers = Answers.objects.filter(question=q, correct_answer=False)
     q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
+    if (len(q_best_answer) > 0):
+        q_best_answer = q_best_answer.last()
+
     return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer})
 
 
