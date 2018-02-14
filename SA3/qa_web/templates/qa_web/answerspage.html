@@ -1,4 +1,3 @@
-
 {% load static %}
 <html>
   <head>
@@ -8,9 +7,11 @@
     <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
     <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
     <script src="{% static 'js/Markdown.Sanitizer.min.js'%}"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="{% static 'js/base.js'%}"></script>
+    
     <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
-
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     <style>
       .wmd-button > span {
         background-image: url("{% static 'img/wmd-buttons.svg' %}");
@@ -45,17 +46,42 @@
       <h1>{{ currentQuestion.title }}</h1>
       <p>{{ currentQuestion.content }}</p>
       <h2>Question by {{ currentQuestion.owner }} on {{ currentQuestion.creation_date }}</h2>
+      <hr>
   </div>
   <div id="answers">
   <!-- Display the answers -->
-    {% for answer in answers %}
-        <div id="answer_{{ answer.id }}">
-            <p>{{ answer.content }}</p>
-            <h3>Answer by {{ answer.owner }} on {{ answer.creation_date }}</h3>
-        </div>
-    {% empty %}
-      <h3>Be the first to answer this question!</h3>
-    {% endfor %}
+  {% if bestAnswer %}
+      <form id="deselect_form" method="post">
+          {% csrf_token %}
+          {% if user == currentQuestion.owner %}
+              <h3 class="good_answer">You have selected this as the best answer!</h3>
+          {% else %}
+              <h3 class="good_answer">{{currentQuestion.owner}} has selected this as the best answer!</h3>
+          {% endif %}
+          <p>{{ bestAnswer.content }}</p>
+          <!--Allow one to deselect the best answer if user is logged in and is the user who asked the question-->
+          {% if user.is_authenticated and user == currentQuestion.owner %}
+              <input type = "submit" name="deselect", value="Deselect as Best Answer"></button>
+          {% endif %}
+          <h4>Answer by {{ bestAnswer.owner }} on {{ bestAnswer.creation_date }}</h4>
+          <hr>
+      </form>
+      <h3>Other answers:</h3>
+  {% endif %}
+  {% for answer in answers %}
+      <form id="select{{ answer.id }}_form" method="post">
+          {% csrf_token %}
+          <p>{{ answer.content }}</p>
+          <!--Allow one to select best answers if user is logged in, is the user who asked the question and a best answer doesn't exist already-->
+          {% if user.is_authenticated and user == currentQuestion.owner and not bestAnswer %} 
+             <input type = "submit" name="select_{{ answer.id }}" value="Select as Best Answer"></input>
+          {% endif %}
+          <h4>Answer by {{ answer.owner }} on {{ answer.creation_date }}</h4>
+          <hr>
+      </form>
+  {% empty %}
+    <h3>Be the first to answer this question!</h3>
+  {% endfor %}
   </div>
   <!-- Display the answering form for logged in users -->
   {% if user.is_authenticated %}
@@ -64,12 +90,7 @@
         <div id="wmd-button-bar"></div>
         <textarea id="wmd-input" name="content" class="wmd-input"></textarea>
         <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
-        <input type="submit" value="Submit your answer"/>
-        <script>
-            var converter = Markdown.getSanitizingConverter();
-            var editor = new Markdown.Editor(converter);
-            editor.run();
-        </script>
+        <input type="submit" name="answer_form" value="Submit your answer"/>
     </form>
   {% else %}
    <p>To answer this question, <a href="/login">login</a> or <a href="/signup">sign up</a>!</p>

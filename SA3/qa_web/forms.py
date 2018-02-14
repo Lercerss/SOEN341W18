@@ -35,3 +35,4 @@ class QuestionsForm(forms.Form):
 
 class AnswersForm(forms.Form):
     content = forms.Textarea()
+
