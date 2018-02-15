@@ -1,29 +1,51 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/one-page-wonder.min.css' %}" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Custom fonts for this template -->
+    <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
+
   </head>
   <body>
-
+<header class="masthead text-center text white">
+    <div align="center" style="vertical-align:bottom" class="masthead-content">
+     <div class="container">
+<div align="center" style="vertical-align:bottom">
     <main>
       <h2>Sign up</h2>
       <form method="post">
         {% for field in form %}
           <p>
             {{ field.label_tag }}<br>
-            {{ field }}
-            {% if field.help_text %}
+            {{ field }}<br>
+            {% if field.help_text %}<br>
               <small style="color: grey">{{ field.help_text|safe }}</small>
             {% endif %}
-            {% for error in field.errors %}
+            {% for error in field.errors %}<br>
               <p style="color: red">{{ error }}</p>
-            {% endfor %}
+            {% endfor %}<br>
           </p>
         {% endfor %}
         <button type="submit">Sign up</button>
         <button onclick="{location.href='/login'}">login</button>
       </form>
     </main>
+</div>
+       </div>
+</div>
+<div align="center" style="vertical-align:bottom">
+      <div class="bg-circle-1 bg-circle"></div>
+      <div class="bg-circle-2 bg-circle"></div>
+      <div class="bg-circle-3 bg-circle"></div>
+      <div class="bg-circle-4 bg-circle"></div>
   </body>
 </html>
