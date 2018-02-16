@@ -2,8 +2,13 @@
 {% load staticfiles %}
 <html>
 <head>
+
+
+
+
+
 		<meta charset="utf-8">
-		<link href="{% static 'css/reglogin.css' %}" rel='stylesheet' type='text/css' />
+	<link href="{% static 'css/reglogin.css' %}" rel='stylesheet' type='text/css' />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Log In into your account!</title>
 </head>
@@ -15,10 +20,16 @@
     {% endif %}
 	<div class="main">
 		<div class="header" >
-			<h1>Welcome to QA_Web</h1>
-			<a href="../"><button>Back to Index</button></a>
+			<h1 style="color:#FF1493;">     GOT a Login?     </h1>
+			<style>
+
+
+</style>
+			<p style="color:Tomato;">Sign In to Continue!</p>
+			<a href="../"><button>Back to Homepage</button></a>
 		</div>
 		<p></p>
+		<p style="color:#FF1493;"> Login to answer or ask questions!</p>
 			<form method="post">
 				<ul class="right-form">
 					<h2>Login:</h2>
