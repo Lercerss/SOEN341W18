@@ -1,0 +1,114 @@
+{% extends "qa_web/base_navigator.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="col-md-8">
+
+    <ul class="nav nav-tabs nav-justified">
+        <li role="presentation"
+            {% if active_tab == 'latest' %}class="active"{% endif %}>
+            <a href="#latest" data-toggle="tab">
+                <span class="glyphicon glyphicon-time"></span>
+                Latest
+            </a>
+        </li>
+    </ul>
+    <br/>
+    <div class="tab-content">
+        <div class="tab-pane {% if active_tab == 'latest' %}active{% endif %}" id="latest">
+          {% if latest_current_page %}
+            {% for question in latest_current_page %}
+                <div class="row">
+                  <div class="col-sm-1 ans"><small><div class="ques">{{ question.num_answers }}</div>Answers</small></div>
+{#                  <div class="col-sm-1 ans"><small><div class="ques">{{ to-do: question.hit_count }}</div>Views</small></div>#}
+                  <div class="col-sm-1 ans"><small><div class="ques">0</div>Views</small></div>
+                  <p>
+                    {% if question.num_answers > 3 %}<span class="glyphicon glyphicon-fire" aria-hidden="true"></span>{% endif %}
+                    {# if answered more than 3 times means this quetion is hot. #}
+        {#            <h3><a href="{% url 'qa_detail' question.id %}">{{ question.title }}</a></h3>#}
+                    {# to-do: link to question page #}
+                    <h3><a href="{% url 'answers' question.id %}">{{ question.title }}</a></h3>
+                    <br/>
+{#                    {% for tag in question.tags.all %}#}
+{#                        <a href="{% url 'some_tag_link' tag %}"><tag>{{ tag.name }}</tag></a>  {# to-do: add tag link #}
+{#                    {% endfor %}#}
+                    <small> {{ question.creation_date }}</small>
+                  </p>
+                </div>
+                <hr>
+            {% endfor %}
+               {% if is_paginated %}
+                  <div class="pagination">
+                      {% if first %}
+                          <a href="?page=1">1</a>
+                      {% endif %}
+                      {% if left %}
+                          {% if left_has_more %}
+                              <span>...</span>
+                          {% endif %}
+                          {% for i in left %}
+                              <a href="?page={{ i }}">{{ i }}</a>
+                          {% endfor %}
+                      {% endif %}
+                      <a href="?page={{ page_obj.number }}" style="color: red">{{ page_obj.number }}</a>
+                      {% if right %}
+                          {% for i in right %}
+                              <a href="?page={{ i }}">{{ i }}</a>
+                          {% endfor %}
+                          {% if right_has_more %}
+                              <span>...</span>
+                          {% endif %}
+                      {% endif %}
+                      {% if last %}
+                          <a href="?page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a>
+                      {% endif %}
+                  </div>
+               {% endif %}
+
+          {% else %}
+            <div class="alert alert-warning" role="alert">No Questions are available!</div>
+          {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="col-md-4">
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <h4>Total Questions: {{ total_question_num }}</h4>
+      <h4>Total Answers: {{ total_answer_num }}</h4>
+    </div>
+  </div>
+
+{#  <div class="panel panel-default">#}
+{#    <div class="panel-heading">#}
+{#      <h3 class="panel-title"><span class="glyphicon glyphicon-tag" aria-hidden="true"></span> Tags</h3>#}
+{#    </div>#}
+{#    <div class="panel-body">#}
+{#      {% for tag in tags %}#}
+{#          <a href="{% url 'some_tag_link' tag.name %}"><tag>{{ tag.name }}</tag></a>  {# to-do: add tag link #}
+{#      {% endfor %}#}
+{#    </div>#}
+{#  </div>#}
+
+    {# to-do: another tab #}
+{#  {% if un_answered_num_for_current_page.count %}#}
+{#  <div class="panel panel-warning">#}
+{#    <div class="panel-heading">#}
+{#      <h3 class="panel-title">Unanswered Questions</h3>#}
+{#    </div>#}
+{#    <div class="panel-body">#}
+{#    <ul>#}
+{#      {% for question in noans %}#}
+{#      <li><a href="{% url 'qa_detail' question.id %}">{{ question.title }}</a></li>#}
+{#      {% endfor %}#}
+{#    </ul>#}
+{#    </div>#}
+{#  </div>#}
+{#  {% endif %}#}
+
+</div>
+
+{% endblock content %}
