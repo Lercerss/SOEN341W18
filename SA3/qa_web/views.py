@@ -1,9 +1,9 @@
-from .models import Answers, Questions, User
+from .models import Answers, Questions, User, Comments, Vote
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
 from .forms import LoginForm, QuestionsForm, AnswersForm
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
@@ -79,12 +79,69 @@ def questions(request):
 
 def answers(request, id_):
     q = get_object_or_404(Questions, pk=id_)
-    if request.method == 'POST':
+    if request.method == 'POST' and 'answer_form' in request.POST: #Update's database when somebody answers a question
         form = AnswersForm(request.POST)
-        if form.is_valid():
+        if form.is_valid(): 
             Answers.objects.create(content=request.POST['content'], owner=request.user, question=q)
-    q_answers = Answers.objects.filter(question=q)
-    return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers})
+    elif request.method == 'POST' and 'deselect' in request.POST:  #Update's database when somebody deselects best answer.
+        updateAnswer = Answers.objects.get(question=q, correct_answer=True)
+        updateAnswer.correct_answer = False;
+        updateAnswer.save();
+    elif request.method == 'POST': #Update's database when somebody selects a best answer.
+        answer_id = [int(key.replace('select_', '')) for key in request.POST.keys() if key.startswith('select_')]
+        if answer_id:
+            updateAnswer = Answers.objects.get(id = answer_id[0])
+            updateAnswer.correct_answer = True;
+            updateAnswer.save();
+    #Get updated answer data.
+    q_answers = Answers.objects.filter(question=q, correct_answer=False)
+    q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
+    if (len(q_best_answer) > 0):
+        q_best_answer = q_best_answer.last()
+
+    return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer})
+
+
+def vote(request):
+    """Receives Ajax queries to vote on Posts, updates the corresponding Post and returns the new score"""
+    if request.method == 'POST' and request.user.is_authenticated:
+        vote_direction, button_id, post_type = request.POST['button'].split('_')
+        vote_direction = vote_direction == 'upvote'
+        post_subclass = Questions if post_type == 'question' else Answers if post_type == 'answer' else Comments
+        post = get_object_or_404(post_subclass, pk=int(button_id))
+        foreign_key_args = {post_type:post} # Workaround to provide the correct kwarg depending on post_type
+        if request.user not in post.voters.all():
+            # Add user's vote
+            Vote.objects.create(user=request.user, positive=vote_direction,
+                                    **foreign_key_args) # Bind the post to the appropriate FK
+            if vote_direction:
+                post.upvotes = post.upvotes + 1
+            else:
+                post.downvotes = post.downvotes + 1
+        else:
+            # Allow user to modify their vote
+            last_vote = Vote.objects.get(user=request.user, **foreign_key_args)
+            if last_vote.positive == vote_direction:
+                # Vote cancelled, user pressed same button as original vote
+                last_vote.delete()
+                if vote_direction:
+                    post.upvotes = post.upvotes - 1
+                else:
+                    post.downvotes = post.downvotes - 1
+            else:
+                # Vote changed direction
+                last_vote.positive = vote_direction
+                last_vote.save()
+                if vote_direction:
+                    post.upvotes = post.upvotes + 1
+                    post.downvotes = post.downvotes - 1
+                else:
+                    post.downvotes = post.downvotes + 1
+                    post.upvotes = post.upvotes - 1
+        post.save()
+        return JsonResponse({'new_score' : post.score, 'id' : 'score_{}_{}'.format(post.id, post_type)})
+    # Accessing url without using Post or unauthenticated
+    return HttpResponseRedirect('/')
 
 
 # Home Page
