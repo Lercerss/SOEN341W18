@@ -95,3 +95,6 @@ class UserProfile(forms.Form):
         error_messages = {'required': 'Please insert the name of your current city'},
     )
 
+class EditForm(forms.Form):
+    content = forms.Textarea()
+
