@@ -21,8 +21,7 @@
             {% for question in latest_current_page %}
                 <div class="row">
                   <div class="col-sm-1 ans"><small><div class="ques">{{ question.num_answers }}</div>Answers</small></div>
-{#                  <div class="col-sm-1 ans"><small><div class="ques">{{ to-do: question.hit_count }}</div>Views</small></div>#}
-                  <div class="col-sm-1 ans"><small><div class="ques">0</div>Views</small></div>
+                  <div class="col-sm-1 ans"><small><div class="ques">{{ question.visits }}</div>Views</small></div>
                   <p>
                     {% if question.num_answers > 3 %}<span class="glyphicon glyphicon-fire" aria-hidden="true"></span>{% endif %}
                     {# if answered more than 3 times means this quetion is hot. #}
