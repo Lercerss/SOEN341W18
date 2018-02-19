@@ -9,5 +9,6 @@ urlpatterns = [
     path('questions/', views.questions, name='questions'),
     path('questions/<int:id_>/', views.answers, name='answers'),
     url(r'^home/$', views.homepage, name='homepage'),
-    path('vote/', views.vote, name='vote')
+    path('vote/', views.vote, name='vote'),
+    url(r'QuestionIndex/', views.QuestionDisplayView.as_view(), name='QuestionIndex'),
 ]
