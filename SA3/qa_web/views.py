@@ -106,7 +106,12 @@ def answers(request, id_):
     q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
     if (len(q_best_answer) > 0):
         q_best_answer = q_best_answer.last()
-
+    
+    #Increment the visits counter of the question by one
+    if request.user.is_authenticated:
+        q.visits += 1
+        q.save()
+        
     return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer})
 
 
