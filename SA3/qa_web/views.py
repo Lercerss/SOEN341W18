@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
 from .forms import LoginForm, QuestionsForm, AnswersForm
 from django.http import HttpResponseRedirect, Http404, JsonResponse
-from django.contrib.auth import login, authenticate, get_user_model
+from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -51,6 +51,10 @@ def login(request):
         else:
             return render_to_response('qa_web/login.html', context={'form': form})
 
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('../login/')
+    # redirects to log in page once logged out successfully
 
 @csrf_exempt
 def signup(request):
