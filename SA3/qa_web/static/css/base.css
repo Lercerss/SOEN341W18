@@ -1,3 +1,7 @@
 .good_answer{
   color: green;
 }
+
+#content {
+  padding: 2%;
+}

@@ -41,6 +41,7 @@
 {% endblock %}
 
 {% block content %}
+<div id="content">
   <!-- Display the question's data -->
   <div id="question">
       <h2><b>{{ currentQuestion.title }}</b> &nbsp; <span class="label label-primary">{{ currentQuestion.visits }} visits</span></h2>
@@ -62,14 +63,13 @@
           {% else %}
               <h3 class="good_answer">{{currentQuestion.owner}} has selected this as the best answer!</h3>
           {% endif %}
-          <h6>{{ bestAnswer.content }}</h6>
+          <p>{{ bestAnswer.content }}</p>
           <!--Allow one to deselect the best answer if user is logged in and is the user who asked the question-->
           {% if user.is_authenticated and user == currentQuestion.owner %}
-              <input type = "submit" name="deselect" value="Deselect as Best Answer"/>
+              <input type = "submit" name="deselect", value="Deselect as Best Answer"/>
           {% endif %}
           <h6>Answer by {{ bestAnswer.owner }} on {{ bestAnswer.creation_date }}</h6>
       </form>
-
       <a id='upvote_{{ bestAnswer.id }}_answer'><button>Upvote</button></a>
       <span id='score_{{ bestAnswer.id }}_answer'>{{ bestAnswer.score }}</span>
       <a id='downvote_{{ bestAnswer.id }}_answer'><button>Downvote</button></a>
@@ -92,6 +92,7 @@
             <input type="submit" name="comment_form_answer_{{ bestAnswer.id }}" value="Submit your comment"/>
          </form>
       {% endif %}
+
       <h3>Other answers:</h3>
       <hr>
   {% endif %}
@@ -101,12 +102,11 @@
           {% csrf_token %}
           <p>{{ answer.content }}</p>
           <!--Allow one to select best answers if user is logged in, is the user who asked the question and a best answer doesn't exist already-->
-          {% if user.is_authenticated and user == currentQuestion.owner and not bestAnswer %}
-             <input type = "submit" name="select_{{ answer.id }}" value="Select as Best Answer">
+          {% if user.is_authenticated and user == currentQuestion.owner and not bestAnswer %} 
+             <input type = "submit" name="select_{{ answer.id }}" value="Select as Best Answer"></input>
           {% endif %}
           <h6>Answer by {{ answer.owner }} on {{ answer.creation_date }}</h6>
       </form>
-
       <a id='upvote_{{ answer.id }}_answer'><button>Upvote</button></a>
       <span id='score_{{ answer.id }}_answer'>{{ answer.score }}</span>
       <a id='downvote_{{ answer.id }}_answer'><button>Downvote</button></a>
@@ -134,11 +134,10 @@
   {% empty %}
     <h3>Be the first to answer this question!</h3>
   {% endfor %}
-
   </div>
+
   <!-- Display the answering form for logged in users -->
   {% if user.is_authenticated %}
-    <h3>Got answers? Why not share them!</h3>
     <form id="answer_form" method="post">
         {% csrf_token %}
         <div id="wmd-button-bar"></div>
@@ -147,7 +146,7 @@
         <input type="submit" name="answer_form" value="Submit your answer"/>
     </form>
   {% else %}
-
    <p>To answer this question, <a href="/login">login</a> or <a href="/signup">sign up</a>!</p>
   {% endif %}
+</div>
 {% endblock %}
