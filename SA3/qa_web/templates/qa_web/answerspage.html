@@ -1,20 +1,16 @@
+{% extends "qa_web/base.html" %}
 {% load static %}
-<html>
-  <head>
-	<meta charset="UTF-8">
-	
-    <title>SA3 QA Website Answers</title>
+
+{% block scripts %}
     <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
     <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
     <script src="{% static 'js/Markdown.Sanitizer.min.js'%}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="{% static 'js/base.js'%}"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+{% endblock %}
 
+{% block styles %}
     <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
     <style>
       .wmd-button > span {
         background-image: url("{% static 'img/wmd-buttons.svg' %}");
@@ -42,13 +38,12 @@
         box-sizing: border-box;
       }
     </style>
-  </head>
-  <body>
-  <a href="../../"><button>Back to Index</button></a>
-  <a href="./edit"><button>Edit</button></a>
+{% endblock %}
+
+{% block content %}
   <!-- Display the question's data -->
   <div id="question">
-      <h2><b>{{ currentQuestion.title }}</b> &nbsp <span class="label label-primary">{{ currentQuestion.visits }} visits</span></h2>
+      <h2><b>{{ currentQuestion.title }}</b> &nbsp; <span class="label label-primary">{{ currentQuestion.visits }} visits</span></h2>
       <p>{{ currentQuestion.content }}</p>
       <h6>Question by {{ currentQuestion.owner }} on {{ currentQuestion.creation_date }}</h6>
       <a id='upvote_{{ currentQuestion.id }}_question'><button>Upvote</button></a>
@@ -155,5 +150,4 @@
 
    <p>To answer this question, <a href="/login">login</a> or <a href="/signup">sign up</a>!</p>
   {% endif %}
-  </body>
-</html>
+{% endblock %}

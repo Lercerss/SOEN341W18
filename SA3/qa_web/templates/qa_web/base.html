@@ -7,7 +7,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="author" content="SA3 Group">
+    {% block meta %}
+    {% endblock %}
 
     <title>Got Answers </title>
 
@@ -20,20 +22,16 @@
 
     <!-- Custom styles for this template -->
     <link href="{% static 'css/one-page-wonder.min.css' %}" rel="stylesheet">
-    
+    {% block styles %}
+    {% endblock %}
+
   </head>
 
   <body>
-    <div>
-        {% block content %}
-        {% endblock %}
-    </div>
-
-
-
-
-    </div>
-
+    {% include "qa_web/includes/navbar.html" %}
+    {% block content %}
+    {% endblock %}
+    {% include "qa_web/includes/footer.html" %}
     <!-- JQuery from BootstrapCDN -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 
@@ -42,6 +40,8 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    {% block scripts %}
+    {% endblock %}
   </body>
 
 </html>
