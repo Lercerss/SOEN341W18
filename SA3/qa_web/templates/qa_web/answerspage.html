@@ -75,16 +75,13 @@
       <a id='upvote_{{ bestAnswer.id }}_answer'><button>Upvote</button></a>
       <span id='score_{{ bestAnswer.id }}_answer'>{{ bestAnswer.score }}</span>
       <a id='downvote_{{ bestAnswer.id }}_answer'><button>Downvote</button></a>
-      <h4>Comments:</h4>
       {% for comment in comments %}
-          {% if comment.answer.id == bestAnswer.id %}
-            <p>{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})</p>
-          {% endif %}
+        {% if comment.answer.id == bestAnswer.id %}
+            <h5>{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})</h5>
+        {% endif %}
       {% endfor %}
-      {% if comments.answer.id.count == 0 %}
-          <p>Got something to say? Be the first to comment!</p>
-      {% endif %}
       {% if user.is_authenticated %}
+        <p>Got a comment? Why not share it here!</p>
         <form id="comment_form_{{answer.id}}" method="post">
           {% csrf_token %}
             <textarea id="wmd-input" name="content" class="wmd-input"></textarea></br>
@@ -112,13 +109,13 @@
       <a id='upvote_{{ answer.id }}_answer'><button>Upvote</button></a>
       <span id='score_{{ answer.id }}_answer'>{{ answer.score }}</span>
       <a id='downvote_{{ answer.id }}_answer'><button>Downvote</button></a>
-      <h4>Comments:</h4>
       {% for comment in comments %}
-          {% if comment.answer.id == answer.id %}
-            <p>{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})</p>
-          {% endif %}
+        {% if comment.answer.id == answer.id %}
+            <h5>{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})</h5>
+        {% endif %}
       {% endfor %}
       {% if user.is_authenticated %}
+        <p>Got a comment? Why not share it here!</p>
         <form id="comment_form_{{answer.id}}" method="post">
           {% csrf_token %}
             <textarea id="wmd-input" name="content" class="wmd-input"></textarea></br>

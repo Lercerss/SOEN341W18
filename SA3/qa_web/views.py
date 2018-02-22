@@ -151,6 +151,9 @@ def answers(request, id_):
     #Get updated answer data.
     q_answers = Answers.objects.filter(question=q, correct_answer=False)
     q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
+    #q_comments = {}
+    #for a in q_answers:
+    #    q_comments[q_answers] = Comments.objects.filter(question=q, answer=a)
     q_comments = Comments.objects.filter(question=q)
 
     # Increment the visits counter of the question by one
@@ -160,6 +163,7 @@ def answers(request, id_):
 
     if (len(q_best_answer) > 0):
         q_best_answer = q_best_answer.last()
+    #    q_comments[q_best_answer.id] = Comments.objects.filter(question=q, answer=q_best_answer)
     return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer, 'comments': q_comments})
 
 
