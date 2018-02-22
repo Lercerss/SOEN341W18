@@ -52,27 +52,27 @@ class UserProfile(forms.Form):
     )
 
 
-    motherland = models.TextField(
-        required=True)
+    motherland = forms.CharField(
+        required=True,
         label="motherland",
         error_messages={'required': 'Please insert the country of your native land'},
     )
 
-    school = models.TextField(
-        required=True)
-        label = "school",
-        error_messages = {'required': 'Please insert the country of your native land'},
+    school = forms.CharField(
+        required=True,
+        label="school",
+        error_messages = {'required': 'Please insert the country of your country of origin'},
     )
 
-   major = models.CharField(
-        required=True)
-        label = "major",
+    major = forms.CharField(
+        required=True,
+        label="major",
         error_messages = {'required': 'Please insert your main subject of studies. Ex: Software Engineering'},
     )
 
-    city = models.TextField(
-        required=True)
-        label = "city",
+    city = forms.CharField(
+        required=True,
+        label="city",
         error_messages = {'required': 'Please insert the name of your current city'},
     )
 
