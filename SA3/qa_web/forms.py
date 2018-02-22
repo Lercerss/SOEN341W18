@@ -36,3 +36,43 @@ class QuestionsForm(forms.Form):
 class AnswersForm(forms.Form):
     content = forms.Textarea()
 
+class UserProfile(forms.Form):
+
+    age = forms.IntegerField(
+        required=True,
+        label='age',
+        error_messages={'required': 'Please insert an age.'},
+
+    )
+
+    birthday= forms.DateField(
+        required=True,
+        label='age',
+        error_messages={'required': 'Please insert birthday in the format of (mm/dd/yy)'},
+    )
+
+
+    motherland = models.TextField(
+        required=True)
+        label="motherland",
+        error_messages={'required': 'Please insert the country of your native land'},
+    )
+
+    school = models.TextField(
+        required=True)
+        label = "school",
+        error_messages = {'required': 'Please insert the country of your native land'},
+    )
+
+   major = models.CharField(
+        required=True)
+        label = "major",
+        error_messages = {'required': 'Please insert your main subject of studies. Ex: Software Engineering'},
+    )
+
+    city = models.TextField(
+        required=True)
+        label = "city",
+        error_messages = {'required': 'Please insert the name of your current city'},
+    )
+

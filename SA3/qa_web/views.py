@@ -31,7 +31,14 @@ def index(request):
 
 @login_required(login_url='/login/')
 def profile(request):
-    pass
+    if request.method=='GET':
+        form = ProfileForm()
+        # return render_to_response('qa_web/UserProfile.html', RequestContext(request, {'form': form, }))
+        return render(request,'qa_web/UserProfile.html', context={'form': form})
+    else:
+        user = request.user
+        user.age = request.POST['age']
+
 
 @csrf_exempt
 def login(request):

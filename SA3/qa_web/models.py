@@ -11,12 +11,12 @@ class User(AbstractUser):
 
      """
 
-    Age = models.IntegerField(null =True)
-    Birthday = models.DateField(null = True)
-    Motherland=models.TextField(max_length=100, null =True)
-    School = models.TextField(max_length=100, null =True)
-    Major = models.CharField(max_length=50, null =True)
-    City = models.TextField(max_length=100, null=True)
+    age = models.IntegerField(null =True)
+    birthday = models.DateField(null = True)
+    motherland=models.TextField(max_length=100, null =True)
+    school = models.TextField(max_length=100, null =True)
+    major = models.CharField(max_length=50, null =True)
+    city = models.TextField(max_length=100, null=True)
 
     """
       The below code has a purpose that a user profile will be created when
