@@ -15,6 +15,10 @@
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- header -->
+    <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/one-page-wonder.min.css' %}" />
 
     <!-- Custom fonts for this template -->
     <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
@@ -29,9 +33,31 @@
 
   <body>
     {% include "qa_web/includes/navbar.html" %}
-    {% block content %}
+
+<header class="masthead text-center text-white">
+    {% block header %}
+
+
     {% endblock %}
+
+      <div class="bg-circle-1 bg-circle"></div>
+      <div class="bg-circle-2 bg-circle"></div>
+      <div class="bg-circle-3 bg-circle"></div>
+      <div class="bg-circle-4 bg-circle"></div>
+      </header>
+<div align="center" style="vertical-align:bottom" class="masthead-content">
+
+    {% block content %}
+
+    {% endblock %}
+</div>
+
+
     {% include "qa_web/includes/footer.html" %}
+
+
+
+
     <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     

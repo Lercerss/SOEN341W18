@@ -40,18 +40,26 @@
     </style>
 {% endblock %}
 
-{% block content %}
+
 <main>
+
+    {% block header %}
     <!-- Display the question's data -->
-    <div id="question">
-        <h2><b>{{ currentQuestion.title }}</b> &nbsp; <span class="label label-primary">{{ currentQuestion.visits }} visits</span></h2>
-        <p>{{ currentQuestion.content }}</p>
+    <div class="masthead-content">
+      <div class="container" id="question">
+         <h1 class="masthead-heading mb-0"><b>{{ currentQuestion.title }}</b> &nbsp; <span class="label label-primary">{{ currentQuestion.visits }} visits</span></h1>
+          <h2 class="masthead-subheading mb-0"><p>{{ currentQuestion.content }}</p></h2>
         <h6>Question by {{ currentQuestion.owner }} on {{ currentQuestion.creation_date }}</h6>
         <a id='upvote_{{ currentQuestion.id }}_question'><button>Upvote</button></a>
         <span id='score_{{ currentQuestion.id }}_question'>{{ currentQuestion.score }}</span>
         <a id='downvote_{{ currentQuestion.id }}_question'><button>Downvote</button></a>
-        <hr>
+
     </div>
+    </div>
+
+    {% endblock %}
+
+    {% block content %}
     <div id="answers">
     <!-- Display the answers -->
     {% if bestAnswer %}

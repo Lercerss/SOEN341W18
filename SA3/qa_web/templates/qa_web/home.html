@@ -1,8 +1,8 @@
 {% extends 'qa_web/base.html' %}
 {% load staticfiles%}
 
-{% block content %}
-  <header class="masthead text-center text-white">
+
+ {% block header %}
     <div class="masthead-content">
       <div class="container">
         <h1 class="masthead-heading mb-0">Got Answers</h1>
@@ -10,12 +10,10 @@
         <a href="#" class="btn btn-primary btn-xl rounded-pill mt-5">Click to Ask or Answer</a>
       </div>
     </div>
-    <div class="bg-circle-1 bg-circle"></div>
-    <div class="bg-circle-2 bg-circle"></div>
-    <div class="bg-circle-3 bg-circle"></div>
-    <div class="bg-circle-4 bg-circle"></div>
-  </header>
-  
+
+  {% endblock %}
+
+{% block content %}
   <section>
     <div class="container">
       <div class="row align-items-center">

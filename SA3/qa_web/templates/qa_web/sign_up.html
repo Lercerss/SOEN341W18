@@ -1,15 +1,26 @@
 {% extends "qa_web/base.html" %}
 
+
+{% block header %}
+<div class="masthead-content">
+      <div class="container">
+        <h1 class="masthead-heading mb-0">Sign Up</h1>
+        <h1 class="masthead-heading mb-0">!!!</h1>
+        <BR><BR><BR>
+      </div>
+</div>
+{% endblock %}
 {% block content %}
   <main>
-    <h2>Sign up</h2>
+    <br><br><br>
     <a href="/"><button>Back to Index</button></a>
+    <br><br>
     <form method="post">
       {% for field in form %}
         <p>
           {{ field.label_tag }}<br>
-          {{ field }}
-          {% if field.help_text %}
+          {{ field }}<br>
+          {% if field.help_text %}<br>
             <small style="color: grey">{{ field.help_text|safe }}</small>
           {% endif %}
           {% for error in field.errors %}

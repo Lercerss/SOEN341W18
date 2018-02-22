@@ -42,12 +42,21 @@
     }
   </style>
 {% endblock %}
+{% block header %}
+<div class="masthead-content">
+      <div class="container">
+        <h1 class="masthead-heading mb-0">Got Questions</h1>
+        <h1 class="masthead-heading mb-0"> ? ! </h1>
+        <BR><BR><BR>
+      </div>
+</div>
 
+{% endblock %}
 {% block content %}
   <a href="/"><button>Back to Index</button></a>
   <form method="post">
     {% csrf_token %}
-    <h1>got Questions?!</h1>
+
     <input id="title" name = "title" type="text" placeholder="question title" required/>
     <div id="wmd-button-bar"></div>
     <textarea id="wmd-input" name="content" class="wmd-input" placeholder="type your description here" required></textarea>
