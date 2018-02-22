@@ -2,7 +2,7 @@ from .models import Answers, Questions, User, Comments, Vote
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
-from .forms import LoginForm, QuestionsForm, AnswersForm
+from .forms import LoginForm, QuestionsForm, AnswersForm, UserProfile
 from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -32,9 +32,9 @@ def index(request):
 @login_required(login_url='/login/')
 def profile(request):
     if request.method=='GET':
-        form = ProfileForm()
+        form = UserProfile()
         # return render_to_response('qa_web/UserProfile.html', RequestContext(request, {'form': form, }))
-        return render(request,'qa_web/UserProfile.html', context={'form': form})
+        return render(request,'qa_web/EditUserProfile.html', context={'form': form})
     else:
         user = request.user
         user.age = request.POST['age']

@@ -40,33 +40,33 @@ class UserProfile(forms.Form):
 
     age = forms.IntegerField(
         required=True,
-        label='age',
+        label='Age',
         error_messages={'required': 'Please insert an age.'},
 
     )
 
     birthday= forms.DateField(
         required=True,
-        label='age',
+        label='Birthday',
         error_messages={'required': 'Please insert birthday in the format of (mm/dd/yy)'},
     )
 
 
     motherland = forms.CharField(
         required=True,
-        label="motherland",
+        label="Motherland",
         error_messages={'required': 'Please insert the country of your native land'},
     )
 
     school = forms.CharField(
         required=True,
-        label="school",
+        label="School",
         error_messages = {'required': 'Please insert the country of your country of origin'},
     )
 
     major = forms.CharField(
         required=True,
-        label="major",
+        label="Major",
         error_messages = {'required': 'Please insert your main subject of studies. Ex: Software Engineering'},
     )
 
