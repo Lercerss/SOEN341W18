@@ -29,6 +29,10 @@ def index(request):
     return render(request, 'qa_web/index.html', context={'questions': Questions.objects.all()})
 
 
+@login_required(login_url='/login/')
+def profile(request):
+    pass
+
 @csrf_exempt
 def login(request):
     if request.method == 'GET':

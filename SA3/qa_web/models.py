@@ -24,8 +24,8 @@ class User(AbstractUser):
 
      """
 
-    def create_profile(selfsender,):
-
+    def create_profile(self):
+        pass
 
 
 

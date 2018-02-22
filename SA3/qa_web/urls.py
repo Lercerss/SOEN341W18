@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^home/$', views.homepage, name='homepage'),
     path('vote/', views.vote, name='vote'),
     url(r'QuestionIndex/', views.QuestionDisplayView.as_view(), name='QuestionIndex'),
+    path('profile/', views.profile, name='UserProfile'),
 ]
