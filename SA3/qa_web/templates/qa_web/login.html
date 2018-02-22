@@ -1,13 +1,11 @@
-<!DOCTYPE html>
+{% extends "qa_web/base.html" %}
 {% load staticfiles %}
-<html>
-<head>
-		<meta charset="utf-8">
+
+{% block styles %}
 		<link href="{% static 'css/reglogin.css' %}" rel='stylesheet' type='text/css' />
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Log In into your account!</title>
-</head>
-<body>
+{% endblock %}
+
+{% block content %}
     {% if password_is_wrong %}
         <div class="alert alert-error">
             <h5>Incorrect username or password</h5>
@@ -16,7 +14,7 @@
 	<div class="main">
 		<div class="header" >
 			<h1>Welcome to QA_Web</h1>
-			<a href="../"><button>Back to Index</button></a>
+			<a href="/"><button>Back to Index</button></a>
 		</div>
 		<p></p>
 			<form method="post">
@@ -32,5 +30,4 @@
 
 			</form>
 	</div>
-</body>
-</html>
+{% endblock %}
