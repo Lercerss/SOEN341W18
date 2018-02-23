@@ -1,5 +1,9 @@
 {% extends "qa_web/base.html" %}
+{% load staticfiles %}
 
+{% block styles %}
+    	<link rel="stylesheet" href="{% static 'css/base.css' %}" />
+{% endblock %}
 
 {% block header %}
 <div class="masthead-content">
@@ -12,9 +16,9 @@
 {% endblock %}
 {% block content %}
   <main>
-    <br><br><br>
+    <br>
     <a href="/"><button>Back to Index</button></a>
-    <br><br>
+    <br>
     <form method="post">
       {% for field in form %}
         <p>
@@ -31,5 +35,6 @@
       <button type="submit">Sign up</button>
       <button onclick="{location.href='/login'}">login</button>
     </form>
+    <BR>
   </main>
 {% endblock %}
