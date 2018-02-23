@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 
 from django.db.models import Count
-# from taggit.models import Tag, TaggedItem
+from taggit.models import Tag, TaggedItem
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.contrib.contenttypes.models import ContentType
 
@@ -77,9 +77,11 @@ def questions(request):
         if form.is_valid():
             content = request.POST['content']
             title = request.POST['title']
+            tag = request.POST['tag'].split(':')
             owner = request.user
             q = Questions(content=content, title=title, owner=owner)
             q.save()
+            q.tag.add(*tag)
             return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
         else:
             return render(request, 'qa_web/questionspage.html', context={})
@@ -203,8 +205,9 @@ class QuestionDisplayView(ListView):
         context.update(pagination_data)
 
         # to inspect each page object in current page.
-        # for page_ in page_obj:  #  inspect structure of page_
-        #     print(page_.id)
+        for page_ in page_obj:  #  inspect structure of page_
+            for each in page_.tag.all():
+                print(each.slug)
 
         # second tab: unanswered page
         # un_answered page, aggregate attributes num_answers and num_question_comments to this QuerySet

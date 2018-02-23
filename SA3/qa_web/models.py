@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from taggit.managers import TaggableManager
 
 class User(AbstractUser):
     pass
@@ -32,6 +33,7 @@ class Questions(Post):
     title = models.CharField(max_length=300, null=True)
     visits = models.IntegerField(default=0)
     voters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='q_voters', through='Vote')
+    tag = TaggableManager()
 
     def __str__(self):
         return self.title

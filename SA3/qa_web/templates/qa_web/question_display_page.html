@@ -29,9 +29,10 @@
                     {# to-do: link to question page #}
                     <h3><a href="{% url 'answers' question.id %}">{{ question.title }}</a></h3>
                     <br/>
-{#                    {% for tag in question.tags.all %}#}
-{#                        <a href="{% url 'some_tag_link' tag %}"><tag>{{ tag.name }}</tag></a>  {# to-do: add tag link #}
-{#                    {% endfor %}#}
+                    {% for tag in question.tag.all %}
+                        <a><tag>{{ tag.slug }}</tag></a>
+                        {# to-do: add tag link #}
+                    {% endfor %}
                     <small> {{ question.creation_date }}</small>
                   </p>
                 </div>
