@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <title>Edit User Profile</title>
     </br>
-    <h1> Account Setting</h1>
+    <h1> Edit User Profile</h1>
 
 </head>
 <body>
 
-
+<!–– Django supported form is looped below to obtain the information -->
     <form method="post">
+        {% csrf_token %}
         {% for field in form %}
           <p>
             {{ field.label_tag }}<br>
@@ -23,7 +24,10 @@
             {% endfor %}
           </p>
         {% endfor %}
+        <input type="submit" value="Submit">
+    </form>
 
+  <br><br>
 
 
 

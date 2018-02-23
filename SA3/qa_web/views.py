@@ -30,14 +30,38 @@ def index(request):
 
 
 @login_required(login_url='/login/')
-def profile(request):
+def edit_profile(request):
     if request.method=='GET':
         form = UserProfile()
         # return render_to_response('qa_web/UserProfile.html', RequestContext(request, {'form': form, }))
         return render(request,'qa_web/EditUserProfile.html', context={'form': form})
     else:
-        user = request.user
-        user.age = request.POST['age']
+        form = UserProfile(request.POST)
+        # validating the form occurs below and then saving the results entered by the user
+        if form.is_valid():
+            user = request.user
+
+            user.first_name = request.POST['prename']
+            user.last_name = request.POST['surname']
+            user.age = request.POST['age']
+            user.birthday = request.POST['birthday']
+            user.motherland = request.POST['motherland']
+            user.school= request.POST['school']
+            user.major = request.POST['major']
+            user.city = request.POST['city']
+
+            user.save()
+
+            # when the information is entered and the information is saved
+            # the page gets redirected to the profile page
+            return HttpResponseRedirect('/profile/' + str(user.id))
+        else:
+            return render(request, 'qa_web/EditUserProfile.html', context={'form': form})
+
+
+def display_profile(request, id_):
+    displayed_user = get_object_or_404(User, pk=id_)
+    return render(request, 'qa_web/UserProfile.html', context={'displayed_user' : displayed_user})
 
 
 @csrf_exempt

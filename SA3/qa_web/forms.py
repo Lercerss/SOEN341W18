@@ -37,7 +37,27 @@ class AnswersForm(forms.Form):
     content = forms.Textarea()
 
 class UserProfile(forms.Form):
+    # a form is created to intake the user's personal information
+    prename = forms.CharField(
+        required=True,
+        label='Prename',
+        error_messages={'required': 'Please insert your first name.'},
 
+    )
+
+    surname = forms.CharField(
+        required=True,
+        label='Surname',
+        error_messages={'required': 'Please insert your last name.'},
+
+    )
+
+    email = forms.CharField(
+        required=True,
+        label='E-Mail:',
+        error_messages={'required': 'Please insert your last e-mail.'},
+
+    )
     age = forms.IntegerField(
         required=True,
         label='Age',
@@ -45,12 +65,11 @@ class UserProfile(forms.Form):
 
     )
 
-    birthday= forms.DateField(
+    birthday = forms.DateField(
         required=True,
         label='Birthday',
         error_messages={'required': 'Please insert birthday in the format of (mm/dd/yy)'},
     )
-
 
     motherland = forms.CharField(
         required=True,
