@@ -44,7 +44,7 @@ def edit_profile(request):
             user.first_name = request.POST['prename']
             user.last_name = request.POST['surname']
             user.age = request.POST['age']
-            user.birthday = request.POST['birthday']
+            user.birthday = form.cleaned_data.get('birthday')
             user.motherland = request.POST['motherland']
             user.school= request.POST['school']
             user.major = request.POST['major']

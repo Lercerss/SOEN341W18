@@ -24,14 +24,6 @@ class User(AbstractUser):
 
      """
 
-    def create_profile(self):
-        pass
-
-
-
-
-
-
 class Post(models.Model):
     """
     Parent meta class that describes a post as a publication on the website with certain content

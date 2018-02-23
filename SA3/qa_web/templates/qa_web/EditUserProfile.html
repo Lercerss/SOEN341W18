@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<!–– Django supported form is looped below to obtain the information -->
+
     <form method="post">
         {% csrf_token %}
         {% for field in form %}
@@ -32,5 +32,6 @@
 
 
 <p>Clicking Submit will save and update your profile page.</p>
+<p> You will now be redirected to your profile page.</p>
 </body>
 </html>
