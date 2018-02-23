@@ -11,34 +11,8 @@
     <script src="{% static 'js/Markdown.Sanitizer.min.js' %}"></script>
 
     <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
+    {% include "qa_web/editor_style.html" %}
 
-    <style>
-      .wmd-button > span {
-        background-image: url('{% static 'img/wmd-buttons.svg' %}');
-        background-repeat: no-repeat;
-        background-position: 0px 0px;
-        width: 20px;
-        height: 20px;
-        display: inline-block;
-      }
-      #wmd-input {
-        padding: 10px;
-        background-color: white;
-        max-width: 660px;
-        min-width: 660px;
-      }
-      .wmd-spacer {
-        background-color: white;
-        width: 0;
-      }
-      #wmd-button-bar {
-        height: 44px;
-        padding: 0 12px;
-        width: 660px;
-        border: 1px solid #c8ccd0;
-        box-sizing: border-box;
-      }
-    </style>
   </head>
   <body>
     <a href="../"><button>Back to Index</button></a>
