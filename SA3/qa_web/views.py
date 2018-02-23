@@ -2,7 +2,7 @@ from .models import Answers, Questions, User, Comments, Vote
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
-from .forms import LoginForm, QuestionsForm, AnswersForm
+from .forms import LoginForm, QuestionsForm, AnswersForm, UserProfile
 from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -27,6 +27,41 @@ class CustomUserCreationForm(UserCreationForm):
 def index(request):
     # return render(request, 'qa_web/index.html', context={'posts': Post.objects.all()})
     return render(request, 'qa_web/index.html', context={'questions': Questions.objects.all()})
+
+
+@login_required(login_url='/login/')
+def edit_profile(request):
+    if request.method=='GET':
+        form = UserProfile()
+        # return render_to_response('qa_web/UserProfile.html', RequestContext(request, {'form': form, }))
+        return render(request,'qa_web/EditUserProfile.html', context={'form': form})
+    else:
+        form = UserProfile(request.POST)
+        # validating the form occurs below and then saving the results entered by the user
+        if form.is_valid():
+            user = request.user
+
+            user.first_name = request.POST['prename']
+            user.last_name = request.POST['surname']
+            user.age = request.POST['age']
+            user.birthday = form.cleaned_data.get('birthday')
+            user.motherland = request.POST['motherland']
+            user.school= request.POST['school']
+            user.major = request.POST['major']
+            user.city = request.POST['city']
+
+            user.save()
+
+            # when the information is entered and the information is saved
+            # the page gets redirected to the profile page
+            return HttpResponseRedirect('/profile/' + str(user.id))
+        else:
+            return render(request, 'qa_web/EditUserProfile.html', context={'form': form})
+
+
+def display_profile(request, id_):
+    displayed_user = get_object_or_404(User, pk=id_)
+    return render(request, 'qa_web/UserProfile.html', context={'displayed_user' : displayed_user})
 
 
 @csrf_exempt
