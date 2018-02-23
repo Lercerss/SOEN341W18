@@ -33,7 +33,7 @@ class Questions(Post):
     title = models.CharField(max_length=300, null=True)
     visits = models.IntegerField(default=0)
     voters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='q_voters', through='Vote')
-    tag = TaggableManager()
+    tag = TaggableManager(blank=True)
 
     def __str__(self):
         return self.title
