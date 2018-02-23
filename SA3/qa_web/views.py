@@ -309,10 +309,10 @@ class QuestionDisplayView(ListView):
         elif page_number == total_pages:
             left = page_range[(page_number - 3) if (page_number - 3) > 0 else 0:page_number - 1]
 
-            if left[0] > 2:
+            if len(left) != 0 and left[0] > 2:
                 left_has_more = True
 
-            if left[0] > 1:
+            if len(left) != 0 and left[0] > 1:
                 first = True
         else:
             left = page_range[(page_number - 3) if (page_number - 3) > 0 else 0:page_number - 1]
@@ -323,9 +323,9 @@ class QuestionDisplayView(ListView):
             if right[-1] < total_pages:
                 last = True
 
-        if left[0] > 2:
+        if len(left) != 0 and left[0] > 2:
             left_has_more = True
-        if left[0] > 1:
+        if len(left) != 0 and left[0] > 1:
             first = True
 
         context = {

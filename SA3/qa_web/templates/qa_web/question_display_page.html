@@ -40,28 +40,29 @@
             {% endfor %}
                {% if is_paginated %}
                   <div class="pagination">
+                      page:
                       {% if first %}
-                          <a href="?page=1">1</a>
+                          <a href="?question_page=1">1</a>
                       {% endif %}
                       {% if left %}
                           {% if left_has_more %}
                               <span>...</span>
                           {% endif %}
                           {% for i in left %}
-                              <a href="?page={{ i }}">{{ i }}</a>
+                              <a href="?question_page={{ i }}">{{ i }}</a>
                           {% endfor %}
                       {% endif %}
-                      <a href="?page={{ page_obj.number }}" style="color: red">{{ page_obj.number }}</a>
+                      <a href="?question_page={{ latest_current_page.number }}" style="color: red">{{ latest_current_page.number }}</a>
                       {% if right %}
                           {% for i in right %}
-                              <a href="?page={{ i }}">{{ i }}</a>
+                              <a href="?question_page={{ i }}">{{ i }}</a>
                           {% endfor %}
                           {% if right_has_more %}
                               <span>...</span>
                           {% endif %}
                       {% endif %}
                       {% if last %}
-                          <a href="?page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a>
+                          <a href="?question_page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a>
                       {% endif %}
                   </div>
                {% endif %}
