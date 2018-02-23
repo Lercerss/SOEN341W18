@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit User Profile</title>
+    </br>
+    <h1> Edit User Profile</h1>
+
+</head>
+<body>
+
+<!–– Django supported form is looped below to obtain the information -->
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+          <p>
+            {{ field.label_tag }}<br>
+            {{ field }}
+            {% if field.help_text %}
+              <small style="color: grey">{{ field.help_text|safe }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+              <p style="color: red">{{ error }}</p>
+            {% endfor %}
+          </p>
+        {% endfor %}
+        <input type="submit" value="Submit">
+    </form>
+
+  <br><br>
+
+<p>Clicking Submit will save and update your profile page.</p>
+</body>
+</html>

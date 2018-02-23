@@ -36,3 +36,62 @@ class QuestionsForm(forms.Form):
 class AnswersForm(forms.Form):
     content = forms.Textarea()
 
+class UserProfile(forms.Form):
+    # a form is created to intake the user's personal information
+    prename = forms.CharField(
+        required=True,
+        label='Prename',
+        error_messages={'required': 'Please insert your first name.'},
+
+    )
+
+    surname = forms.CharField(
+        required=True,
+        label='Surname',
+        error_messages={'required': 'Please insert your last name.'},
+
+    )
+
+    email = forms.CharField(
+        required=True,
+        label='E-Mail:',
+        error_messages={'required': 'Please insert your last e-mail.'},
+
+    )
+    age = forms.IntegerField(
+        required=True,
+        label='Age',
+        error_messages={'required': 'Please insert an age.'},
+
+    )
+
+    birthday = forms.DateField(
+        required=True,
+        label='Birthday',
+        error_messages={'required': 'Please insert birthday in the format of (mm/dd/yy)'},
+    )
+
+    motherland = forms.CharField(
+        required=True,
+        label="Motherland",
+        error_messages={'required': 'Please insert the country of your native land'},
+    )
+
+    school = forms.CharField(
+        required=True,
+        label="School",
+        error_messages = {'required': 'Please insert the country of your country of origin'},
+    )
+
+    major = forms.CharField(
+        required=True,
+        label="Major",
+        error_messages = {'required': 'Please insert your main subject of studies. Ex: Software Engineering'},
+    )
+
+    city = forms.CharField(
+        required=True,
+        label="city",
+        error_messages = {'required': 'Please insert the name of your current city'},
+    )
+
