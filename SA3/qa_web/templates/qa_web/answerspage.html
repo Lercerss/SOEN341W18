@@ -58,17 +58,17 @@
   <div id="answers">
   <!-- Display the answers -->
   {% if bestAnswer %}
-      <form id="deselect{{ answer.id }}_form" method="post">
+      <form id="deselect_form" method="post">
           {% csrf_token %}
           {% if user == currentQuestion.owner %}
               <h3 class="good_answer">You have selected this as the best answer!</h3>
           {% else %}
               <h3 class="good_answer">{{currentQuestion.owner}} has selected this as the best answer!</h3>
           {% endif %}
-          <p>{{ answer.content }}</p>
+          <p>{{ bestAnswer.content }}</p>
           <!--Allow one to deselect the best answer if user is logged in and is the user who asked the question-->
           {% if user.is_authenticated and user == currentQuestion.owner %}
-              <input type = "submit" name="deselect", value="Deselect as Best Answer"/>
+              <input type = "submit" name="deselect" value="Deselect as Best Answer"/>
           {% endif %}
           <h4>Answer by {{ bestAnswer.owner }} on {{ bestAnswer.creation_date }}</h4>
       </form>
@@ -77,20 +77,19 @@
       <a id='downvote_{{ bestAnswer.id }}_answer'><button>Downvote</button></a>
       {% for comment in comments %}
         {% if comment.answer.id == bestAnswer.id %}
-            <h5>{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})</h5>
+            <p>{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
+                 <a id='upvote_{{ comment.id }}_comment'><button>Upvote</button></a>
+                 <span id='score_{{ comment.id }}_comment'>{{ comment.score }}</span>
+                 <a id='downvote_{{ comment.id }}_comment'><button>Downvote</button></a>
+            </p>
         {% endif %}
       {% endfor %}
       {% if user.is_authenticated %}
         <p>Got a comment? Why not share it here!</p>
-        <form id="comment_form_{{answer.id}}" method="post">
+        <form id="comment_form_{{ bestAnswer.id }}" method="post">
           {% csrf_token %}
             <textarea id="wmd-input" name="content" class="wmd-input"></textarea></br>
-            <input type="submit" name="comment_form_{{ answer.id }}" value="Submit your comment"/>
-            <script>
-                var converter = Markdown.getSanitizingConverter();
-                var editor = new Markdown.Editor(converter);
-                editor.run();
-            </script>
+            <input type="submit" name="comment_form_{{ bestAnswer.id }}" value="Submit your comment"/>
          </form>
       {% endif %}
       <h3>Other answers:</h3>
@@ -101,8 +100,8 @@
           {% csrf_token %}
           <p>{{ answer.content }}</p>
           <!--Allow one to select best answers if user is logged in, is the user who asked the question and a best answer doesn't exist already-->
-          {% if user.is_authenticated and user == currentQuestion.owner and bestAnswer.count == 0 %} 
-             <input type = "submit" name="select_{{ answer.id }}" value="Select as Best Answer"></input>
+          {% if user.is_authenticated and user == currentQuestion.owner and not bestAnswer %}
+             <input type = "submit" name="select_{{ answer.id }}" value="Select as Best Answer">
           {% endif %}
           <h6>Answer by {{ answer.owner }} on {{ answer.creation_date }}</h6>
       </form>
@@ -111,7 +110,11 @@
       <a id='downvote_{{ answer.id }}_answer'><button>Downvote</button></a>
       {% for comment in comments %}
         {% if comment.answer.id == answer.id %}
-            <h5>{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})</h5>
+            <p>{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
+                 <a id='upvote_{{ comment.id }}_comment'><button>Upvote</button></a>
+                 <span id='score_{{ comment.id }}_comment'>{{ comment.score }}</span>
+                 <a id='downvote_{{ comment.id }}_comment'><button>Downvote</button></a>
+            </p>
         {% endif %}
       {% endfor %}
       {% if user.is_authenticated %}
@@ -120,11 +123,6 @@
           {% csrf_token %}
             <textarea id="wmd-input" name="content" class="wmd-input"></textarea></br>
             <input type="submit" name="comment_form_{{ answer.id }}" value="Submit your comment"/>
-            <script>
-                var converter = Markdown.getSanitizingConverter();
-                var editor = new Markdown.Editor(converter);
-                editor.run();
-            </script>
          </form>
       {% endif %}
       <hr>
