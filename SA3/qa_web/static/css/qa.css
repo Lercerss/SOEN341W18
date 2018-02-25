@@ -1,0 +1,51 @@
+.ques {
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+}
+
+.page-header{
+    width: 100%;
+    height: 40px;
+	margin-top: 1px;
+}
+
+.page-header .btn{
+	font-family: 'Oxygen', cursive;
+}
+
+h1 {font-family: 'Nanum Brush Script', cursive;}
+
+
+.ans {
+  height: 40px;
+  width: 75px;
+  color:#500000;
+  text-align: center;
+  text-align: center;
+  vertical-align: middle;
+}
+
+tag {
+  background-color:#E0E0E0;
+  color:#500000;
+}
+
+orange {
+  color: #ff8a00;
+}
+
+blue {
+  color: #9fa6ff;
+}
+
+a:hover {color: #FF8800; }
+
+.topbar {
+  width:100%;
+  height:7px;
+  position: absolute;
+  z-index:1000;
+
+  background: #9fa6ff;
+}
+

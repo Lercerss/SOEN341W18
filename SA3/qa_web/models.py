@@ -3,8 +3,27 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
-    pass
-    
+    """
+       User will be able to insert his or her personal information,
+       this will then be uploaded and saver the appropriate database.
+       Furthermore, these fields are added to the pre-existing fields provided
+       by Django such as first name, last name, email.
+
+     """
+
+    age = models.IntegerField(null =True)
+    birthday = models.DateField(null = True)
+    motherland=models.TextField(max_length=100, null =True)
+    school = models.TextField(max_length=100, null =True)
+    major = models.CharField(max_length=50, null =True)
+    city = models.TextField(max_length=100, null=True)
+
+    """
+      The below code has a purpose that a user profile will be created when
+      a user is created
+
+     """
+
 class Post(models.Model):
     """
     Parent meta class that describes a post as a publication on the website with certain content
