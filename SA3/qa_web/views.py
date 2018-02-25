@@ -204,12 +204,12 @@ class QuestionDisplayView(ListView):
         pagination_data = self.pagination_data(paginator_all_questions, page_obj, context['is_paginated'])
         context.update(pagination_data)
 
-        # to inspect each page object in current page.
-        for page_ in page_obj:  #  inspect structure of page_
-            for each in page_.tag.all():
-                print(each.slug)
+        # Debug: to inspect each page object in current page.
+        # for page_ in page_obj:  #  inspect structure of page_
+        #     for each in page_.tag.all():
+        #         print(each.slug)
 
-        # second tab: unanswered page
+        # To-do: second tab: unanswered page
         # un_answered page, aggregate attributes num_answers and num_question_comments to this QuerySet
         un_answered_qs = Questions.objects.order_by('-creation_date')\
             .filter(answers__isnull=True).select_related('owner')\
@@ -339,4 +339,38 @@ class QuestionDisplayView(ListView):
 
         return context
 
-        
+
+class QuestionsByTagView(ListView):
+    """View to call all the questions classified under one specific tag.
+    """
+    model = Questions
+    paginate_by = 10
+    context_object_name = 'questions'
+    template_name = 'qa_web/question_display_page.html'
+
+    def get_queryset(self, **kwargs):
+        # that's why we should use regex group name in url: url(r'^tag/(?P<tag>[-\w]+)/$'. A common way to get
+        # parameters from front end.
+        return Questions.objects.order_by('-creation_date').filter(tag__slug=self.kwargs['tag'])\
+                                .annotate(num_answers=Count('answers', distinct=True))
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(
+            QuestionsByTagView, self).get_context_data(*args, **kwargs)
+
+        # get default display objects from get_queryset.
+        context['latest_current_page'] = context['questions']
+
+        context['active_tab'] = self.request.GET.get('active_tab', 'latest')
+        tabs = ['latest', 'un_answered']  # to-do: un_answered tag
+        context['active_tab'] = 'latest' if context['active_tab'] not in\
+            tabs else context['active_tab']
+
+        context['total_question_num'] = Questions.objects.count()
+        context['total_answer_num'] = Answers.objects.count()
+
+        # another way to get tagged questions if not get from get_queryset.
+        context['un_answered_page'] = Questions.objects.order_by('-creation_date').filter(
+            tag__name__contains=self.kwargs['tag'], answers__isnull=True)
+        context['total_un_answered_page_num'] = len(context['un_answered_page'])
+        return context
