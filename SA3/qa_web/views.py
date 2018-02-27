@@ -126,32 +126,41 @@ def questions(request):
 
 def answers(request, id_):
     q = get_object_or_404(Questions, pk=id_)
+    answer_id = [int(key.replace('select_', '')) for key in request.POST.keys() if key.startswith('select_')]
+
     if request.method == 'POST' and 'answer_form' in request.POST: #Update's database when somebody answers a question
         form = AnswersForm(request.POST)
-        if form.is_valid():
+        if form.is_valid(): 
             Answers.objects.create(content=request.POST['content'], owner=request.user, question=q)
     elif request.method == 'POST' and 'deselect' in request.POST:  #Update's database when somebody deselects best answer.
-        updateAnswer = Answers.objects.get(question=q, correct_answer=True)
-        updateAnswer.correct_answer = False;
-        updateAnswer.save();
-    elif request.method == 'POST': #Update's database when somebody selects a best answer.
-        answer_id = [int(key.replace('select_', '')) for key in request.POST.keys() if key.startswith('select_')]
-        if answer_id:
-            updateAnswer = Answers.objects.get(id = answer_id[0])
-            updateAnswer.correct_answer = True;
-            updateAnswer.save();
-    #Get updated answer data.
+        updateAnswer = Answers.objects.filter(question=q, correct_answer=True).last()
+        updateAnswer.correct_answer = False
+        updateAnswer.save()
+    elif answer_id: #Update's database when somebody selects a best answer.
+        updateAnswer = Answers.objects.get(id = answer_id[0])
+        updateAnswer.correct_answer = True
+        updateAnswer.save()
+    elif any(key.startswith("comment_form_answer") for key in request.POST.keys()):
+        answer_id = [int(key.replace('comment_form_answer_', '')) for key in request.POST.keys() if key.startswith('comment_form')]
+        a = Answers.objects.get(id = answer_id[0])
+        c = Comments(content=request.POST['content'], owner=request.user, answer=a)
+        c.save()
+    #elif request.method == 'POST' and (key.startswith("comment_form_question") to be done later..
+
+    #Get updated answer data
     q_answers = Answers.objects.filter(question=q, correct_answer=False)
     q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
-    if (len(q_best_answer) > 0):
-        q_best_answer = q_best_answer.last()
-    
-    #Increment the visits counter of the question by one
+    q_comments = Comments.objects.filter(question=q)
+    a_comments = Comments.objects.filter(answer__question=q)
+
+    # Increment the visits counter of the question by one
     if request.user.is_authenticated:
         q.visits += 1
         q.save()
-        
-    return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer})
+
+    if len(q_best_answer) > 0:
+        q_best_answer = q_best_answer.last()
+    return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer, 'q_comments': q_comments, 'a_comments': a_comments})
 
 
 def vote(request):
@@ -375,4 +384,3 @@ class QuestionDisplayView(ListView):
 
         return context
 
-        

@@ -10,11 +10,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="{% static 'js/base.js'%}"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    
+
     <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    
+
     <style>
       .wmd-button > span {
         background-image: url("{% static 'img/wmd-buttons.svg' %}");
@@ -45,6 +45,7 @@
   </head>
   <body>
   <a href="../../"><button>Back to Index</button></a>
+
   <!-- Display the question's data -->
   <div id="question">
       <h2><b>{{ currentQuestion.title }}</b> &nbsp <span class="label label-primary">{{ currentQuestion.visits }} visits</span></h2>
@@ -55,6 +56,7 @@
       <a id='downvote_{{ currentQuestion.id }}_question'><button>Downvote</button></a>
       <hr>
   </div>
+
   <div id="answers">
   <!-- Display the answers -->
   {% if bestAnswer %}
@@ -65,39 +67,83 @@
           {% else %}
               <h3 class="good_answer">{{currentQuestion.owner}} has selected this as the best answer!</h3>
           {% endif %}
-          <p>{{ bestAnswer.content }}</p>
+          <h6>{{ bestAnswer.content }}</h6>
           <!--Allow one to deselect the best answer if user is logged in and is the user who asked the question-->
           {% if user.is_authenticated and user == currentQuestion.owner %}
-              <input type = "submit" name="deselect", value="Deselect as Best Answer"/>
+              <input type = "submit" name="deselect" value="Deselect as Best Answer"/>
           {% endif %}
-          <h6>Answer by {{ bestAnswer.owner }} on {{ bestAnswer.creation_date }}</h6>
+          <h4>Answer by {{ bestAnswer.owner }} on {{ bestAnswer.creation_date }}</h4>
       </form>
+
       <a id='upvote_{{ bestAnswer.id }}_answer'><button>Upvote</button></a>
       <span id='score_{{ bestAnswer.id }}_answer'>{{ bestAnswer.score }}</span>
       <a id='downvote_{{ bestAnswer.id }}_answer'><button>Downvote</button></a>
-      <hr>
+
+      {% for comment in a_comments %}
+        {% if comment.answer.id == bestAnswer.id %}
+            <p>{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
+                 <a id='upvote_{{ comment.id }}_comment'><button>Upvote</button></a>
+                 <span id='score_{{ comment.id }}_comment'>{{ comment.score }}</span>
+                 <a id='downvote_{{ comment.id }}_comment'><button>Downvote</button></a>
+            </p>
+        {% endif %}
+      {% endfor %}
+
+      {% if user.is_authenticated %}
+        <p>Got a comment? Why not share it here!</p>
+        <form id="comment_form_answer_{{ bestAnswer.id }}" method="post">
+          {% csrf_token %}
+            <textarea id="wmd-input" name="content" class="wmd-input"></textarea></br>
+            <input type="submit" name="comment_form_answer_{{ bestAnswer.id }}" value="Submit your comment"/>
+         </form>
+      {% endif %}
       <h3>Other answers:</h3>
+      <hr>
   {% endif %}
+
   {% for answer in answers %}
       <form id="select{{ answer.id }}_form" method="post">
           {% csrf_token %}
           <p>{{ answer.content }}</p>
           <!--Allow one to select best answers if user is logged in, is the user who asked the question and a best answer doesn't exist already-->
-          {% if user.is_authenticated and user == currentQuestion.owner and not bestAnswer %} 
-             <input type = "submit" name="select_{{ answer.id }}" value="Select as Best Answer"></input>
+          {% if user.is_authenticated and user == currentQuestion.owner and not bestAnswer %}
+             <input type = "submit" name="select_{{ answer.id }}" value="Select as Best Answer">
           {% endif %}
           <h6>Answer by {{ answer.owner }} on {{ answer.creation_date }}</h6>
       </form>
+
       <a id='upvote_{{ answer.id }}_answer'><button>Upvote</button></a>
       <span id='score_{{ answer.id }}_answer'>{{ answer.score }}</span>
       <a id='downvote_{{ answer.id }}_answer'><button>Downvote</button></a>
+
+      {% for comment in a_comments %}
+        {% if comment.answer.id == answer.id %}
+            <p>{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
+                 <a id='upvote_{{ comment.id }}_comment'><button>Upvote</button></a>
+                 <span id='score_{{ comment.id }}_comment'>{{ comment.score }}</span>
+                 <a id='downvote_{{ comment.id }}_comment'><button>Downvote</button></a>
+            </p>
+        {% endif %}
+      {% endfor %}
+
+      {% if user.is_authenticated %}
+        <p>Got a comment for this answer? Why not share it here!</p>
+        <form id="comment_form_answer_{{answer.id}}" method="post">
+          {% csrf_token %}
+            <textarea id="wmd-input" name="content" class="wmd-input"></textarea></br>
+            <input type="submit" name="comment_form_answer_{{ answer.id }}" value="Submit your comment"/>
+         </form>
+      {% endif %}
+
       <hr>
   {% empty %}
     <h3>Be the first to answer this question!</h3>
   {% endfor %}
+
   </div>
   <!-- Display the answering form for logged in users -->
   {% if user.is_authenticated %}
+    <h3>Got answers? Why not share them!</h3>
     <form id="answer_form" method="post">
         {% csrf_token %}
         <div id="wmd-button-bar"></div>
@@ -106,6 +152,7 @@
         <input type="submit" name="answer_form" value="Submit your answer"/>
     </form>
   {% else %}
+
    <p>To answer this question, <a href="/login">login</a> or <a href="/signup">sign up</a>!</p>
   {% endif %}
   </body>
