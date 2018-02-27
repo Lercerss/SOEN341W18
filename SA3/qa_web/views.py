@@ -209,32 +209,6 @@ def vote(request):
 def homepage(request):
     return render(request, "qa_web/home.html")
 
-# edit post
-@login_required(login_url='/login/')
-def edit(request, id_):
-    if id_:
-        q = get_object_or_404(Questions, pk=id_)
-        if q.owner != request.user:
-            return HttpResponseForbidden()
-    else:
-        q = Questions(owner=request.user)
-
-    q = get_object_or_404(Questions, pk=id_)
-    form = EditForm(request.POST)
-    if request.POST and form.is_valid():
-        q.content = request.POST['content']
-        q.title = request.POST['title']
-        q.owner = request.user
-        q.save()
-        return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
-    return render(request,'qa_web/edit.html', context={})
-
-
-
-
-
-
-
 class QuestionDisplayView(ListView):
     model = Questions
     paginate_by = 10  # 10 questions a page
