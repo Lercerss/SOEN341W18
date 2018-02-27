@@ -127,6 +127,7 @@ def questions(request):
 def answers(request, id_):
     q = get_object_or_404(Questions, pk=id_)
     answer_id = [int(key.replace('select_', '')) for key in request.POST.keys() if key.startswith('select_')]
+
     if request.method == 'POST' and 'answer_form' in request.POST: #Update's database when somebody answers a question
         form = AnswersForm(request.POST)
         if form.is_valid(): 
@@ -139,19 +140,18 @@ def answers(request, id_):
         updateAnswer = Answers.objects.get(id = answer_id[0])
         updateAnswer.correct_answer = True
         updateAnswer.save()
-    else:
-        q_answers = Answers.objects.filter(question=q, correct_answer=False)
-        q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
-        for answer in q_best_answer:
-            if request.method == 'POST' and 'comment_form_'+str(answer.id) in request.POST:
-                Comments.objects.create(content=request.POST['content'], owner=request.user, question=q, answer=answer)
-        for answer in q_answers:
-            if request.method == 'POST' and 'comment_form_'+str(answer.id) in request.POST:
-                Comments.objects.create(content=request.POST['content'], owner=request.user, question=q, answer=answer)
-    #Get updated answer data.
+    elif any(key.startswith("comment_form_answer") for key in request.POST.keys()):
+        answer_id = [int(key.replace('comment_form_answer_', '')) for key in request.POST.keys() if key.startswith('comment_form')]
+        a = Answers.objects.get(id = answer_id[0])
+        c = Comments(content=request.POST['content'], owner=request.user, answer=a)
+        c.save()
+    #elif request.method == 'POST' and (key.startswith("comment_form_question") to be done later..
+
+    #Get updated answer data
     q_answers = Answers.objects.filter(question=q, correct_answer=False)
     q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
     q_comments = Comments.objects.filter(question=q)
+    a_comments = Comments.objects.filter(answer__question=q)
 
     # Increment the visits counter of the question by one
     if request.user.is_authenticated:
@@ -160,7 +160,7 @@ def answers(request, id_):
 
     if len(q_best_answer) > 0:
         q_best_answer = q_best_answer.last()
-    return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer, 'comments': q_comments})
+    return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer, 'q_comments': q_comments, 'a_comments': a_comments})
 
 
 def vote(request):
