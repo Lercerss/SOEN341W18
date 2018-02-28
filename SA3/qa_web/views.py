@@ -156,7 +156,10 @@ def answers(request, id_):
         a = Answers.objects.get(id = answer_id[0])
         c = Comments(content=request.POST['content'], owner=request.user, answer=a)
         c.save()
-    #elif request.method == 'POST' and (key.startswith("comment_form_question") to be done later..
+    elif request.method == 'POST' and 'comment_form_question' in request.POST:
+        q = Questions.objects.get(id = q.id)
+        c = Comments(content=request.POST['content'], owner=request.user, question=q)
+        c.save()
 
     #Get updated answer data
     q_answers = Answers.objects.filter(question=q, correct_answer=False).annotate(points=F('upvotes')-F('downvotes')).order_by('-points') #Most points first.
