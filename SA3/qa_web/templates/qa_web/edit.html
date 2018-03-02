@@ -15,7 +15,7 @@
     <a href="../"><button>Discard Changes</button></a>
     <form method="post">
       {% csrf_token %}
-      <input id="title" name = "title" type="text" placeholder="question title" value="{{ currentQ.content }}" required/>
+      <input id="title" name = "title" type="text" placeholder="question title" value="{{ currentQ.title }}" required/>
       <div id="wmd-button-bar"></div>
       <textarea id="wmd-input" name="content" class="wmd-input" placeholder="type your description here" required>{{ currentQ.content}}</textarea>
       <div id="wmd-preview" class="wmd-panel wmd-preview"></div>

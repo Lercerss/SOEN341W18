@@ -387,14 +387,11 @@ class QuestionDisplayView(ListView):
 # edit post
 @login_required(login_url='/login/')
 def edit(request, id_):
-    if id_:
-        q = get_object_or_404(Questions, pk=id_)
-        if q.owner != request.user:
-            return HttpResponseForbidden()
-    else:
-        q = Questions(owner=request.user)
 
     q = get_object_or_404(Questions, pk=id_)
+    if q.owner != request.user:
+        return HttpResponseForbidden()
+
     form = EditForm(request.POST)
     if request.POST and form.is_valid():
         q.content = request.POST['content']
