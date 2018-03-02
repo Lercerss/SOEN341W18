@@ -106,7 +106,7 @@
 
         {% for answer in answers %}
         <form id="select{{ answer.id }}_form" method="post">
-            {%<h3>Other answers:</h3> csrf_token %}
+            {% csrf_token %}
             <p>{{ answer.content }}</p>
             <!--Allow one to select best answers if user is logged in, is the user who asked the question and a best answer doesn't exist already-->
             {% if user.is_authenticated and user == currentQuestion.owner and not bestAnswer %} 
