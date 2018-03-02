@@ -1,10 +1,8 @@
-
-
+<!DOCTYPE html>
 <html>
-  <head>
-  
-	<meta charset="UTF-8">
-    <title>SA3 QA Website Questions</title>
+<head>
+	<meta charset="utf-8">
+	<title> edit questions </title>
 	{% load static %}
     <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
     <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
@@ -12,25 +10,21 @@
 
     <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
     {% include "qa_web/editor_style.html" %}
-
-  </head>
-  <body>
-    <a href="../"><button>Back to Index</button></a>
+</head>
+<body>
+    <a href="../"><button>Discard Changes</button></a>
     <form method="post">
       {% csrf_token %}
-      <h1>got Questions?!</h1>
-      <input id="title" name = "title" type="text" placeholder="question title" required/>
+      <input id="title" name = "title" type="text" placeholder="question title" value="{{ currentQ.title }}" required/>
       <div id="wmd-button-bar"></div>
-      <textarea id="wmd-input" name="content" class="wmd-input" placeholder="type your description here" required></textarea>
+      <textarea id="wmd-input" name="content" class="wmd-input" placeholder="type your description here" required>{{ currentQ.content}}</textarea>
       <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
-      <input id="tag" name = "tag" type="text" placeholder="comma-separated tags." required/>
-      <div></div>
-      <input type="submit" value="Submit"/>
+      <input type="submit" href="../" value="Submit"/>
     </form>
     <script>
       var converter = Markdown.getSanitizingConverter();
       var editor = new Markdown.Editor(converter);
       editor.run();
     </script>
-  </body>
+</body>
 </html>

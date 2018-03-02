@@ -2,11 +2,11 @@ from .models import Answers, Questions, User, Comments, Vote
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
-from .forms import LoginForm, QuestionsForm, AnswersForm, UserProfile
-from django.http import HttpResponseRedirect, Http404, JsonResponse
-from django.contrib.auth import login, logout, authenticate, get_user_model
+from .forms import LoginForm, QuestionsForm, AnswersForm, EditForm, UserProfile
+from django.http import HttpResponseRedirect, Http404, JsonResponse, HttpResponseForbidden
+from django.contrib.auth import login, authenticate, get_user_model, logout
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 
@@ -132,7 +132,7 @@ def answers(request, id_):
 
     if request.method == 'POST' and 'answer_form' in request.POST: #Update's database when somebody answers a question
         form = AnswersForm(request.POST)
-        if form.is_valid(): 
+        if form.is_valid():
             Answers.objects.create(content=request.POST['content'], owner=request.user, question=q)
     elif request.method == 'POST' and 'deselect' in request.POST:  #Update's database when somebody deselects best answer.
         updateAnswer = Answers.objects.filter(question=q, correct_answer=True).last()
@@ -155,7 +155,7 @@ def answers(request, id_):
     q_comments = Comments.objects.filter(question=q)
     a_comments = Comments.objects.filter(answer__question=q)
 
-    # Increment the visits counter of the question by one
+    #Increment the visits counter of the question by one
     if request.user.is_authenticated:
         q.visits += 1
         q.save()
@@ -210,7 +210,6 @@ def vote(request):
 # Home Page
 def homepage(request):
     return render(request, "qa_web/home.html")
-
 
 class QuestionDisplayView(ListView):
     model = Questions
@@ -417,4 +416,22 @@ class QuestionsByTagView(ListView):
             tag__name__contains=self.kwargs['tag'], answers__isnull=True)
         context['total_un_answered_page_num'] = len(context['un_answered_page'])
         return context
+
+
+# edit post
+@login_required(login_url='/login/')
+def edit(request, id_):
+
+    q = get_object_or_404(Questions, pk=id_)
+    if q.owner != request.user:
+        return HttpResponseForbidden()
+
+    form = EditForm(request.POST)
+    if request.POST and form.is_valid():
+        q.content = request.POST['content']
+        q.title = request.POST['title']
+        q.owner = request.user
+        q.save()
+        return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
+    return render(request,'qa_web/edit.html', context={'currentQ':q})
 
