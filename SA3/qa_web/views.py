@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 
-from django.db.models import Count
+from django.db.models import Count, F
 from taggit.models import Tag, TaggedItem
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.contrib.contenttypes.models import ContentType
@@ -130,7 +130,6 @@ def questions(request):
 def answers(request, id_):
     q = get_object_or_404(Questions, pk=id_)
     answer_id = [int(key.replace('select_', '')) for key in request.POST.keys() if key.startswith('select_')]
-
     if request.method == 'POST' and 'answer_form' in request.POST: #Update's database when somebody answers a question
         form = AnswersForm(request.POST)
         if form.is_valid():
@@ -151,7 +150,26 @@ def answers(request, id_):
     #elif request.method == 'POST' and (key.startswith("comment_form_question") to be done later..
 
     #Get updated answer data
-    q_answers = Answers.objects.filter(question=q, correct_answer=False)
+    #q_answers = Answers.objects.filter(question=q, correct_answer=False).annotate(points=F('upvotes')-F('downvotes')).order_by('points') #Least points first.
+    q_answers = Answers.objects.filter(question=q, correct_answer=False).annotate(points=F('upvotes')-F('downvotes')).order_by('-points') #Most points first.
+    #q_answers = Answers.objects.filter(question=q, correct_answer=False).order_by('creation_date') #Least recent first.
+    #q_answers = Answers.objects.filter(question=q, correct_answer=False).order_by('-creation_date') #Most recent first.
+
+    if request.method == 'POST' and 'sort_by_form_select' in request.POST:
+        initialSelectValue = request.POST['sort_by_form_select']
+        if request.POST['sort_by_form_select'] == 'lowestScore':
+            q_answers = Answers.objects.filter(question=q, correct_answer=False).annotate(points=F('upvotes')-F('downvotes')).order_by('points')
+        elif request.POST['sort_by_form_select'] == 'highestScore':
+            q_answers = Answers.objects.filter(question=q, correct_answer=False).annotate(points=F('upvotes')-F('downvotes')).order_by('-points')
+        elif request.POST['sort_by_form_select'] == 'leastRecent':
+            q_answers = Answers.objects.filter(question=q, correct_answer=False).order_by('creation_date')
+        else:
+            q_answers = Answers.objects.filter(question=q, correct_answer=False).order_by('-creation_date')
+    else:
+         initialSelectValue = "highestScore"
+         q_answers = Answers.objects.filter(question=q, correct_answer=False).annotate(points=F('upvotes')-F('downvotes')).order_by('-points')
+        
+
     q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
     q_comments = Comments.objects.filter(question=q)
     a_comments = Comments.objects.filter(answer__question=q)
@@ -163,7 +181,7 @@ def answers(request, id_):
 
     if len(q_best_answer) > 0:
         q_best_answer = q_best_answer.last()
-    return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer, 'q_comments': q_comments, 'a_comments': a_comments})
+    return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer, 'q_comments': q_comments, 'a_comments': a_comments, 'initial_select_value': initialSelectValue})
 
 
 def vote(request):
