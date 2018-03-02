@@ -237,16 +237,11 @@ class QuestionDisplayView(ListView):
         context['un_answered_num_for_current_page'] = paginator.count
         context['un_answered_page'] = un_answered_page
 
-        # handle tags. Tag feature in progress.
+        # pass tags to html.
         question_contenttype = ContentType.objects.get_for_model(Questions)
-        # items = TaggedItem.objects.filter(content_type=question_contenttype)
-        # context['tags'] = Tag.objects.filter(
-        #     taggit_taggeditem_items__in=items).order_by('-id').distinct()[:10]
-
-        # handle question hit count. In progress.
-
-        # test messages.
-        # messages.add_message(self.request, messages.INFO, 'Hello world.')  # a test on message framework
+        items = TaggedItem.objects.filter(content_type=question_contenttype)
+        context['tags'] = Tag.objects.filter(
+            taggit_taggeditem_items__in=items).exclude(slug__exact='').order_by('-id').distinct()
 
         return context
 
