@@ -11,6 +11,7 @@ urlpatterns = [
     path('questions/<int:id_>/', views.answers, name='answers'),
     url(r'^home/$', views.homepage, name='homepage'),
     path('vote/', views.vote, name='vote'),
+    path('questions/<int:id_>/edit/', views.edit, name='edit'),
     url(r'QuestionIndex/', views.QuestionDisplayView.as_view(), name='QuestionIndex'),
     path('editprofile/', views.edit_profile, name='UserProfile'),
     path('profile/<int:id_>/', views.display_profile, name='UserProfile'),
