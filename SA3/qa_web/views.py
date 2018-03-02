@@ -2,9 +2,9 @@ from .models import Answers, Questions, User, Comments, Vote
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
-from .forms import LoginForm, QuestionsForm, AnswersForm
+from .forms import LoginForm, QuestionsForm, AnswersForm, UserProfile
 from django.http import HttpResponseRedirect, Http404, JsonResponse
-from django.contrib.auth import login, authenticate, get_user_model
+from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -29,6 +29,41 @@ def index(request):
     return render(request, 'qa_web/index.html', context={'questions': Questions.objects.all()})
 
 
+@login_required(login_url='/login/')
+def edit_profile(request):
+    if request.method=='GET':
+        form = UserProfile()
+        # return render_to_response('qa_web/UserProfile.html', RequestContext(request, {'form': form, }))
+        return render(request,'qa_web/EditUserProfile.html', context={'form': form})
+    else:
+        form = UserProfile(request.POST)
+        # validating the form occurs below and then saving the results entered by the user
+        if form.is_valid():
+            user = request.user
+
+            user.first_name = request.POST['prename']
+            user.last_name = request.POST['surname']
+            user.age = request.POST['age']
+            user.birthday = form.cleaned_data.get('birthday')
+            user.motherland = request.POST['motherland']
+            user.school= request.POST['school']
+            user.major = request.POST['major']
+            user.city = request.POST['city']
+
+            user.save()
+
+            # when the information is entered and the information is saved
+            # the page gets redirected to the profile page
+            return HttpResponseRedirect('/profile/' + str(user.id))
+        else:
+            return render(request, 'qa_web/EditUserProfile.html', context={'form': form})
+
+
+def display_profile(request, id_):
+    displayed_user = get_object_or_404(User, pk=id_)
+    return render(request, 'qa_web/UserProfile.html', context={'displayed_user' : displayed_user})
+
+
 @csrf_exempt
 def login(request):
     if request.method == 'GET':
@@ -51,6 +86,10 @@ def login(request):
         else:
             return render_to_response('qa_web/login.html', context={'form': form})
 
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('../login/')
+    # redirects to log in page once logged out successfully
 
 @csrf_exempt
 def signup(request):
@@ -89,32 +128,41 @@ def questions(request):
 
 def answers(request, id_):
     q = get_object_or_404(Questions, pk=id_)
+    answer_id = [int(key.replace('select_', '')) for key in request.POST.keys() if key.startswith('select_')]
+
     if request.method == 'POST' and 'answer_form' in request.POST: #Update's database when somebody answers a question
         form = AnswersForm(request.POST)
-        if form.is_valid():
+        if form.is_valid(): 
             Answers.objects.create(content=request.POST['content'], owner=request.user, question=q)
     elif request.method == 'POST' and 'deselect' in request.POST:  #Update's database when somebody deselects best answer.
-        updateAnswer = Answers.objects.get(question=q, correct_answer=True)
-        updateAnswer.correct_answer = False;
-        updateAnswer.save();
-    elif request.method == 'POST': #Update's database when somebody selects a best answer.
-        answer_id = [int(key.replace('select_', '')) for key in request.POST.keys() if key.startswith('select_')]
-        if answer_id:
-            updateAnswer = Answers.objects.get(id = answer_id[0])
-            updateAnswer.correct_answer = True;
-            updateAnswer.save();
-    #Get updated answer data.
+        updateAnswer = Answers.objects.filter(question=q, correct_answer=True).last()
+        updateAnswer.correct_answer = False
+        updateAnswer.save()
+    elif answer_id: #Update's database when somebody selects a best answer.
+        updateAnswer = Answers.objects.get(id = answer_id[0])
+        updateAnswer.correct_answer = True
+        updateAnswer.save()
+    elif any(key.startswith("comment_form_answer") for key in request.POST.keys()):
+        answer_id = [int(key.replace('comment_form_answer_', '')) for key in request.POST.keys() if key.startswith('comment_form')]
+        a = Answers.objects.get(id = answer_id[0])
+        c = Comments(content=request.POST['content'], owner=request.user, answer=a)
+        c.save()
+    #elif request.method == 'POST' and (key.startswith("comment_form_question") to be done later..
+
+    #Get updated answer data
     q_answers = Answers.objects.filter(question=q, correct_answer=False)
     q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
-    if (len(q_best_answer) > 0):
-        q_best_answer = q_best_answer.last()
-    
-    #Increment the visits counter of the question by one
+    q_comments = Comments.objects.filter(question=q)
+    a_comments = Comments.objects.filter(answer__question=q)
+
+    # Increment the visits counter of the question by one
     if request.user.is_authenticated:
         q.visits += 1
         q.save()
-        
-    return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer})
+
+    if len(q_best_answer) > 0:
+        q_best_answer = q_best_answer.last()
+    return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer, 'q_comments': q_comments, 'a_comments': a_comments})
 
 
 def vote(request):
@@ -369,3 +417,4 @@ class QuestionsByTagView(ListView):
             tag__name__contains=self.kwargs['tag'], answers__isnull=True)
         context['total_un_answered_page_num'] = len(context['un_answered_page'])
         return context
+
