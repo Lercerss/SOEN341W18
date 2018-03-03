@@ -1,3 +1,11 @@
 .good_answer{
   color: green;
 }
+
+main {
+  padding: 2%;
+}
+
+ul {
+  list-style-type: none;
+}

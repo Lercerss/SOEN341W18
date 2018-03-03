@@ -1,20 +1,59 @@
-{% extends "qa_web/base_navigator.html" %}
+{% extends "qa_web/base.html" %}
 {% load staticfiles %}
 
-{% block content %}
+{% block scripts %}
+    <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
+    <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
+    <script src="{% static 'js/Markdown.Sanitizer.min.js'%}"></script>
+    <script src="{% static 'js/base.js'%}"></script>
+{% endblock %}
 
+{% block styles %}
+    <link href="{% static 'css/qa.css' %}" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'css/one-page-wonder.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+
+{% endblock %}
+
+{% block header %}
+<div class="masthead-content">
+      <div class="container">
+        <h1 class="masthead-heading mb-0">Got Questions</h1>
+        <h1 class="masthead-heading mb-0">? !</h1>
+          <BR><BR><BR>
+      </div>
+</div>
+
+{% endblock %}
+
+{% block content %}
+<BR>
 <div class="col-md-8">
 
-    <ul class="nav nav-tabs nav-justified">
-        <li role="presentation"
-            {% if active_tab == 'latest' %}class="active"{% endif %}>
+    <ul class="nav nav-tabs">
+
+        <li class="active" {% if active_tab == 'latest' %}class="active"{% endif %}>
             <a href="#latest" data-toggle="tab">
-                <span class="glyphicon glyphicon-time"></span>
-                Latest
-            </a>
+                <span class="fas fa-clock"></span>
+                    Latest</a>
         </li>
+<li {% if active_tab == 'hottest' %}class="active"{% endif %}>
+            <a href="#latest" data-toggle="tab">
+                <span class="fas fa-fire"></span>
+                    Hottest</a>
+        </li>
+<li {% if active_tab == 'most_votes' %}class="active"{% endif %}>
+            <a href="#latest" data-toggle="tab">
+                <span class="fas fa-trophy"></span>
+                    Most votes</a>
+            </a>
+
+        </li>
+
+
     </ul>
-    <br/>
+<BR>
     <div class="tab-content">
         <div class="tab-pane {% if active_tab == 'latest' %}active{% endif %}" id="latest">
           {% if latest_current_page %}
@@ -23,24 +62,31 @@
                   <div class="col-sm-1 ans"><small><div class="ques">{{ question.num_answers }}</div>Answers</small></div>
                   <div class="col-sm-1 ans"><small><div class="ques">{{ question.visits }}</div>Views</small></div>
                   <p>
-                    {% if question.num_answers > 3 %}<span class="glyphicon glyphicon-fire" aria-hidden="true"></span>{% endif %}
+
                     {# if answered more than 3 times means this quetion is hot. #}
-        {#            <h3><a href="{% url 'qa_detail' question.id %}">{{ question.title }}</a></h3>#}
+        {#          <h3><a href="{% url 'qa_detail' question.id %}">{{ question.title }}</a></h3>#}
                     {# to-do: link to question page #}
                     <h3><a href="{% url 'answers' question.id %}">{{ question.title }}</a></h3>
+                    {% if question.num_answers > 3 %}
+                    <span style="padding:0.85%" class="fas fa-fire" aria-hidden="true"></span>{% endif %}
                     <br/>
 {#                    {% for tag in question.tags.all %}#}
 {#                        <a href="{% url 'some_tag_link' tag %}"><tag>{{ tag.name }}</tag></a>  {# to-do: add tag link #}
 {#                    {% endfor %}#}
+                    <div class="container" align="right">
                     <small> {{ question.creation_date }}</small>
+                        </div>
                   </p>
                 </div>
                 <hr>
             {% endfor %}
                {% if is_paginated %}
                   <div class="pagination">
+                      <div class="container" align="center">
                       {% if first %}
+
                           <a href="?page=1">1</a>
+
                       {% endif %}
                       {% if left %}
                           {% if left_has_more %}
@@ -68,10 +114,11 @@
           {% else %}
             <div class="alert alert-warning" role="alert">No Questions are available!</div>
           {% endif %}
+                      </div>
         </div>
     </div>
 </div>
-
+<BR><BR>
 <div class="col-md-4">
 
   <div class="panel panel-default">
@@ -83,7 +130,7 @@
 
 {#  <div class="panel panel-default">#}
 {#    <div class="panel-heading">#}
-{#      <h3 class="panel-title"><span class="glyphicon glyphicon-tag" aria-hidden="true"></span> Tags</h3>#}
+{#      <h3 class="panel-title"><span class="fas fa-tag" aria-hidden="true"></span> Tags</h3>#}
 {#    </div>#}
 {#    <div class="panel-body">#}
 {#      {% for tag in tags %}#}

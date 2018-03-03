@@ -1,34 +1,66 @@
+{% extends "qa_web/base.html" %}
+{% load static %}
 
+{% block scripts %}
+  <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
+  <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
+  <script src="{% static 'js/Markdown.Sanitizer.min.js' %}"></script>
+  <script>
+    var converter = Markdown.getSanitizingConverter();
+    var editor = new Markdown.Editor(converter);
+    editor.run();
+  </script>
+{% endblock %}
 
-<html>
-  <head>
-  
-	<meta charset="UTF-8">
-    <title>SA3 QA Website Questions</title>
-	{% load static %}
-    <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
-    <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
-    <script src="{% static 'js/Markdown.Sanitizer.min.js' %}"></script>
+{% block styles %}
+  <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
+  <style>
+    .wmd-button > span {
+      background-image: url('{% static "img/wmd-buttons.svg" %}');
+      background-repeat: no-repeat;
+      background-position: 0px 0px;
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+    }
+    #wmd-input {
+      padding: 10px;
+      background-color: white;
+      max-width: 660px;
+      min-width: 660px;
+    }
+    .wmd-spacer {
+      background-color: white;
+      width: 0;
+    }
+    #wmd-button-bar {
+      height: 44px;
+      padding: 0 12px;
+      width: 660px;
+      border: 1px solid #c8ccd0;
+      box-sizing: border-box;
+    }
+  </style>
+{% endblock %}
+{% block header %}
+<div class="masthead-content">
+      <div class="container">
+        <h1 class="masthead-heading mb-0">Got Questions</h1>
+        <h1 class="masthead-heading mb-0"> ? ! </h1>
+        <BR><BR><BR>
+      </div>
+</div>
 
-    <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
-    {% include "qa_web/editor_style.html" %}
+{% endblock %}
+{% block content %}
+  <a href="/"><button>Back to Index</button></a>
+  <form method="post">
+    {% csrf_token %}
 
-  </head>
-  <body>
-    <a href="../"><button>Back to Index</button></a>
-    <form method="post">
-      {% csrf_token %}
-      <h1>got Questions?!</h1>
-      <input id="title" name = "title" type="text" placeholder="question title" required/>
-      <div id="wmd-button-bar"></div>
-      <textarea id="wmd-input" name="content" class="wmd-input" placeholder="type your description here" required></textarea>
-      <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
-      <input type="submit" value="Submit"/>
-    </form>
-    <script>
-      var converter = Markdown.getSanitizingConverter();
-      var editor = new Markdown.Editor(converter);
-      editor.run();
-    </script>
-  </body>
-</html>
+    <input id="title" name = "title" type="text" placeholder="question title" required/>
+    <div id="wmd-button-bar"></div>
+    <textarea id="wmd-input" name="content" class="wmd-input" placeholder="type your description here" required></textarea>
+    <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+    <input type="submit" value="Submit"/>
+  </form>
+{% endblock %}
