@@ -42,10 +42,11 @@
 
 
 <main>
-
     {% block header %}
     <!-- Display the question's data -->
     <div class="masthead-content">
+        <a href="./edit"><button>Edit</button></a>
+        <br><br><br>
       <div class="container" id="question">
          <h1 class="masthead-heading mb-0"><b>{{ currentQuestion.title }}</b> &nbsp; <span class="label label-primary">{{ currentQuestion.visits }} visits</span></h1>
           <h2 class="masthead-subheading mb-0"><p>{{ currentQuestion.content }}</p></h2>
@@ -53,13 +54,12 @@
         <a id='upvote_{{ currentQuestion.id }}_question'><button>Upvote</button></a>
         <span id='score_{{ currentQuestion.id }}_question'>{{ currentQuestion.score }}</span>
         <a id='downvote_{{ currentQuestion.id }}_question'><button>Downvote</button></a>
-
+      </div>
     </div>
-    </div>
-
     {% endblock %}
 
     {% block content %}
+    <br>
     <div id="answers">
     <!-- Display the answers -->
     {% if bestAnswer %}
@@ -100,11 +100,11 @@
          </form>
       {% endif %}
 
-        <h3>Other answers:</h3>
         <hr>
+        <h3>Other answers:</h3>
     {% endif %}
-
-        {% for answer in answers %}
+    <br>
+    {% for answer in answers %}
         <form id="select{{ answer.id }}_form" method="post">
             {% csrf_token %}
             <p>{{ answer.content }}</p>
@@ -136,12 +136,12 @@
             <input type="submit" name="comment_form_answer_{{ answer.id }}" value="Submit your comment"/>
          </form>
       {% endif %}
-
         <hr>
     {% empty %}
         <h3>Be the first to answer this question!</h3>
     {% endfor %}
     </div>
+
     <!-- Display the answering form for logged in users -->
     {% if user.is_authenticated %}
         <form id="answer_form" method="post">
