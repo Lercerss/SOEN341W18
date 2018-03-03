@@ -5,15 +5,16 @@ $(document).ready(function(){
 });
 
 /*Function that populates all the necessary divs with markdown, using markdown-it library
-This is only proper to answerspage.html
+This is only proper to answerspage.html for now
 */
 function prepare_markdown(){
     var md = window.markdownit();
 
-    $("p[id^='marked']").each(function(){
+    $("span[id^='marked']").each(function(){
         var textToMark = $(this).text();
         var result = md.render(textToMark);
         $(this).html(result);
+        $(this).find("p").css("margin-bottom",0);
     });
 }
 
