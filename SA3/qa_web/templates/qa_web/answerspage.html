@@ -49,7 +49,7 @@
         <br><br><br>
       <div class="container" id="question">
          <h1 class="masthead-heading mb-0"><b>{{ currentQuestion.title }}</b> &nbsp; <span class="label label-primary">{{ currentQuestion.visits }} visits</span></h1>
-          <h2 class="masthead-subheading mb-0"><p>{{ currentQuestion.content }}</p></h2>
+          <h5 class="masthead-subheading mb-0"><p id="marked1">{{ currentQuestion.content }}</p></h5>
         <h6>Question by {{ currentQuestion.owner }} on {{ currentQuestion.creation_date }}</h6>
         <a id='upvote_{{ currentQuestion.id }}_question'><button>Upvote</button></a>
         <span id='score_{{ currentQuestion.id }}_question'>{{ currentQuestion.score }}</span>
@@ -70,10 +70,10 @@
             {% else %}
                 <h3 class="good_answer">{{currentQuestion.owner}} has selected this as the best answer!</h3>
             {% endif %}
-            <p>{{ bestAnswer.content }}</p>
+            <p id="marked2">{{ bestAnswer.content }}</p>
             <!--Allow one to deselect the best answer if user is logged in and is the user who asked the question-->
             {% if user.is_authenticated and user == currentQuestion.owner %}
-                <input type = "submit" name="deselect", value="Deselect as Best Answer"/>
+                <input type = "submit" name="deselect" value="Deselect as Best Answer"/>
             {% endif %}
             <h6>Answer by {{ bestAnswer.owner }} on {{ bestAnswer.creation_date }}</h6>
         </form>
@@ -83,7 +83,7 @@
 
         {% for comment in a_comments %}
         {% if comment.answer.id == bestAnswer.id %}
-            <p>{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
+            <p id="marked3">{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
                  <a id='upvote_{{ comment.id }}_comment'><button>Upvote</button></a>
                  <span id='score_{{ comment.id }}_comment'>{{ comment.score }}</span>
                  <a id='downvote_{{ comment.id }}_comment'><button>Downvote</button></a>
@@ -107,7 +107,7 @@
     {% for answer in answers %}
         <form id="select{{ answer.id }}_form" method="post">
             {% csrf_token %}
-            <p>{{ answer.content }}</p>
+            <p id="marked4">{{ answer.content }}</p>
             <!--Allow one to select best answers if user is logged in, is the user who asked the question and a best answer doesn't exist already-->
             {% if user.is_authenticated and user == currentQuestion.owner and not bestAnswer %} 
                 <input type = "submit" name="select_{{ answer.id }}" value="Select as Best Answer"></input>
@@ -120,7 +120,7 @@
 
        {% for comment in a_comments %}
            {% if comment.answer.id == answer.id %}
-            <p>{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
+            <p id="marked5">{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
                  <a id='upvote_{{ comment.id }}_comment'><button>Upvote</button></a>
                  <span id='score_{{ comment.id }}_comment'>{{ comment.score }}</span>
                  <a id='downvote_{{ comment.id }}_comment'><button>Downvote</button></a>
