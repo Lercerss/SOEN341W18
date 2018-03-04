@@ -2,7 +2,7 @@ from .models import Answers, Questions, User, Comments, Vote
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
-from .forms import LoginForm, QuestionsForm, AnswersForm, EditForm, UserProfile
+from .forms import LoginForm, QuestionsForm, AnswersForm, EditForm, UserProfile, DeleteForm
 from django.http import HttpResponseRedirect, Http404, JsonResponse, HttpResponseForbidden
 from django.contrib.auth import login, authenticate, get_user_model, logout
 from django.contrib.auth.forms import UserCreationForm
@@ -171,7 +171,7 @@ def answers(request, id_):
     else:
          initialSelectValue = "highestScore"
          q_answers = Answers.objects.filter(question=q, correct_answer=False).annotate(points=F('upvotes')-F('downvotes')).order_by('-points')
-        
+
 
     q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
     q_comments = Comments.objects.filter(question=q)
@@ -458,4 +458,20 @@ def edit(request, id_):
         q.save()
         return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
     return render(request,'qa_web/edit.html', context={'currentQ':q})
+
+
+#delete posts
+@login_required(login_url='/login/')
+def delete(request, id_):
+    p = get_object_or_404(Questions, pk=id_)
+    if p.owner != request.user:
+        return HttpResponseForbidden()
+
+    form = DeleteForm(request.POST)
+    if request.POST and form.is_valid():
+        p.delete()
+        return HttpResponseRedirect('/')
+
+
+
 
