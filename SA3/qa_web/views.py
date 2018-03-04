@@ -116,11 +116,12 @@ def questions(request):
         if form.is_valid():
             content = request.POST['content']
             title = request.POST['title']
-            tag = request.POST['tag'].split(':')
+            tag = request.POST['tag'].split(';')
             owner = request.user
             q = Questions(content=content, title=title, owner=owner)
             q.save()
-            q.tag.add(*tag)
+            [q.tag.add(each_tag) for each_tag in tag if each_tag.strip() != '']
+            # since question can be submitted with no tag, filtering empty and blank string.
             return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
         else:
             return render(request, 'qa_web/questionspage.html', context={})
@@ -230,8 +231,8 @@ class QuestionDisplayView(ListView):
         all_questions_qs = Questions.objects.order_by('-creation_date')\
             .select_related('owner')\
             .annotate(num_answers=Count('answers', distinct=True),
-                      num_question_comments=Count('comments',
-                      distinct=True))
+                      num_question_comments=Count('comments', distinct=True),
+                      num_tag=Count('tag', distinct=True))
         paginator_all_questions = Paginator(all_questions_qs, QuestionDisplayView.paginate_by)
 
         # get question_page number from url
@@ -253,6 +254,8 @@ class QuestionDisplayView(ListView):
 
         # Debug: to inspect each page object in current page.
         # for page_ in page_obj:  #  inspect structure of page_
+        #     print(len(page_.tag.all()))
+        #     print(page_.num_tag)
         #     for each in page_.tag.all():
         #         print(each.slug)
 

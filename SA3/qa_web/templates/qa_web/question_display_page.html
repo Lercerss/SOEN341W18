@@ -73,9 +73,12 @@
 
 
                     <div class="container" align="right">
+                        {% if question.num_tag != 0%}
+                            tag:
+                        {% endif %}
                         {% for tag in question.tag.all %}
                           {% if tag.slug != '' %}
-                            tag:<a href="{% url 'question_by_tag' tag.slug %}"><tag>{{ tag.slug }}</tag></a>
+                            <a href="{% url 'question_by_tag' tag.slug %}"><tag>{{ tag.slug }}</tag></a>
                           {% endif %}
                         {% endfor %}
                       <small> {{ question.creation_date }}</small>
