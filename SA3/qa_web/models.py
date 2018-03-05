@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from taggit.managers import TaggableManager
 
 class User(AbstractUser):
     """
@@ -51,6 +52,7 @@ class Questions(Post):
     title = models.CharField(max_length=300, null=True)
     visits = models.IntegerField(default=0)
     voters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='q_voters', through='Vote')
+    tag = TaggableManager(blank=True)
 
     def __str__(self):
         return self.title
@@ -73,13 +75,6 @@ class Comments(Post):
     answer = models.ForeignKey(Answers, null=True, on_delete=models.CASCADE)
     voters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='c_voters', through='Vote')
 
-class Tags(models.Model):
-    """
-    One or multiple tags can be assigned to a question, in order to classify the question
-    There can be many tags to a question
-    """
-    question = models.ForeignKey(Questions, null= True, on_delete=models.CASCADE)
-    category = models.CharField(max_length=50, null=True)
 
 class Vote(models.Model):
     """

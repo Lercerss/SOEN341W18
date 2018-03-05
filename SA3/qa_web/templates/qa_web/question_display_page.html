@@ -70,12 +70,19 @@
                     {% if question.num_answers > 3 %}
                     <span style="padding:0.85%" class="fas fa-fire" aria-hidden="true"></span>{% endif %}
                     <br/>
-{#                    {% for tag in question.tags.all %}#}
-{#                        <a href="{% url 'some_tag_link' tag %}"><tag>{{ tag.name }}</tag></a>  {# to-do: add tag link #}
-{#                    {% endfor %}#}
+
+
                     <div class="container" align="right">
-                    <small> {{ question.creation_date }}</small>
-                        </div>
+                        {% if question.num_tag != 0%}
+                            tag:
+                        {% endif %}
+                        {% for tag in question.tag.all %}
+                          {% if tag.slug != '' %}
+                            <a href="{% url 'question_by_tag' tag.slug %}"><tag>{{ tag.slug }}</tag></a>
+                          {% endif %}
+                        {% endfor %}
+                      <small> {{ question.creation_date }}</small>
+                    </div>
                   </p>
                 </div>
                 <hr>
@@ -83,38 +90,37 @@
                {% if is_paginated %}
                   <div class="pagination">
                       <div class="container" align="center">
+                      page:
                       {% if first %}
-
-                          <a href="?page=1">1</a>
-
+                          <a href="?question_page=1">1</a>
                       {% endif %}
                       {% if left %}
                           {% if left_has_more %}
                               <span>...</span>
                           {% endif %}
                           {% for i in left %}
-                              <a href="?page={{ i }}">{{ i }}</a>
+                              <a href="?question_page={{ i }}">{{ i }}</a>
                           {% endfor %}
                       {% endif %}
-                      <a href="?page={{ page_obj.number }}" style="color: red">{{ page_obj.number }}</a>
+                      <a href="?question_page={{ latest_current_page.number }}" style="color: red">{{ latest_current_page.number }}</a>
                       {% if right %}
                           {% for i in right %}
-                              <a href="?page={{ i }}">{{ i }}</a>
+                              <a href="?question_page={{ i }}">{{ i }}</a>
                           {% endfor %}
                           {% if right_has_more %}
                               <span>...</span>
                           {% endif %}
                       {% endif %}
                       {% if last %}
-                          <a href="?page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a>
+                          <a href="?question_page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a>
                       {% endif %}
+                      </div>
                   </div>
                {% endif %}
 
           {% else %}
             <div class="alert alert-warning" role="alert">No Questions are available!</div>
           {% endif %}
-                      </div>
         </div>
     </div>
 </div>
@@ -128,16 +134,16 @@
     </div>
   </div>
 
-{#  <div class="panel panel-default">#}
-{#    <div class="panel-heading">#}
-{#      <h3 class="panel-title"><span class="fas fa-tag" aria-hidden="true"></span> Tags</h3>#}
-{#    </div>#}
-{#    <div class="panel-body">#}
-{#      {% for tag in tags %}#}
-{#          <a href="{% url 'some_tag_link' tag.name %}"><tag>{{ tag.name }}</tag></a>  {# to-do: add tag link #}
-{#      {% endfor %}#}
-{#    </div>#}
-{#  </div>#}
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title"><span class="glyphicon glyphicon-tag"></span> Tags</h3>
+    </div>
+    <div class="panel-body">
+      {% for tag in tags %}
+          <a href="{% url 'question_by_tag' tag.slug %}"><tag>{{ tag.slug }}</tag></a>
+      {% endfor %}
+    </div>
+  </div>
 
     {# to-do: another tab #}
 {#  {% if un_answered_num_for_current_page.count %}#}
