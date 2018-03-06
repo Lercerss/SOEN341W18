@@ -9,3 +9,6 @@ main {
 ul {
   list-style-type: none;
 }
+.masthead-subheading{
+  font-size: 2rem !important;
+}

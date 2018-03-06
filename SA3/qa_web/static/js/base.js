@@ -1,5 +1,20 @@
 /*JAVASCRIPT for QA_Web*/
 
+/*Function that populates all the necessary divs with markdown, using markdown-it library
+This is only proper to answerspage.html for now
+*/
+function prepare_markdown(){
+    var md = window.markdownit();
+
+    $(".marked").each(function(){
+        var textToMark = $(this).text();
+        var result = md.render(textToMark);
+        $(this).html(result);
+        $(this).find("p").css("margin-bottom",0);
+    });
+}
+
+
 // Callback for voting, sends ajax request to server then updates the corresponding score
 function vote_callback(event){
   var vote_button = event.currentTarget
@@ -32,7 +47,12 @@ function getCookie(name) {
   return cookieValue;
 }
 
+/*JS to execute as soon as document is ready*/
 $(document).ready(function(){
+
+  // Displays text in answers pages as MD
+  prepare_markdown();
+
   var converter = Markdown.getSanitizingConverter();
   var editor = new Markdown.Editor(converter);
   editor.run();
@@ -57,3 +77,4 @@ $(document).ready(function(){
     vote_buttons[i].onclick = vote_callback;
   }
 });
+
