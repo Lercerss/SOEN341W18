@@ -1,4 +1,4 @@
-{% extends "qa_web/base_navigator.html" %}
+{% extends "qa_web/base.html" %}
 {% load staticfiles %}
 
 {% block scripts %}
@@ -19,20 +19,19 @@
 {% block header %}
 <div class="masthead-content">
     <div class="container">
-        <h1 class="masthead-heading mb-0">GET USER ID</h1>
+        <h1 class="masthead-heading mb-0">{{ displayed_user.username }}</h1>
         <BR><BR><BR>
     </div>
 </div>
 {% endblock %}
 
 {% block content %}
-<title>USER ID</title>
-<h1><a href="{% url 'QuestionIndex' %}">
-    <blue>{{ displayed_user.id }}</blue>
-</a></h1>
-<div class="col-md-3">
-    <div class="card" id="left">
-        <h1></h1>
+<div class="container-fluid">
+    <div class="row">
+<div class="col-sm-4">
+    <div class="p-5">
+             <img class="img-fluid rounded-circle" src="{% static 'img/default.jpg' %}" alt="">
+          </div>
         <p class="info">First Name: {{ displayed_user.first_name }}</p>
         <p class="info">Last Name: {{ displayed_user.last_name }}</p>
         <p class="info">Email: {{ displayed_user.email }}</p>
@@ -47,13 +46,10 @@
             <button>Click for Home Page</button>
         </a>
         <button>EDIT MY PROFILE</button>
-
-
-    </div>
 </div>
 
-
-<h1>Recent Posts</h1>
+<div class="col-sm-4">
+    <h1>Recent Posts</h1>
 
 {% for qs in questions %}
 {{ qs.content }}
@@ -78,9 +74,10 @@
 
 </div>
 
-<div class=".col-md-3">
+<div class="col-sm-4">
     likes n upvotes here?
 </div>
-
+    </div>
+</div>
 
 {% endblock content %}
