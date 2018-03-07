@@ -1,6 +1,32 @@
 {% extends "qa_web/base_navigator.html" %}
 {% load staticfiles %}
 
+{% block scripts %}
+    <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
+    <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
+    <script src="{% static 'js/Markdown.Sanitizer.min.js'%}"></script>
+    <script src="{% static 'js/base.js'%}"></script>
+{% endblock %}
+
+{% block styles %}
+    <link href="{% static 'css/qa.css' %}" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'css/one-page-wonder.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+
+{% endblock %}
+
+{% block header %}
+<div class="masthead-content">
+      <div class="container">
+        <h1 class="masthead-heading mb-0">QUESTIONS</h1>
+
+          <BR><BR><BR>
+      </div>
+</div>
+
+{% endblock %}
+
 {% block content %}
 
 <div class="col-md-8">
@@ -16,6 +42,7 @@
     </ul>
     <br/>
     <div class="tab-content">
+
         <div class="tab-pane {% if active_tab == 'latest' %}active{% endif %}" id="latest">
           {% if latest_current_page %}
             {% for question in latest_current_page %}
