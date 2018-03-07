@@ -44,9 +44,10 @@ def edit_profile(request):
             user.first_name = request.POST['prename']
             user.last_name = request.POST['surname']
             user.age = request.POST['age']
+            user.email = form.cleaned_data.get('email')
             user.birthday = form.cleaned_data.get('birthday')
             user.motherland = request.POST['motherland']
-            user.school= request.POST['school']
+            user.school = request.POST['school']
             user.major = request.POST['major']
             user.city = request.POST['city']
 
@@ -54,7 +55,7 @@ def edit_profile(request):
 
             # when the information is entered and the information is saved
             # the page gets redirected to the profile page
-            return HttpResponseRedirect('/profile/' + str(user.id))
+            return HttpResponseRedirect('/profile/{}/'.format(user.id))
         else:
             return render(request, 'qa_web/EditUserProfile.html', context={'form': form})
 
