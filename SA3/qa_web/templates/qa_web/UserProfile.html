@@ -1,75 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>User Profile</title>
-    <h1> USER PROFILE</h1>
-    </br>
+{% extends "qa_web/base_navigator.html" %}
+{% load staticfiles %}
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-.card {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  max-width: 300px;
-  margin: auto;
-  text-align: center;
-  font-family: arial;
-}
+{% block scripts %}
+<script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
+<script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
+<script src="{% static 'js/Markdown.Sanitizer.min.js'%}"></script>
+<script src="{% static 'js/base.js'%}"></script>
+{% endblock %}
 
-.title {
-  color: grey;
-  font-size: 18px;
-}
-button {
-  border: none;
-  outline: 0;
-  display: inline-block;
-  padding: 8px;
-  color: white;
-  background-color: #000;
-  text-align: center;
-  cursor: pointer;
-  width: 100%;
-  font-size: 18px;
-}
+{% block styles %}
+<link href="{% static 'css/qa.css' %}" rel="stylesheet"/>
+<link rel="stylesheet" href="{% static 'css/one-page-wonder.min.css' %}"/>
+<link rel="stylesheet" href="{% static 'css/pagedown.css' %}"/>
+<link rel="stylesheet" href="{% static 'css/base.css' %}"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
 
-a {
-  text-decoration: none;
-  font-size: 22px;
-  color: black;
-}
+{% block header %}
+<div class="masthead-content">
+    <div class="container">
+        <h1 class="masthead-heading mb-0">GET USER ID</h1>
+        <BR><BR><BR>
+    </div>
+</div>
+{% endblock %}
 
-button:hover, a:hover {
-  opacity: 0.7;
-}
-</style>
-</head>
-<body>
+{% block content %}
+<title>USER ID</title>
+<h1><a href="{% url 'QuestionIndex' %}">
+    <blue>{{ displayed_user.id }}</blue>
+</a></h1>
+<div class="col-md-3">
+    <div class="card" id="left">
+        <h1></h1>
+        <p class="info">First Name: {{ displayed_user.first_name }}</p>
+        <p class="info">Last Name: {{ displayed_user.last_name }}</p>
+        <p class="info">Email: {{ displayed_user.email }}</p>
+        <p class="info">Age: {{ displayed_user.age }}</p>
+        <p class="info">Birthday: {{ displayed_user.birthday }}</p>
+        <p class="info">Motherland: {{ displayed_user.motherland}}</p>
+        <p class="info">School: {{ displayed_user.school }}</p>
+        <p class="info">Major: {{ displayed_user.major }}</p>
+        <p class="info">City: {{ displayed_user.city }}</p>
 
-<div class="card">
-  <h1></h1>
+        <a href="#">
+            <button>Click for Home Page</button>
+        </a>
+        <button>EDIT MY PROFILE</button>
 
 
-     <p class="info">First Name: {{ displayed_user.first_name }}</p>
-     <p class="info">Last Name: {{ displayed_user.last_name }}</p>
-     <p class="info">Email: {{ displayed_user.email }}</p>
-     <p class="info">Age: {{ displayed_user.age }}</p>
-     <p class="info">Birthday: {{ displayed_user.birthday }}</p>
-     <p class="info">Motherland: {{ displayed_user.motherland}}</p>
-     <p class="info">School: {{ displayed_user.school }}</p>
-     <p class="info">Major: {{ displayed_user.major }}</p>
-     <p class="info">City: {{ displayed_user.city }}</p>
-
-  <p></p>
-  <div style="margin: 24px 0;">
-    <a href="#"><i>Click for Home Page</i></a>
- </div>
- <p><button>EDIT MY PROFILE </button></p>
+    </div>
 </div>
 
 
-</head>
-</body>
+<h1>Recent Posts</h1>
 
-</body>
-</html>
+{% for qs in questions %}
+{{ qs.content }}
+<BR>
+<small>{{ qs.creation_date }}</small>
+{% endfor %}
+
+<h1>Recent Answers/Comments</h1>
+{% for ans in answers %}
+{{ ans.content }}
+<BR>
+<small>{{ ans.creation_date }}</small>
+{% endfor %}
+
+<h1>Recent Votes</h1>
+{% for vts in votes %}
+{{ vts.content }}
+<BR>
+<small>{{ vts.creation_date }}</small>
+{% endfor %}
+
+
+</div>
+
+<div class=".col-md-3">
+    likes n upvotes here?
+</div>
+
+
+{% endblock content %}
