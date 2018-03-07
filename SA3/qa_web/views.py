@@ -2,16 +2,16 @@ from .models import Answers, Questions, User, Comments, Vote
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
-from .forms import LoginForm, QuestionsForm, AnswersForm, UserProfile
-from django.http import HttpResponseRedirect, Http404, JsonResponse
-from django.contrib.auth import login, logout, authenticate, get_user_model
+from .forms import LoginForm, QuestionsForm, AnswersForm, EditForm, UserProfile
+from django.http import HttpResponseRedirect, Http404, JsonResponse, HttpResponseForbidden
+from django.contrib.auth import login, authenticate, get_user_model, logout
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 
 from django.db.models import Count
-# from taggit.models import Tag, TaggedItem
+from taggit.models import Tag, TaggedItem
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.contrib.contenttypes.models import ContentType
 
@@ -116,9 +116,12 @@ def questions(request):
         if form.is_valid():
             content = request.POST['content']
             title = request.POST['title']
+            tag = request.POST['tag'].split(';')
             owner = request.user
             q = Questions(content=content, title=title, owner=owner)
             q.save()
+            [q.tag.add(each_tag) for each_tag in tag if each_tag.strip() != '']
+            # since question can be submitted with no tag, filtering empty and blank string.
             return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
         else:
             return render(request, 'qa_web/questionspage.html', context={})
@@ -126,32 +129,41 @@ def questions(request):
 
 def answers(request, id_):
     q = get_object_or_404(Questions, pk=id_)
+    answer_id = [int(key.replace('select_', '')) for key in request.POST.keys() if key.startswith('select_')]
+
     if request.method == 'POST' and 'answer_form' in request.POST: #Update's database when somebody answers a question
         form = AnswersForm(request.POST)
         if form.is_valid():
             Answers.objects.create(content=request.POST['content'], owner=request.user, question=q)
     elif request.method == 'POST' and 'deselect' in request.POST:  #Update's database when somebody deselects best answer.
-        updateAnswer = Answers.objects.get(question=q, correct_answer=True)
-        updateAnswer.correct_answer = False;
-        updateAnswer.save();
-    elif request.method == 'POST': #Update's database when somebody selects a best answer.
-        answer_id = [int(key.replace('select_', '')) for key in request.POST.keys() if key.startswith('select_')]
-        if answer_id:
-            updateAnswer = Answers.objects.get(id = answer_id[0])
-            updateAnswer.correct_answer = True;
-            updateAnswer.save();
-    #Get updated answer data.
+        updateAnswer = Answers.objects.filter(question=q, correct_answer=True).last()
+        updateAnswer.correct_answer = False
+        updateAnswer.save()
+    elif answer_id: #Update's database when somebody selects a best answer.
+        updateAnswer = Answers.objects.get(id = answer_id[0])
+        updateAnswer.correct_answer = True
+        updateAnswer.save()
+    elif any(key.startswith("comment_form_answer") for key in request.POST.keys()):
+        answer_id = [int(key.replace('comment_form_answer_', '')) for key in request.POST.keys() if key.startswith('comment_form')]
+        a = Answers.objects.get(id = answer_id[0])
+        c = Comments(content=request.POST['content'], owner=request.user, answer=a)
+        c.save()
+    #elif request.method == 'POST' and (key.startswith("comment_form_question") to be done later..
+
+    #Get updated answer data
     q_answers = Answers.objects.filter(question=q, correct_answer=False)
     q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
-    if (len(q_best_answer) > 0):
-        q_best_answer = q_best_answer.last()
-    
+    q_comments = Comments.objects.filter(question=q)
+    a_comments = Comments.objects.filter(answer__question=q)
+
     #Increment the visits counter of the question by one
     if request.user.is_authenticated:
         q.visits += 1
         q.save()
-        
-    return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer})
+
+    if len(q_best_answer) > 0:
+        q_best_answer = q_best_answer.last()
+    return render(request, 'qa_web/answerspage.html', {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer, 'q_comments': q_comments, 'a_comments': a_comments})
 
 
 def vote(request):
@@ -200,7 +212,6 @@ def vote(request):
 def homepage(request):
     return render(request, "qa_web/home.html")
 
-
 class QuestionDisplayView(ListView):
     model = Questions
     paginate_by = 10  # 10 questions a page
@@ -220,8 +231,8 @@ class QuestionDisplayView(ListView):
         all_questions_qs = Questions.objects.order_by('-creation_date')\
             .select_related('owner')\
             .annotate(num_answers=Count('answers', distinct=True),
-                      num_question_comments=Count('comments',
-                      distinct=True))
+                      num_question_comments=Count('comments', distinct=True),
+                      num_tag=Count('tag', distinct=True))
         paginator_all_questions = Paginator(all_questions_qs, QuestionDisplayView.paginate_by)
 
         # get question_page number from url
@@ -241,11 +252,14 @@ class QuestionDisplayView(ListView):
         pagination_data = self.pagination_data(paginator_all_questions, page_obj, context['is_paginated'])
         context.update(pagination_data)
 
-        # to inspect each page object in current page.
+        # Debug: to inspect each page object in current page.
         # for page_ in page_obj:  #  inspect structure of page_
-        #     print(page_.id)
+        #     print(len(page_.tag.all()))
+        #     print(page_.num_tag)
+        #     for each in page_.tag.all():
+        #         print(each.slug)
 
-        # second tab: unanswered page
+        # To-do: second tab: unanswered page
         # un_answered page, aggregate attributes num_answers and num_question_comments to this QuerySet
         un_answered_qs = Questions.objects.order_by('-creation_date')\
             .filter(answers__isnull=True).select_related('owner')\
@@ -273,16 +287,11 @@ class QuestionDisplayView(ListView):
         context['un_answered_num_for_current_page'] = paginator.count
         context['un_answered_page'] = un_answered_page
 
-        # handle tags. Tag feature in progress.
+        # pass tags to html.
         question_contenttype = ContentType.objects.get_for_model(Questions)
-        # items = TaggedItem.objects.filter(content_type=question_contenttype)
-        # context['tags'] = Tag.objects.filter(
-        #     taggit_taggeditem_items__in=items).order_by('-id').distinct()[:10]
-
-        # handle question hit count. In progress.
-
-        # test messages.
-        # messages.add_message(self.request, messages.INFO, 'Hello world.')  # a test on message framework
+        items = TaggedItem.objects.filter(content_type=question_contenttype)
+        context['tags'] = Tag.objects.filter(
+            taggit_taggeditem_items__in=items).exclude(slug__exact='').order_by('-id').distinct()
 
         return context
 
@@ -345,10 +354,10 @@ class QuestionDisplayView(ListView):
         elif page_number == total_pages:
             left = page_range[(page_number - 3) if (page_number - 3) > 0 else 0:page_number - 1]
 
-            if left[0] > 2:
+            if len(left) != 0 and left[0] > 2:
                 left_has_more = True
 
-            if left[0] > 1:
+            if len(left) != 0 and left[0] > 1:
                 first = True
         else:
             left = page_range[(page_number - 3) if (page_number - 3) > 0 else 0:page_number - 1]
@@ -359,9 +368,9 @@ class QuestionDisplayView(ListView):
             if right[-1] < total_pages:
                 last = True
 
-        if left[0] > 2:
+        if len(left) != 0 and left[0] > 2:
             left_has_more = True
-        if left[0] > 1:
+        if len(left) != 0 and left[0] > 1:
             first = True
 
         context = {
@@ -375,4 +384,57 @@ class QuestionDisplayView(ListView):
 
         return context
 
-        
+
+class QuestionsByTagView(ListView):
+    """View to call all the questions classified under one specific tag.
+    """
+    model = Questions
+    paginate_by = 10
+    context_object_name = 'questions'
+    template_name = 'qa_web/question_display_page.html'
+
+    def get_queryset(self, **kwargs):
+        # that's why we should use regex group name in url: url(r'^tag/(?P<tag>[-\w]+)/$'. A common way to get
+        # parameters from front end.
+        return Questions.objects.order_by('-creation_date').filter(tag__slug=self.kwargs['tag'])\
+                                .annotate(num_answers=Count('answers', distinct=True))
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(
+            QuestionsByTagView, self).get_context_data(*args, **kwargs)
+
+        # get default display objects from get_queryset.
+        context['latest_current_page'] = context['questions']
+
+        context['active_tab'] = self.request.GET.get('active_tab', 'latest')
+        tabs = ['latest', 'un_answered']  # to-do: un_answered tag
+        context['active_tab'] = 'latest' if context['active_tab'] not in\
+            tabs else context['active_tab']
+
+        context['total_question_num'] = Questions.objects.count()
+        context['total_answer_num'] = Answers.objects.count()
+
+        # another way to get tagged questions if not get from get_queryset.
+        context['un_answered_page'] = Questions.objects.order_by('-creation_date').filter(
+            tag__name__contains=self.kwargs['tag'], answers__isnull=True)
+        context['total_un_answered_page_num'] = len(context['un_answered_page'])
+        return context
+
+
+# edit post
+@login_required(login_url='/login/')
+def edit(request, id_):
+
+    q = get_object_or_404(Questions, pk=id_)
+    if q.owner != request.user:
+        return HttpResponseForbidden()
+
+    form = EditForm(request.POST)
+    if request.POST and form.is_valid():
+        q.content = request.POST['content']
+        q.title = request.POST['title']
+        q.owner = request.user
+        q.save()
+        return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
+    return render(request,'qa_web/edit.html', context={'currentQ':q})
+
