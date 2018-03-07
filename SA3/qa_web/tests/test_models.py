@@ -21,5 +21,8 @@ class ModelTest(TestCase):
         c.content = comment2
         c.save()
 
+        c2 = Comments.objects.create(content="quick content", owner=user1, question=q)
+        c2.delete()
+
         self.assertTrue(len(Comments.objects.all()) == 1)
         self.assertEqual(Comments.objects.get(owner=user1).question, q)

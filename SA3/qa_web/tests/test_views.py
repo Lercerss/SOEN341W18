@@ -1,7 +1,8 @@
 from datetime import date
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.http import HttpResponseRedirect
-from qa_web.models import User
+from qa_web.models import User, Questions
+
 
 credentials = {'username': 'test', 'password': 'test'}
 
@@ -11,7 +12,6 @@ class ViewTest(TestCase):
 
     def setUp(self):
         User.objects.create_user(**credentials)
-    
     def _login(self):
         self.assertTrue(self.client.login(**credentials))
 
@@ -57,8 +57,39 @@ class ViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Enter a valid date.")
 
-    def test_questions(self):
-        pass
+    def test_signup(self):
+
+        get_response = self.client.get('/signup/')
+        self.assertEqual(get_response.status_code, 200)
+        form_entries = {
+            'username': 'NewUser',
+            'password': 'password123'
+        }
+        response = self.client.post('/signup/', data=form_entries)
+        self.assertEqual(response.status_code, 200)
+        # Figure out a way to assert existence of newly created user
+
+    def test_asking_questions(self):
+        response = self.client.get('/questions/')
+        self.assertEqual(response.status_code, 302)
+
+        pre_questions_count = Questions.objects.count()
+
+        form_data = {'title': 'test question',
+                     'content': "test content",
+                     'tag': 'testing'}
+
+        response = self.client.post('/questions/', data= form_data)
+        self.assertEqual(response.url, "/login/?next=/questions/")
+        self._login()
+        response = self.client.post('/questions/', data=form_data)
+        last_question = Questions.objects.last()
+        post_questions_count = Questions.objects.count()
+        tags = last_question.tag.slugs()
+
+        self.assertRedirects(response, '/questions/{}/'.format(last_question.id))
+        self.assertTrue((pre_questions_count + 1) == post_questions_count)
+        self.assertEqual(tags[0], form_data['tag'])
 
 
 class QuestionDisplayViewTest(TestCase):
