@@ -30,8 +30,8 @@ class ViewTest(TestCase):
             'city': 'Test'
         }
         response = self.client.post('/editprofile/', data=values)
-        self.assertRedirects(response, '/profile/1/')
         user = User.objects.get_by_natural_key(credentials['username'])
+        self.assertRedirects(response, '/profile/{}/'.format(user.id))
         self.assertEqual(user.birthday, date(1960, 1, 1))
         self.assertEqual(user.email, values['email'])
         values['birthday'] = 'wrong format'
