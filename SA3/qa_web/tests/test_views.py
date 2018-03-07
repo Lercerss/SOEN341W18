@@ -62,12 +62,13 @@ class ViewTest(TestCase):
         get_response = self.client.get('/signup/')
         self.assertEqual(get_response.status_code, 200)
         form_entries = {
-            'username': 'NewUser',
-            'password': 'password123'
+            'username' : 'NewUser',
+            'password1' : 'password123',
+            'password2' : 'password123'
         }
         response = self.client.post('/signup/', data=form_entries)
-        self.assertEqual(response.status_code, 200)
-        # Figure out a way to assert existence of newly created user
+        self.assertRedirects(response, '/')
+        self.assertTrue(User.objects.filter(username=form_entries['username']).exists())
 
     def test_asking_questions(self):
         response = self.client.get('/questions/')
