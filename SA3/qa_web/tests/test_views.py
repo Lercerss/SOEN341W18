@@ -201,6 +201,25 @@ class ViewTest(TestCase):
         response = self.client.get('/vote/')
         self.assertRedirects(response, '/')
 
+    def test_edit_profile(self):
+        self._login()
+        q = _populate_db(User.objects.get(pk=1), 1, 1)
+        values = {
+            'content': 'New content displayed! {}'.format(hash(q)),
+            'title': 'A new title! {}'.format(hash(q)) 
+        }
+        response = self.client.post('/questions/{}/edit/'.format(q.id), data=values)
+        self.assertRedirects(response, '/questions/{}/'.format(q.id))
+        self.assertEqual(Questions.objects.get(pk=q.id).content, values['content'])
+        self.assertEqual(Questions.objects.get(pk=q.id).title, values['title'])
+
+    def test_edit_profile_forbidden(self):
+        other_user = User.objects.create_user(username='other_user', password='wat')
+        self._login()
+        q = _populate_db(other_user, 1, 1)
+        response = self.client.get('/questions/{}/edit/'.format(q.id))
+        self.assertEqual(response.status_code, 403) # Forbidden since other_user owns q
+
 
 class QuestionDisplayViewTest(TestCase):
     """This class contains test cases for the QuestionDisplayView"""
