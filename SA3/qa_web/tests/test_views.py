@@ -3,10 +3,19 @@ from datetime import date
 from django.test import TestCase
 from django.http import HttpResponseRedirect
 from qa_web.models import User, Questions, Answers, Comments
+from qa_web.views import QuestionDisplayView, QuestionsByTagView
 
 
 credentials = {'username': 'test', 'password': 'test'}
 
+def _populate_db(user, num_answers, comments_per_answer):
+        q = Questions.objects.create(title="Test question", content="Test content", owner=user)
+        for i in range(num_answers):
+            a = Answers.objects.create(content="answer content " + str(i), owner=user, question=q)
+            for j in range(comments_per_answer):
+                Comments.objects.create(content="comment content {}-{}".format(i, j), owner=user, answer=a)
+
+        return q
 
 class ViewTest(TestCase):
     """This class contains test methods for view functions"""
@@ -16,15 +25,6 @@ class ViewTest(TestCase):
 
     def _login(self):
         self.assertTrue(self.client.login(**credentials))
-
-    def _populate_db(self, user, num_answers, comments_per_answer):
-        q = Questions.objects.create(title="Test question", content="Test content", owner=user)
-        for i in range(num_answers):
-            a = Answers.objects.create(content="answer content " + str(i), owner=user, question=q)
-            for j in range(comments_per_answer):
-                Comments.objects.create(content="comment content {}-{}".format(i, j), owner=user, answer=a)
-
-        return q
 
     def test_login(self):
         response = self.client.get('/login/')
@@ -102,7 +102,7 @@ class ViewTest(TestCase):
     def test_answers_simple(self):
         user = User.objects.get(pk=1)
         num_answers, comments_per_answer = 10, 3
-        q = self._populate_db(user, num_answers, comments_per_answer)
+        q = _populate_db(user, num_answers, comments_per_answer)
         response = self.client.get('/questions/{}/'.format(q.id))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "0 visits") # Only authenticated users increment the view counter
@@ -116,7 +116,7 @@ class ViewTest(TestCase):
     def test_answers_select_best(self):
         user = User.objects.get(pk=1)
         num_answers = 3
-        q = self._populate_db(user, num_answers, 0)
+        q = _populate_db(user, num_answers, 0)
         values = {
             'select_{}'.format(Answers.objects.filter(question=q)[0].id): 'Select as Best Answer'
         }
@@ -130,7 +130,7 @@ class ViewTest(TestCase):
     def test_answers_add_answer(self):
         user = User.objects.get(pk=1)
         num_answers = 3
-        q = self._populate_db(user, num_answers, 0)
+        q = _populate_db(user, num_answers, 0)
         self._login()
         values = {
             'answer_form': '',
@@ -144,7 +144,7 @@ class ViewTest(TestCase):
     def test_answers_add_comment(self):
         user = User.objects.get(pk=1)
         num_answers, comments_per_answer = 3, 3
-        q = self._populate_db(user, num_answers, comments_per_answer)
+        q = _populate_db(user, num_answers, comments_per_answer)
         self._login()
         values = {
             'comment_form_answer_{}'.format(Answers.objects.filter(question=q)[0].id): '',
@@ -156,7 +156,7 @@ class ViewTest(TestCase):
 
     def test_answers_view_count(self):
         user = User.objects.get(pk=1)
-        q = self._populate_db(user, 1, 1)
+        q = _populate_db(user, 1, 1)
         self._login()
         amount = 10
         for i in range(amount):
@@ -166,7 +166,7 @@ class ViewTest(TestCase):
 
     def test_vote_question(self):
         user = User.objects.get(pk=1)
-        q = self._populate_db(user, 1, 1)
+        q = _populate_db(user, 1, 1)
         self._login()
         values = {
             'button': 'upvote_{}_question'.format(q.id)
@@ -176,7 +176,7 @@ class ViewTest(TestCase):
 
     def test_vote_answer(self):
         user = User.objects.get(pk=1)
-        q = self._populate_db(user, 1, 1)
+        q = _populate_db(user, 1, 1)
         a = Answers.objects.get(question=q)
         self._login()
         values = {
@@ -187,7 +187,7 @@ class ViewTest(TestCase):
 
     def test_vote_comment(self):
         user = User.objects.get(pk=1)
-        q = self._populate_db(user, 1, 1)
+        q = _populate_db(user, 1, 1)
         c = Comments.objects.all()[0]
         self._login()
         values = {
@@ -201,8 +201,28 @@ class ViewTest(TestCase):
         response = self.client.get('/vote/')
         self.assertRedirects(response, '/')
 
+
 class QuestionDisplayViewTest(TestCase):
     """This class contains test cases for the QuestionDisplayView"""
 
-    def test_get_context(self):
-        pass
+    def setUp(self):
+        User.objects.create_user(**credentials)
+
+    def test_pagination(self):
+        user = User.objects.get(pk=1)
+        questions = []
+        num_questions, num_answers, comments_per_answer = 50, 10, 3
+        for i in range(num_questions):
+            questions.append(_populate_db(user, num_answers, comments_per_answer))
+
+        response = self.client.get('/QuestionIndex/')
+        self.assertEqual(len(response.context['latest_current_page']), QuestionDisplayView.paginate_by)
+        self.assertEqual(response.context['left'], [])
+        self.assertEqual(response.context['right'], range(2,4)) # [2, 3]
+        self.assertEqual(response.context['latest_current_page'].number, 1)
+
+        response = self.client.get('/QuestionIndex/', data={'question_page': 3})
+        self.assertEqual(len(response.context['latest_current_page']), QuestionDisplayView.paginate_by)
+        self.assertEqual(response.context['left'], range(1,3))
+        self.assertEqual(response.context['right'], range(4,6))
+        self.assertEqual(response.context['latest_current_page'].number, 3)
