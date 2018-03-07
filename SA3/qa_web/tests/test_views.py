@@ -1,7 +1,8 @@
+import re
 from datetime import date
 from django.test import TestCase
 from django.http import HttpResponseRedirect
-from qa_web.models import User, Questions
+from qa_web.models import User, Questions, Answers, Comments
 
 
 credentials = {'username': 'test', 'password': 'test'}
@@ -12,8 +13,18 @@ class ViewTest(TestCase):
 
     def setUp(self):
         User.objects.create_user(**credentials)
+
     def _login(self):
         self.assertTrue(self.client.login(**credentials))
+
+    def _populate_db(self, user, num_answers, comments_per_answer):
+        q = Questions.objects.create(title="Test question", content="Test content", owner=user)
+        for i in range(num_answers):
+            a = Answers.objects.create(content="answer content " + str(i), owner=user, question=q)
+            for j in range(comments_per_answer):
+                Comments.objects.create(content="comment content {}-{}".format(i, j), owner=user, answer=a)
+
+        return q
 
     def test_login(self):
         response = self.client.get('/login/')
@@ -58,7 +69,6 @@ class ViewTest(TestCase):
         self.assertContains(response, "Enter a valid date.")
 
     def test_signup(self):
-
         get_response = self.client.get('/signup/')
         self.assertEqual(get_response.status_code, 200)
         form_entries = {
@@ -89,6 +99,70 @@ class ViewTest(TestCase):
         self.assertEqual(post_questions_count, 1)
         self.assertEqual(tags[0], form_data['tag'])
 
+    def test_answers_simple(self):
+        user = User.objects.get(pk=1)
+        num_answers, comments_per_answer = 10, 3
+        q = self._populate_db(user, num_answers, comments_per_answer)
+        response = self.client.get('/questions/{}/'.format(q.id))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "0 visits") # Only authenticated users increment the view counter
+        self.assertEqual(response.context['currentQuestion'], q)
+        # Matches score items to count number of posts displayed on the page
+        matches = re.findall(r'score_\d+_(answer|comment|question)', response.content.decode())
+        self.assertEqual(len(matches), num_answers*comments_per_answer + num_answers + 1)
+        self.assertNotContains(response, 'Be the first to answer this question!')
+        self.assertFalse(response.context['bestAnswer'])
+    
+    def test_answers_select_best(self):
+        user = User.objects.get(pk=1)
+        num_answers = 3
+        q = self._populate_db(user, num_answers, 0)
+        values = {
+            'select_{}'.format(Answers.objects.filter(question=q)[0].id): 'Select as Best Answer'
+        }
+        response = self.client.post('/questions/{}/'.format(q.id), data=values)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'good_answer')
+        response = self.client.post('/questions/{}/'.format(q.id), data={'deselect': 'Deselect as Best Answer'})
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, 'good_answer')
+
+    def test_answers_add_answer(self):
+        user = User.objects.get(pk=1)
+        num_answers = 3
+        q = self._populate_db(user, num_answers, 0)
+        self._login()
+        values = {
+            'answer_form': '',
+            'content': 'Some content'
+        }
+        response = self.client.post('/questions/{}/'.format(q.id), data=values)
+        self.assertEqual(response.status_code, 200)
+        matches = re.findall(r'score_\d+_answer', response.content.decode())
+        self.assertEqual(len(matches), num_answers + 1)
+
+    def test_answers_add_comment(self):
+        user = User.objects.get(pk=1)
+        num_answers, comments_per_answer = 3, 3
+        q = self._populate_db(user, num_answers, comments_per_answer)
+        self._login()
+        values = {
+            'comment_form_answer_{}'.format(Answers.objects.filter(question=q)[0].id): '',
+            'content': 'Some content'
+        }
+        response = self.client.post('/questions/{}/'.format(q.id), data=values)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Comments.objects.count(), num_answers * comments_per_answer + 1)
+
+    def test_answers_view_count(self):
+        user = User.objects.get(pk=1)
+        q = self._populate_db(user, 1, 1)
+        self._login()
+        amount = 10
+        for i in range(amount):
+            response = self.client.get('/questions/{}/'.format(q.id))
+
+        self.assertContains(response, '{} visits'.format(amount))
 
 class QuestionDisplayViewTest(TestCase):
     """This class contains test cases for the QuestionDisplayView"""
