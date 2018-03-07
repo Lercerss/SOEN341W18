@@ -150,10 +150,7 @@ def answers(request, id_):
     #elif request.method == 'POST' and (key.startswith("comment_form_question") to be done later..
 
     #Get updated answer data
-    #q_answers = Answers.objects.filter(question=q, correct_answer=False).annotate(points=F('upvotes')-F('downvotes')).order_by('points') #Least points first.
     q_answers = Answers.objects.filter(question=q, correct_answer=False).annotate(points=F('upvotes')-F('downvotes')).order_by('-points') #Most points first.
-    #q_answers = Answers.objects.filter(question=q, correct_answer=False).order_by('creation_date') #Least recent first.
-    #q_answers = Answers.objects.filter(question=q, correct_answer=False).order_by('-creation_date') #Most recent first.
 
     if request.method == 'POST' and 'sort_by_form_select' in request.POST:
         initialSelectValue = request.POST['sort_by_form_select']
@@ -163,7 +160,7 @@ def answers(request, id_):
             q_answers = Answers.objects.filter(question=q, correct_answer=False).annotate(points=F('upvotes')-F('downvotes')).order_by('-points')
         elif request.POST['sort_by_form_select'] == 'leastRecent':
             q_answers = Answers.objects.filter(question=q, correct_answer=False).order_by('creation_date')
-        else:
+        else: #Most Recent
             q_answers = Answers.objects.filter(question=q, correct_answer=False).order_by('-creation_date')
     else:
          initialSelectValue = "highestScore"
