@@ -226,3 +226,26 @@ class QuestionDisplayViewTest(TestCase):
         self.assertEqual(response.context['left'], range(1,3))
         self.assertEqual(response.context['right'], range(4,6))
         self.assertEqual(response.context['latest_current_page'].number, 3)
+
+
+class QuestionsByTagViewTest(TestCase):
+    """Test cases for QuestionByTagView"""
+    
+    def setUp(self):
+        User.objects.create_user(**credentials)
+    
+    def test_tagview(self):
+        user = User.objects.get(pk=1)
+        for i in range(10):
+            _populate_db(user, 1, 1)
+
+        for i, q in enumerate(Questions.objects.all()):
+            q.tag.add('test')
+            if i % 3 == 0: # 0, 3, 6, 9...
+                q.tag.add('other')
+            q.save()
+
+        response = self.client.get('/tag/other/')
+        self.assertEqual(len(response.context['latest_current_page']), 4)
+        response = self.client.get('/tag/test/')
+        self.assertEqual(len(response.context['latest_current_page']), 10)
