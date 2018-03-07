@@ -11,11 +11,29 @@ class ViewTest(TestCase):
 
     def setUp(self):
         User.objects.create_user(**credentials)
+    
+    def _login(self):
+        self.assertTrue(self.client.login(**credentials))
+
+    def test_login(self):
+        response = self.client.get('/login/')
+        self.assertEqual(response.status_code, 200)
+        values = {
+            'username' : credentials['username'],
+            'password' : credentials['password'] + 'error'
+        }
+        response = self.client.post('/login/', data=values)
+        self.assertContains(response, 'Incorrect username or password')
+
+    def test_login_protected(self):
+        """Pages that require a logged in user should redirect to the login page"""
+        login_required_views = ['/questions/', '/editprofile/', '/questions/1/edit/']
+        for url in login_required_views:
+            response = self.client.get(url)
+            self.assertRedirects(response, '/login/?next=' + url)
 
     def test_edit_profile(self):
-        response = self.client.get('/editprofile/')
-        self.assertRedirects(response, '/login/?next=/editprofile/')
-        self.assertTrue(self.client.login(**credentials))
+        self._login()
         response = self.client.get('/editprofile/')
         self.assertEqual(response.status_code, 200)
         values = {

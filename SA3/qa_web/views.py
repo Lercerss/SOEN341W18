@@ -79,9 +79,8 @@ def login(request):
             user = auth.authenticate(username=username, password=password)
             if user is not None and user.is_active:
                 auth.login(request, user)
-                # return render_to_response('qa_web/index.html')
-                return HttpResponseRedirect('/')
-                # jumping to index page means login successful
+                # Use parameter from login_required decorator to redirect to a specific page, otherwise index
+                return HttpResponseRedirect(request.GET.get('next', '/'))
             else:
                 return render_to_response('qa_web/login.html', context={'form': form, 'password_is_wrong': True})
         else:
