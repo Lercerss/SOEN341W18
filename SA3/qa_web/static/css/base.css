@@ -33,7 +33,6 @@ button {
   background-color: #000;
   text-align: center;
   cursor: pointer;
-  width: 100%;
   font-size: 18px;
 }
 
@@ -62,4 +61,8 @@ button:hover, a:hover {
     float:0 auto;
     width:100px;
     text-align: left;
+}
+#question span:hover{
+    background-color: #ee0979 !important;
+    border-color:#ee0979 !important;
 }
