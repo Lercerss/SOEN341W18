@@ -73,9 +73,6 @@ class ViewTest(TestCase):
     def test_asking_questions(self):
         response = self.client.get('/questions/')
         self.assertEqual(response.status_code, 302)
-
-        pre_questions_count = Questions.objects.count()
-
         form_data = {'title': 'test question',
                      'content': "test content",
                      'tag': 'testing'}
@@ -89,7 +86,7 @@ class ViewTest(TestCase):
         tags = last_question.tag.slugs()
 
         self.assertRedirects(response, '/questions/{}/'.format(last_question.id))
-        self.assertTrue((pre_questions_count + 1) == post_questions_count)
+        self.assertEqual(post_questions_count, 1)
         self.assertEqual(tags[0], form_data['tag'])
 
 
