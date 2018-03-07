@@ -164,6 +164,43 @@ class ViewTest(TestCase):
 
         self.assertContains(response, '{} visits'.format(amount))
 
+    def test_vote_question(self):
+        user = User.objects.get(pk=1)
+        q = self._populate_db(user, 1, 1)
+        self._login()
+        values = {
+            'button': 'upvote_{}_question'.format(q.id)
+        }
+        response = self.client.post('/vote/', data=values)
+        self.assertEqual(response.json(), {'id':'score_{}_question'.format(q.id), 'new_score': 1})
+
+    def test_vote_answer(self):
+        user = User.objects.get(pk=1)
+        q = self._populate_db(user, 1, 1)
+        a = Answers.objects.get(question=q)
+        self._login()
+        values = {
+            'button': 'upvote_{}_answer'.format(a.id)
+        }
+        response = self.client.post('/vote/', data=values)
+        self.assertEqual(response.json(), {'id':'score_{}_answer'.format(a.id), 'new_score': 1})
+
+    def test_vote_comment(self):
+        user = User.objects.get(pk=1)
+        q = self._populate_db(user, 1, 1)
+        c = Comments.objects.all()[0]
+        self._login()
+        values = {
+            'button': 'upvote_{}_comment'.format(c.id)
+        }
+        response = self.client.post('/vote/', data=values)
+        self.assertEqual(response.json(), {'id':'score_{}_comment'.format(q.id), 'new_score': 1})
+
+    def test_vote_no_ajax(self):
+        self._login()
+        response = self.client.get('/vote/')
+        self.assertRedirects(response, '/')
+
 class QuestionDisplayViewTest(TestCase):
     """This class contains test cases for the QuestionDisplayView"""
 
