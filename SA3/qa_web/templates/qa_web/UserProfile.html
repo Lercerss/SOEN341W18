@@ -9,11 +9,7 @@
 {% endblock %}
 
 {% block styles %}
-<link href="{% static 'css/qa.css' %}" rel="stylesheet"/>
-<link rel="stylesheet" href="{% static 'css/one-page-wonder.min.css' %}"/>
-<link rel="stylesheet" href="{% static 'css/pagedown.css' %}"/>
 <link rel="stylesheet" href="{% static 'css/base.css' %}"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 
 {% block header %}
@@ -42,41 +38,42 @@
         <p class="info">Major: {{ displayed_user.major }}</p>
         <p class="info">City: {{ displayed_user.city }}</p>
 
-        <a href="#">
-            <button>Click for Home Page</button>
-        </a>
-        <button>EDIT MY PROFILE</button>
+
+    <a href="/"><button>Click for Home Page</button></a>
+    <a href="/editprofile/"><button>EDIT MY PROFILE</button></a>
 </div>
 
 <div class="col-sm-4">
     <h1>Recent Posts</h1>
 
 {% for qs in questions %}
-{{ qs.content }}
-<BR>
-<small>{{ qs.creation_date }}</small>
+    <h3><span class="marked">{{ qs.title }}</span></h3>
+    <span class="marked">{{ qs.content }}</span>
+    <small>{{ qs.creation_date }}</small>
+    <br><br>
 {% endfor %}
 
 <h1>Recent Answers/Comments</h1>
+
 {% for ans in answers %}
-{{ ans.content }}
-<BR>
-<small>{{ ans.creation_date }}</small>
+    <span class="marked">{{ ans.content }}</span>
+    <small>{{ ans.creation_date }}</small>
+    <br><br>
 {% endfor %}
 
 <h1>Recent Votes</h1>
 {% for vts in votes %}
-{{ vts.content }}
-<BR>
-<small>{{ vts.creation_date }}</small>
+    <span class="marked">{{ vts.content }}</span>
+    <small>{{ vts.creation_date }}</small>
+    <br><br>
 {% endfor %}
-
 
 </div>
 
 <div class="col-sm-4">
-    likes n upvotes here?
+
 </div>
+
     </div>
 </div>
 

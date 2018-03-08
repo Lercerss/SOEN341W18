@@ -14,8 +14,7 @@
             <ul class="navbar-nav ml-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        {# A link to the user profile should be added here #}
-                        <a class="nav-link" href="#">Welcome {{ user.username }}</a>
+                        <a class="nav-link" href='/profile/{{ user.id }}')>Welcome {{ user.username }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout/">Log Out</a>
