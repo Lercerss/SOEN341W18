@@ -44,9 +44,10 @@ def edit_profile(request):
             user.first_name = request.POST['prename']
             user.last_name = request.POST['surname']
             user.age = request.POST['age']
+            user.email = form.cleaned_data.get('email')
             user.birthday = form.cleaned_data.get('birthday')
             user.motherland = request.POST['motherland']
-            user.school= request.POST['school']
+            user.school = request.POST['school']
             user.major = request.POST['major']
             user.city = request.POST['city']
 
@@ -54,7 +55,7 @@ def edit_profile(request):
 
             # when the information is entered and the information is saved
             # the page gets redirected to the profile page
-            return HttpResponseRedirect('/profile/' + str(user.id))
+            return HttpResponseRedirect('/profile/{}/'.format(user.id))
         else:
             return render(request, 'qa_web/EditUserProfile.html', context={'form': form})
 
@@ -87,9 +88,8 @@ def login(request):
             user = auth.authenticate(username=username, password=password)
             if user is not None and user.is_active:
                 auth.login(request, user)
-                # return render_to_response('qa_web/index.html')
-                return HttpResponseRedirect('/')
-                # jumping to index page means login successful
+                # Use parameter from login_required decorator to redirect to a specific page, otherwise index
+                return HttpResponseRedirect(request.GET.get('next', '/'))
             else:
                 return render_to_response('qa_web/login.html', context={'form': form, 'password_is_wrong': True})
         else:
