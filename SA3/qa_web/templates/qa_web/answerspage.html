@@ -100,11 +100,36 @@
             <input type="submit" name="comment_form_answer_{{ bestAnswer.id }}" value="Submit your comment"/>
          </form>
       {% endif %}
-
         <hr>
         <h3>Other answers:</h3>
     {% endif %}
-    <br>
+    <form id="sort_by_form" method="POST">
+      {% csrf_token %}
+      Sort by:
+      <select name="sort_by_form_select" id="selectSortBy" selected="{{initial_select_value}}"onchange="this.form.submit()">
+          {% if initial_select_value == "highestScore" %}
+            <option value="highestScore" selected="selected">Highest Score</option>
+          {% else %}
+            <option value="highestScore">Highest Score</option>
+          {% endif %}
+          {% if initial_select_value == "lowestScore" %}
+            <option value="lowestScore" selected="selected">Lowest Score</option>
+          {% else %}
+            <option value="lowestScore">Lowest Score</option>
+          {% endif %}
+          {% if initial_select_value == "mostRecent" %}
+            <option value="mostRecent" selected="selected">Most Recent</option>
+          {% else %}
+            <option value="mostRecent">Most Recent</option>
+          {% endif %}
+          {% if initial_select_value == "leastRecent" %}
+            <option value="leastRecent" selected="selected">Least Recent</option>
+          {% else %}
+            <option value="leastRecent">Least Recent</option>
+          {% endif %}
+      </select>
+    </form>
+    <hr>
     {% for answer in answers %}
         <form id="select{{ answer.id }}_form" method="post">
             {% csrf_token %}
