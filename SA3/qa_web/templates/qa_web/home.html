@@ -5,9 +5,9 @@
  {% block header %}
     <div class="masthead-content">
       <div class="container">
-        <h1 class="masthead-heading mb-0">Got Answers</h1>
+        <h1 class="masthead-heading mb-0">Got Questions</h1>
         <h2 class="masthead-subheading mb-0"> ? !</h2>
-        <a href="#" class="btn btn-primary btn-xl rounded-pill mt-5">Click to Ask or Answer</a>
+        <a {% if user.is_authenticated %} href="/questions/" {% else %}  href="/login/"  {% endif %} class="btn btn-primary btn-xl rounded-pill mt-5">Click to Ask a Question</a>
       </div>
     </div>
 

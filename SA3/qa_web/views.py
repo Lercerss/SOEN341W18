@@ -61,7 +61,16 @@ def edit_profile(request):
 
 def display_profile(request, id_):
     displayed_user = get_object_or_404(User, pk=id_)
-    return render(request, 'qa_web/UserProfile.html', context={'displayed_user' : displayed_user})
+    user_qs = Questions.objects.filter(owner_id=id_)
+    user_as = Answers.objects.filter(owner_id=id_)
+    user_vs = Vote.objects.filter(user_id=id_)
+    return render(request, 'qa_web/UserProfile.html', context={'displayed_user': displayed_user,
+                                                               'questions': user_qs,
+                                                               'answers': user_as,
+                                                               'votes': user_vs})
+
+
+
 
 
 @csrf_exempt

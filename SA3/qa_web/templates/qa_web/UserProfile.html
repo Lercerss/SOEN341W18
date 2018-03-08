@@ -1,75 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>User Profile</title>
-    <h1> USER PROFILE</h1>
-    </br>
+{% extends "qa_web/base.html" %}
+{% load staticfiles %}
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-.card {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  max-width: 300px;
-  margin: auto;
-  text-align: center;
-  font-family: arial;
-}
+{% block scripts %}
+<script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
+<script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
+<script src="{% static 'js/Markdown.Sanitizer.min.js'%}"></script>
+<script src="{% static 'js/base.js'%}"></script>
+{% endblock %}
 
-.title {
-  color: grey;
-  font-size: 18px;
-}
-button {
-  border: none;
-  outline: 0;
-  display: inline-block;
-  padding: 8px;
-  color: white;
-  background-color: #000;
-  text-align: center;
-  cursor: pointer;
-  width: 100%;
-  font-size: 18px;
-}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/base.css' %}"/>
+{% endblock %}
 
-a {
-  text-decoration: none;
-  font-size: 22px;
-  color: black;
-}
+{% block header %}
+<div class="masthead-content">
+    <div class="container">
+        <h1 class="masthead-heading mb-0">{{ displayed_user.username }}</h1>
+        <BR><BR><BR>
+    </div>
+</div>
+{% endblock %}
 
-button:hover, a:hover {
-  opacity: 0.7;
-}
-</style>
-</head>
-<body>
-
-<div class="card">
-  <h1></h1>
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+<div class="col-sm-4">
+    <div class="p-5">
+             <img class="img-fluid rounded-circle" src="{% static 'img/default.jpg' %}" alt="">
+          </div>
+        <p class="info">First Name: {{ displayed_user.first_name }}</p>
+        <p class="info">Last Name: {{ displayed_user.last_name }}</p>
+        <p class="info">Email: {{ displayed_user.email }}</p>
+        <p class="info">Age: {{ displayed_user.age }}</p>
+        <p class="info">Birthday: {{ displayed_user.birthday }}</p>
+        <p class="info">Motherland: {{ displayed_user.motherland}}</p>
+        <p class="info">School: {{ displayed_user.school }}</p>
+        <p class="info">Major: {{ displayed_user.major }}</p>
+        <p class="info">City: {{ displayed_user.city }}</p>
 
 
-     <p class="info">First Name: {{ displayed_user.first_name }}</p>
-     <p class="info">Last Name: {{ displayed_user.last_name }}</p>
-     <p class="info">Email: {{ displayed_user.email }}</p>
-     <p class="info">Age: {{ displayed_user.age }}</p>
-     <p class="info">Birthday: {{ displayed_user.birthday }}</p>
-     <p class="info">Motherland: {{ displayed_user.motherland}}</p>
-     <p class="info">School: {{ displayed_user.school }}</p>
-     <p class="info">Major: {{ displayed_user.major }}</p>
-     <p class="info">City: {{ displayed_user.city }}</p>
-
-  <p></p>
-  <div style="margin: 24px 0;">
-    <a href="#"><i>Click for Home Page</i></a>
- </div>
- <p><button>EDIT MY PROFILE </button></p>
+    <a href="/"><button>Click for Home Page</button></a>
+    <a href="/editprofile/"><button>EDIT MY PROFILE</button></a>
 </div>
 
+<div class="col-sm-4">
+    <h1>Recent Posts</h1>
 
-</head>
-</body>
+{% for qs in questions %}
+    <h3><span class="marked">{{ qs.title }}</span></h3>
+    <span class="marked">{{ qs.content }}</span>
+    <small>{{ qs.creation_date }}</small>
+    <br><br>
+{% endfor %}
 
-</body>
-</html>
+<h1>Recent Answers/Comments</h1>
+
+{% for ans in answers %}
+    <span class="marked">{{ ans.content }}</span>
+    <small>{{ ans.creation_date }}</small>
+    <br><br>
+{% endfor %}
+
+<h1>Recent Votes</h1>
+{% for vts in votes %}
+    <span class="marked">{{ vts.content }}</span>
+    <small>{{ vts.creation_date }}</small>
+    <br><br>
+{% endfor %}
+
+</div>
+
+<div class="col-sm-4">
+
+</div>
+
+    </div>
+</div>
+
+{% endblock content %}
