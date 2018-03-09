@@ -40,7 +40,6 @@
     </style>
 {% endblock %}
 
-
 <main>
     {% block header %}
     <!-- Display the question's data -->
@@ -53,7 +52,21 @@
         <span class="btn btn-primary btn-xl rounded-pill mt-5" id='score_{{ currentQuestion.id }}_question'>{{ currentQuestion.score }}</span>
         <a id='downvote_{{ currentQuestion.id }}_question'><button class="btn btn-primary btn-xl rounded-pill mt-5">Downvote</button></a>
         <a href="./edit" class="btn btn-primary btn-xl rounded-pill mt-5">Edit</a>
-
+        {% for comment in q_comments %}
+        <p>{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
+             <a id='upvote_{{ comment.id }}_comment'><button>Upvote</button></a>
+             <span id='score_{{ comment.id }}_comment'>{{ comment.score }}</span>
+             <a id='downvote_{{ comment.id }}_comment'><button>Downvote</button></a>
+        </p>
+    {% endfor %}
+    {% if user.is_authenticated %}
+      <p>Got a comment for this question? Why not share it here!</p>
+      <form id="comment_form_question" method="post">
+        {% csrf_token %}
+          <textarea id="wmd-input" name="content" class="wmd-input"></textarea></br>
+          <input type="submit" name="comment_form_question" value="Submit your comment"/>
+      </form>
+    {% endif %}
       </div>
     </div>
     {% endblock %}
