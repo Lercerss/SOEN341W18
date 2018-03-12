@@ -28,7 +28,7 @@
     <div class="p-5">
              <img class="img-fluid rounded-circle" src="{% static 'img/default.jpg' %}" alt="">
           </div>
-        {% if user.id = displayed_user.id %}
+        {% if user.id == displayed_user.id %}
             <p class="info">First Name: {{ displayed_user.first_name }}</p>
             <p class="info">Last Name: {{ displayed_user.last_name }}</p>
             <p class="info">Email: {{ displayed_user.email }}</p>
