@@ -60,12 +60,13 @@
         </p>
     {% endfor %}
     {% if user.is_authenticated %}
-      <p>Got a comment for this question? Why not share it here!</p>
       <form id="comment_form_question" method="post">
         {% csrf_token %}
           <textarea id="wmd-input" name="content" class="wmd-input"></textarea></br>
-          <input type="submit" name="comment_form_question" value="Submit your comment"/>
+          <a id="hideCQ"><button type="button">Hide</button></a>
+          <button name="comment_form_question" onclick="this.form.submit()">Submit your comment</button>
       </form>
+      <a id="postCQ"><button>Post Comment</button></a>
     {% endif %}
       </div>
     </div>
@@ -106,12 +107,13 @@
         {% endfor %}
 
       {% if user.is_authenticated %}
-        <p>Got a comment? Why not share it here!</p>
         <form id="comment_form_answer_{{ bestAnswer.id }}" method="post">
           {% csrf_token %}
-            <textarea id="wmd-input" name="content" class="wmd-input"></textarea></br>
-            <input type="submit" name="comment_form_answer_{{ bestAnswer.id }}" value="Submit your comment"/>
-         </form>
+          <textarea id="wmd-input" name="content" class="wmd-input"></textarea></br>
+          <a id="hideCA_{{ bestAnswer.id }}"><button type="button">Hide</button></a>
+          <button name="comment_form_answer_{{ bestAnswer.id }}" onclick="this.form.submit()">Submit your comment</button>
+        </form>
+      <a id="postCA_{{ bestAnswer.id }}"><button>Post Comment</button></a>
       {% endif %}
         <hr>
         <h3>Other answers:</h3>
@@ -169,12 +171,13 @@
       {% endfor %}
 
       {% if user.is_authenticated %}
-        <p>Got a comment for this answer? Why not share it here!</p>
-        <form id="comment_form_answer_{{answer.id}}" method="post">
+        <form id="comment_form_answer_{{ answer.id }}" method="post">
           {% csrf_token %}
-            <textarea id="wmd-input" name="content" class="wmd-input"></textarea></br>
-            <input type="submit" name="comment_form_answer_{{ answer.id }}" value="Submit your comment"/>
-         </form>
+          <textarea id="wmd-input" name="content" class="wmd-input"></textarea></br>
+          <a id="hideCA_{{ answer.id }}"><button type="button">Hide</button></a>
+          <button name="comment_form_answer_{{ answer.id }}" onclick="this.form.submit()">Submit your comment</button>
+        </form>
+      <a id="postCA_{{ answer.id }}"><button>Post Comment</button></a>
       {% endif %}
         <hr>
     {% empty %}

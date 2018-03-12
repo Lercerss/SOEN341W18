@@ -31,6 +31,35 @@ function vote_callback(event){
   });
 }
 
+function post_comment(event) {
+  switch_comment_view(event);
+  $('#'+event.currentTarget.id).hide();
+}
+
+function hide_comment(event) {
+  switch_comment_view(event);
+  $('#postC'+event.currentTarget.id.slice(5)).show();
+}
+
+function switch_comment_view(event, buttonToShow) {
+  var comment_button = event.currentTarget;
+  var form_id = "comment_form_";
+  var comment_type = comment_button.id.slice(5); //5 since first five characters are "hideC" or "postC"
+
+  if (comment_type == "Q")
+    form_id += ("question");
+  else if (comment_type.match(/A/)) {
+    var answer_id = comment_type.slice(2); //Slices off A_
+    form_id += ("answer_" + answer_id);
+  }
+
+  if (comment_button.id.match(/^post/))
+    $("#"+form_id).show();
+  else if (comment_button.id.match(/^hide/))
+    $("#"+form_id).hide();
+  $('#postC'+comment_type).show();
+}
+
 // From Django docs on CSRF
 function getCookie(name) {
   var cookieValue = null;
@@ -72,9 +101,34 @@ $(document).ready(function(){
     return this.id.match(/(up|down)vote_\d+/);
   });
 
+  var post_comment_buttons = $('a').filter(function(){
+    return this.id.match(/^post/);
+  });
+
+  var hide_comment_buttons = $('a').filter(function(){
+    return this.id.match(/^hide/);
+  });
+
+  var comment_forms = $('form').filter(function(){
+    return this.id.match(/^comment_form_/);
+  });
+
   // Register click listeners for voting buttons
   for(let i = 0; i < vote_buttons.length; i++){
     vote_buttons[i].onclick = vote_callback;
+  }
+
+  for(let i = 0; i < post_comment_buttons.length; i++){
+    post_comment_buttons[i].onclick = post_comment;
+  }
+
+  for(let i = 0; i < hide_comment_buttons.length; i++){
+    hide_comment_buttons[i].onclick = hide_comment;
+  }
+
+  for(let i = 0; i < comment_forms.length; i++){
+    id = comment_forms[i].id;
+    $("#"+id).hide();
   }
 });
 
