@@ -28,9 +28,11 @@
     <div class="p-5">
              <img class="img-fluid rounded-circle" src="{% static 'img/default.jpg' %}" alt="">
           </div>
-        <p class="info">First Name: {{ displayed_user.first_name }}</p>
-        <p class="info">Last Name: {{ displayed_user.last_name }}</p>
-        <p class="info">Email: {{ displayed_user.email }}</p>
+        {% if user.id = displayed_user.id %}
+            <p class="info">First Name: {{ displayed_user.first_name }}</p>
+            <p class="info">Last Name: {{ displayed_user.last_name }}</p>
+            <p class="info">Email: {{ displayed_user.email }}</p>
+        {% endif %}
         <p class="info">Age: {{ displayed_user.age }}</p>
         <p class="info">Birthday: {{ displayed_user.birthday }}</p>
         <p class="info">Motherland: {{ displayed_user.motherland}}</p>
