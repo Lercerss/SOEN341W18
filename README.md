@@ -2,7 +2,7 @@
 [![codecov](https://codecov.io/gh/Lercerss/SOEN341W18/branch/master/graph/badge.svg)](https://codecov.io/gh/Lercerss/SOEN341W18)
 # SOEN341W18
 Software Process Winter 2018 Group Project - SA3.
-This is a simple Q&A website built using the Python (django web framework)[djangoproject.com].
+This is a simple Q&A website built using the Python [django web framework](djangoproject.com).
 
 ## Installation
 This project uses Python 3.X. To install requirements simply `pip install -r requirements.txt`.
