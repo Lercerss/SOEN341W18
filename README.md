@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/Lercerss/SOEN341W18.svg?branch=master)](https://travis-ci.org/Lercerss/SOEN341W18) 
+[![Build Status](https://travis-ci.org/Lercerss/SOEN341W18.svg?branch=master)](https://travis-ci.org/Lercerss/SOEN341W18)
+[![codecov](https://codecov.io/gh/Lercerss/SOEN341W18/branch/master/graph/badge.svg)](https://codecov.io/gh/Lercerss/SOEN341W18)
 # SOEN341W18
 Software Process Winter 2018 Group Project - SA3
 
