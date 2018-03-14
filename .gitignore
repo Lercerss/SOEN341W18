@@ -4,3 +4,4 @@ venv/
 __pycache__/
 #file
 *.pyc
+.coverage
