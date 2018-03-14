@@ -51,7 +51,11 @@
         <a id='upvote_{{ currentQuestion.id }}_question'><button class="btn btn-primary btn-xl rounded-pill mt-5">Upvote</button></a>
         <span class="btn btn-primary btn-xl rounded-pill mt-5" id='score_{{ currentQuestion.id }}_question'>{{ currentQuestion.score }}</span>
         <a id='downvote_{{ currentQuestion.id }}_question'><button class="btn btn-primary btn-xl rounded-pill mt-5">Downvote</button></a>
-        <a href="./edit" class="btn btn-primary btn-xl rounded-pill mt-5">Edit</a>
+
+        {% if user.is_authenticated and user.id == currentQuestion.owner_id %}
+          <a href="./edit" class="btn btn-primary btn-xl rounded-pill mt-5">Edit</a>
+        {% endif %}
+
         {% for comment in q_comments %}
         <p>{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
              <a id='upvote_{{ comment.id }}_comment'><button>Upvote</button></a>
