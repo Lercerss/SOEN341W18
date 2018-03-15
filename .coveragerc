@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = SA3/qa_web
+omit = 
+    */migrations/*
+    SA3/qa_web/tests/*
