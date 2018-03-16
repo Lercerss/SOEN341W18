@@ -2,7 +2,7 @@ import re
 from datetime import date
 from django.test import TestCase
 from django.http import HttpResponseRedirect
-from qa_web.models import User, Questions, Answers, Comments
+from qa_web.models import User, Questions, Answers, Comments, Vote
 from qa_web.views import QuestionDisplayView, QuestionsByTagView
 
 
@@ -36,6 +36,13 @@ class ViewTest(TestCase):
         response = self.client.post('/login/', data=values)
         self.assertContains(response, 'Incorrect username or password')
 
+    def test_logout(self):
+        self._login()
+        response = self.client.get('/logout/')
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/login/')
+        self.assertEqual(response.status_code, 302)
+
     def test_login_protected(self):
         """Pages that require a logged in user should redirect to the login page"""
         login_required_views = ['/questions/', '/editprofile/', '/questions/1/edit/']
@@ -43,16 +50,17 @@ class ViewTest(TestCase):
             response = self.client.get(url)
             self.assertRedirects(response, '/login/?next=' + url)
 
-    def test_edit_profile(self):
+
+    def test_editing_profile(self):
         self._login()
         response = self.client.get('/editprofile/')
         self.assertEqual(response.status_code, 200)
         values = {
             'prename': 'Test',
             'surname': 'User',
+            'email': 'test@example.com',
             'age': '23',
             'birthday': '1960-01-01',
-            'email': 'test@example.com',
             'motherland': 'Test',
             'school': 'Test',
             'major': 'Test',
@@ -67,6 +75,15 @@ class ViewTest(TestCase):
         response = self.client.post('/editprofile/', data=values)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Enter a valid date.")
+
+    def test_displaying_profile(self):
+        self._login()
+        user = User.objects.get_by_natural_key(credentials['username'])
+        num_answers, comments_per_answer = 5, 2
+        q = _populate_db(user, num_answers, comments_per_answer)
+        self.assertIsNotNone(q)
+        response = self.client.get('/profile/{}/'.format(user.id))
+        self.assertEqual(response.status_code, 200)
 
     def test_signup(self):
         get_response = self.client.get('/signup/')
@@ -164,6 +181,29 @@ class ViewTest(TestCase):
 
         self.assertContains(response, '{} visits'.format(amount))
 
+    def test_ordering_answers(self):
+
+        user = User.objects.get(pk=1)
+        q = _populate_db(user,1,1)
+        self.assertIsNotNone(q)
+        response = self.client.get('/questions/{}/'.format(q.id))
+        self.assertEqual(response.status_code, 200)
+
+        options = ['highestScore', 'lowestScore', 'mostRecent', 'leastRecent']
+
+        for ordering in options:
+            context = {
+                'sort_by_form_select' : ordering
+            }
+            self.client.post('/questions/{}/'.format(q.id), data= context)
+            self.assertEqual(response.status_code, 200)
+
+        context = {
+            'sort_by_form_select_same': 'useless'
+        }
+        self.client.post('/questions/{}/'.format(q.id), data=context)
+        self.assertEqual(response.status_code, 200)
+
     def test_vote_question(self):
         user = User.objects.get(pk=1)
         q = _populate_db(user, 1, 1)
@@ -173,6 +213,8 @@ class ViewTest(TestCase):
         }
         response = self.client.post('/vote/', data=values)
         self.assertEqual(response.json(), {'id':'score_{}_question'.format(q.id), 'new_score': 1})
+
+
 
     def test_vote_answer(self):
         user = User.objects.get(pk=1)
@@ -184,6 +226,12 @@ class ViewTest(TestCase):
         }
         response = self.client.post('/vote/', data=values)
         self.assertEqual(response.json(), {'id':'score_{}_answer'.format(a.id), 'new_score': 1})
+        values = {
+            'button': 'downvote_{}_answer'.format(a.id)
+        }
+        response = self.client.post('/vote/', data=values)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'id': 'score_{}_answer'.format(a.id), 'new_score': -1})
 
     def test_vote_comment(self):
         user = User.objects.get(pk=1)

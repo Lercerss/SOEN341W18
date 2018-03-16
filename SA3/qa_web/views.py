@@ -23,12 +23,6 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = UserCreationForm.Meta.fields
 
-
-def index(request):
-    # return render(request, 'qa_web/index.html', context={'posts': Post.objects.all()})
-    return render(request, 'qa_web/index.html', context={'questions': Questions.objects.all()})
-
-
 @login_required(login_url='/login/')
 def edit_profile(request):
     if request.method=='GET':
