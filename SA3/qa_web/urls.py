@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from django.conf.urls import url
 from . import views
 
@@ -16,4 +16,5 @@ urlpatterns = [
     url(r'^tag/(?P<tag>[-\w]+)/$', views.QuestionsByTagView.as_view(), name='question_by_tag'),
     path('editprofile/', views.edit_profile, name='UserProfile'),
     path('profile/<int:id_>/', views.display_profile, name='UserProfile'),
+
 ]

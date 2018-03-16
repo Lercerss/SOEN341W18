@@ -19,7 +19,7 @@ from django.conf.urls import url, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
+    path(r'^search/', include('haystack.urls')),
     path('', include('qa_web.urls')),
 ]
 
