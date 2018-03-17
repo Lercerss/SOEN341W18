@@ -44,8 +44,6 @@
     {% block header %}
     <!-- Display the question's data -->
     <div class="masthead-content">
-        <a href="./edit"><button>Edit</button></a>
-        <a href="./delete"><button>Delete Post</button></a>
         <br><br><br>
       <div class="container" id="question">
          <h1 class="masthead-heading mb-0"><span id="title_question"><b>{{ currentQuestion.title }}</b></span> &nbsp; <span class="label label-primary">{{ currentQuestion.visits }} visits</span></h1>
@@ -57,6 +55,7 @@
 
         {% if user.is_authenticated and user.id == currentQuestion.owner_id %}
           <a href="./edit" class="btn btn-primary btn-xl rounded-pill mt-5">Edit</a>
+          <a href="./delete/" class="btn btn-primary btn-xl rounded-pill mt-5">Delete</a>
         {% endif %}
 
         {% for comment in q_comments %}

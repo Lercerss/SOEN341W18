@@ -463,14 +463,16 @@ def edit(request, id_):
 #delete posts
 @login_required(login_url='/login/')
 def delete(request, id_):
-    p = get_object_or_404(Questions, pk=id_)
-    if p.owner != request.user:
+    print("THIS IS THE BEGINNING")
+    q = get_object_or_404(Questions, pk=id_)
+    if q.owner != request.user:
         return HttpResponseForbidden()
-
-    form = DeleteForm(request.POST)
-    if request.POST and form.is_valid():
-        p.delete()
-        return HttpResponseRedirect('/')
+    print("BEFORE ENTERING request.py")
+    if request.POST:
+        print("IS THIS WORKING")
+        q.delete()
+        return HttpResponseRedirect('/QuestionIndex')
+    return render(request, 'qa_web/answerspage.html', context={'currentQ':q})
 
 
 
