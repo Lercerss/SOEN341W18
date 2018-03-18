@@ -55,7 +55,7 @@
 
         {% if user.is_authenticated and user.id == currentQuestion.owner_id %}
           <a href="./edit" class="btn btn-primary btn-xl rounded-pill mt-5">Edit</a>
-          <a href="./delete/" class="btn btn-primary btn-xl rounded-pill mt-5">Delete</a>
+          <a href="./delete/" class="btn btn-primary btn-xl rounded-pill mt-5" onclick="return confirm('Are you sure you want to delete')">Delete</a>
         {% endif %}
 
         {% for comment in q_comments %}
