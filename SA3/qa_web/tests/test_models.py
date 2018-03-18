@@ -31,6 +31,10 @@ class CommentModel(TestCase):
         q = Questions.objects.create(title=title, content=content, owner=user1)
         a = Answers.objects.create(content= 'Test answer', owner = user1, correct_answer= True)
 
+    def test_to_string_method_question(self):
+        _, q, _ = obtain_sample_objects_as_tuple()
+        self.assertEqual(str(q), q.title)
+
     def test_question_comment_instantiation(self):
 
         # testing comments for question only
