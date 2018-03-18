@@ -45,8 +45,8 @@
     <!-- Display the question's data -->
     <div class="masthead-content">
       <div class="container" id="question">
-         <h1 class="masthead-heading mb-0"><b>{{ currentQuestion.title }}</b> &nbsp; <span class="label label-primary">{{ currentQuestion.visits }} visits</span></h1>
-          <h5 class="masthead-subheading mb-0"><p><span class="marked">{{ currentQuestion.content }}</span></p></h5>
+         <h1 class="masthead-heading mb-0"><span id="title_question"><b>{{ currentQuestion.title }}</b></span> &nbsp; <span class="label label-primary">{{ currentQuestion.visits }} visits</span></h1>
+          <h5 class="masthead-subheading mb-0"><p><span class="marked" id="content_question">{{ currentQuestion.content }}</span></p></h5>
         <h6>Question by {{ currentQuestion.owner }} on {{ currentQuestion.creation_date }}</h6>
         <a id='upvote_{{ currentQuestion.id }}_question'><button class="btn btn-primary btn-xl rounded-pill mt-5">Upvote</button></a>
         <span class="btn btn-primary btn-xl rounded-pill mt-5" id='score_{{ currentQuestion.id }}_question'>{{ currentQuestion.score }}</span>
@@ -78,7 +78,7 @@
             {% else %}
                 <h3 class="good_answer">{{currentQuestion.owner}} has selected this as the best answer!</h3>
             {% endif %}
-            <p><span class="marked">{{ bestAnswer.content }}</span></p>
+            <p><span class="marked" id="content_answer_{{ bestAnswer.id }}">{{ bestAnswer.content }}</span></p>
             <!--Allow one to deselect the best answer if user is logged in and is the user who asked the question-->
             {% if user.is_authenticated and user == currentQuestion.owner %}
                 <input type = "submit" name="deselect" value="Deselect as Best Answer"/>
@@ -136,7 +136,7 @@
     {% for answer in answers %}
         <form id="select{{ answer.id }}_form" method="post">
             {% csrf_token %}
-            <p><span class="marked">{{ answer.content }}</span></p>
+            <p><span class="marked" id="content_answer_{{ answer.id }}">{{ answer.content }}</span></p>
             <!--Allow one to select best answers if user is logged in, is the user who asked the question and a best answer doesn't exist already-->
             {% if user.is_authenticated and user == currentQuestion.owner and not bestAnswer %} 
                 <input type = "submit" name="select_{{ answer.id }}" value="Select as Best Answer"></input>
@@ -171,7 +171,7 @@
     {% if user.is_authenticated %}
         <button type="button" id="postA" data-toggle="modal" data-target="#formModal">Got Answers!? Click here to share them!</button>
     {% else %}
-    <p>To answer this question, <a href="/login">login</a> or <a href="/signup">sign up</a>!</p>
+        <p>To answer this question, <a href="/login">login</a> or <a href="/signup">sign up</a>!</p>
     {% endif %}
     
     <!-- Don't let one access modal via browser console when not logged in-->
@@ -188,6 +188,8 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
               </div>
               <div class="modal-body">
+                <span id="postTitle" class="marked"></span>
+                <span id="postContent" class="marked"></span>
                 <div id="wmd-button-bar"></div>
                 <textarea id="wmd-input" name="content" class="wmd-input"></textarea>
                 <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
