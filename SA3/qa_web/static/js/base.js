@@ -45,7 +45,7 @@ function post_reply(event) {
     form_id += comment_type;
     $("#modalTitle").html("Posting Comment");
   }
-  $('#modalContent').html(form_id);
+  $('#submitForm').attr('name', form_id);
 }
 
 // From Django docs on CSRF

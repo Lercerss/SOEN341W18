@@ -60,12 +60,6 @@
         </p>
     {% endfor %}
     {% if user.is_authenticated %}
-      <form id="comment_form_question" method="post">
-        {% csrf_token %}
-          <textarea id="wmd-input" name="content" class="wmd-input"></textarea></br>
-          <a id="hideCQ"><button type="button">Hide</button></a>
-          <button name="comment_form_question" onclick="this.form.submit()">Submit your comment</button>
-      </form>
       <button type="button" id="postCquestion" data-toggle="modal" data-target="#formModal">Post comment!</button>
     {% endif %}
       </div>
@@ -107,13 +101,7 @@
         {% endfor %}
 
       {% if user.is_authenticated %}
-        <form id="comment_form_answer_{{ bestAnswer.id }}" method="post">
-          {% csrf_token %}
-          <textarea id="wmd-input" name="content" class="wmd-input"></textarea></br>
-          <a id="hideCA_{{ bestAnswer.id }}"><button type="button">Hide</button></a>
-          <button name="comment_form_answer_{{ bestAnswer.id }}" onclick="this.form.submit()">Submit your comment</button>
-        </form>
-      <button type="button" id="postCanswer_{{ bestAnswer.id }}" data-toggle="modal" data-target="#formModal">Post comment!</button>
+        <button type="button" id="postCanswer_{{ bestAnswer.id }}" data-toggle="modal" data-target="#formModal">Post comment!</button>
       {% endif %}
         <hr>
         <h3>Other answers:</h3>
@@ -171,13 +159,7 @@
       {% endfor %}
 
       {% if user.is_authenticated %}
-        <form id="comment_form_answer_{{ answer.id }}" method="post">
-          {% csrf_token %}
-          <textarea id="wmd-input" name="content" class="wmd-input"></textarea></br>
-          <a id="hideCA_{{ answer.id }}"><button type="button">Hide</button></a>
-          <button name="comment_form_answer_{{ answer.id }}" onclick="this.form.submit()">Submit your comment</button>
-        </form>
-      <button type="button" id="postCanswer_{{ answer.id }}" data-toggle="modal" data-target="#formModal">Post comment!</button>
+        <button type="button" id="postCanswer_{{ answer.id }}" data-toggle="modal" data-target="#formModal">Post comment!</button>
       {% endif %}
         <hr>
     {% empty %}
@@ -188,13 +170,6 @@
     <!-- Display the answering form for logged in users -->
     {% if user.is_authenticated %}
         <button type="button" id="postA" data-toggle="modal" data-target="#formModal">Got Answers!? Click here to share them!</button>
-        <form id="answer_form" method="post">
-            {% csrf_token %}
-            <div id="wmd-button-bar"></div>
-            <textarea id="wmd-input" name="content" class="wmd-input"></textarea>
-            <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
-            <input type="submit" name="answer_form" value="Submit your answer"/>
-        </form>
     {% else %}
     <p>To answer this question, <a href="/login">login</a> or <a href="/signup">sign up</a>!</p>
     {% endif %}
@@ -202,21 +177,28 @@
     <!-- Don't let one access modal via browser console when not logged in-->
     {% if user.is_authenticated %}
       <div id="formModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
       
           <!-- Modal content-->
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 id="modalTitle" class="modal-title"></h4>
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <form id="postForm" method="post">
+            {% csrf_token %}
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 id="modalTitle" class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                <div id="wmd-button-bar"></div>
+                <textarea id="wmd-input" name="content" class="wmd-input"></textarea>
+                <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+                <p id="modalContent"></p>
+              </div>
+              <div class="modal-footer">
+                <button id="submitForm" name="" onclick="this.form.submit()">Submit</button>
+                <button type="button" data-dismiss="modal">Cancel</button>
+              </div>
             </div>
-            <div class="modal-body">
-              <p id="modalContent"></p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            </div>
-          </div>
+          </form>
       
         </div>
       </div>
