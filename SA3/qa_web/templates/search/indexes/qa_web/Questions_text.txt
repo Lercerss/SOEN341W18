@@ -1,2 +1,5 @@
 {{ object.title }}
 {{ object.content }}
+{% for answer in object.get_answer_queryset %}
+    {{ answer.content }}
+{% endfor %}

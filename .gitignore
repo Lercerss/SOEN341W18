@@ -5,3 +5,5 @@ __pycache__/
 #file
 *.pyc
 .coverage
+
+qa_web/whoosh_index/
