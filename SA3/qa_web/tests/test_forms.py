@@ -61,3 +61,10 @@ class FormTest(TestCase):
                                                   "__all__": [{"message": "username and password are required", "code": ""}],
                                                   "username": [{"message": "please input username", "code": "required"}]})
 
+    def test_correct_login(self):
+
+        form_data = {'username': 'heartbroken_python', 'password': 'fake_password_that_still_works'}
+        login = LoginForm(data=form_data)
+        self.assertTrue(login.is_valid())
+        self.assertEqual(login.errors, {})
+

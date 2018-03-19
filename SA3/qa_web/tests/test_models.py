@@ -17,15 +17,14 @@ def create_many_users():
 
     for i in range(0,15):
         name = 'User{}'.format(i)
-        pw = '{}'.format(i)
+        pw = str(i)
         u = User.objects.create(username = name, password= pw)
     return
 
 class CommentModel(TestCase):
 
     def setUp(self):
-        User.objects.create_user(**credentials)
-        user1 = User.objects.first()
+        user1 = User.objects.create_user(**credentials)
         title = "What is life?"
         content = "Someone please explain to me the purpose of life"
         q = Questions.objects.create(title=title, content=content, owner=user1)
@@ -57,8 +56,6 @@ class CommentModel(TestCase):
 
         # testing comments for answers only
         user1, _, a = obtain_sample_objects_as_tuple()
-
-        # testing comments for question only
         comment1 = "This is my comment to your answer"
         c = Comments.objects.create(content=comment1, owner=user1, answer=a)
         comment2 = "This is my updated comment"
@@ -69,6 +66,7 @@ class CommentModel(TestCase):
 
         c2 = Comments.objects.create(content="quick content", owner=user1, answer=a)
         c2.delete()
+        self.assertQuerysetEqual(Comments.objects.filter(content="quick content"), [])
 
     def test_comments_originator(self):
 

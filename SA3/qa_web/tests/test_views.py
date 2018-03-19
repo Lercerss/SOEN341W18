@@ -90,6 +90,8 @@ class ViewTest(TestCase):
         self.assertIsNotNone(q)
         response = self.client.get('/profile/{}/'.format(user.id))
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['answers'].count(), num_answers)
+        self.assertEqual(response.context['questions'].count(), 1)
 
     def test_signup(self):
         get_response = self.client.get('/signup/')

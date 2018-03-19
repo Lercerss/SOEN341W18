@@ -5,4 +5,3 @@ omit =
     */migrations/*
     SA3/qa_web/tests/*
     SA3/qa_web/wsgi.py
-    venv/*
