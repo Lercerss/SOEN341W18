@@ -1,5 +1,6 @@
 __author__ = 'jet'
-import datetime
+# import datetime  # RuntimeWarning: naive datetime is not the best time marker in django
+from django.utils import timezone
 from haystack import indexes
 from qa_web.models import Questions
 
@@ -14,4 +15,4 @@ class QuestionsIndex(indexes.SearchIndex, indexes.Indexable):
 
     def index_queryset(self, using=None):
         """Used when the entire index for model is updated."""
-        return self.get_model().objects.filter(creation_date__lte=datetime.datetime.now())
+        return self.get_model().objects.filter(creation_date__lte=timezone.now())
