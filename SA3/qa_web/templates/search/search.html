@@ -19,7 +19,7 @@
 
             {% for result in page.object_list %}
                 <p>
-                    <a href="{% url 'answers' result.object.id %}">{{ result.object.title }}</a>
+                    <a href="{% url 'answers' result.object.id %}">{{ result.object.title }} &nbsp &nbsp {{ result.object.creation_date }}</a>
                 </p>
             {% empty %}
                 <p>No results found.</p>

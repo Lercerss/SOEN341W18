@@ -4,6 +4,9 @@ from django.utils import timezone
 from haystack import indexes
 from qa_web.models import Questions
 
+# If it's the first time you try to use search, please execute: python manage.py rebuild_index
+# The search index is configured to be automatically updated once a model instance is saved or deleted that
+# has an associated SearchIndex.
 
 class QuestionsIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
