@@ -7,14 +7,19 @@ from qa_web.views import QuestionDisplayView, QuestionsByTagView
 
 credentials = {'username': 'test', 'password': 'test'}
 
-def _populate_db(user, num_answers, comments_per_answer):
-        q = Questions.objects.create(title="Test question", content="Test content", owner=user)
-        for i in range(num_answers):
-            a = Answers.objects.create(content="answer content " + str(i), owner=user, question=q)
-            for j in range(comments_per_answer):
-                Comments.objects.create(content="comment content {}-{}".format(i, j), owner=user, answer=a)
 
-        return q
+def _populate_db(user, num_answers, comments_per_answer):
+    q = Questions.objects.create(
+        title="Test question", content="Test content", owner=user)
+    for i in range(num_answers):
+        a = Answers.objects.create(
+            content="answer content " + str(i), owner=user, question=q)
+        for j in range(comments_per_answer):
+            Comments.objects.create(
+                content="comment content {}-{}".format(i, j), owner=user, answer=a)
+
+    return q
+
 
 class ViewTest(TestCase):
     """This class contains test methods for view functions"""
@@ -29,8 +34,8 @@ class ViewTest(TestCase):
         response = self.client.get('/login/')
         self.assertEqual(response.status_code, 200)
         values = {
-            'username' : credentials['username'],
-            'password' : credentials['password'] + 'error'
+            'username': credentials['username'],
+            'password': credentials['password'] + 'error'
         }
         response = self.client.post('/login/', data=values)
         self.assertContains(response, 'Incorrect username or password')
@@ -51,11 +56,11 @@ class ViewTest(TestCase):
 
     def test_login_protected(self):
         """Pages that require a logged in user should redirect to the login page"""
-        login_required_views = ['/questions/', '/edit_profile/', '/questions/1/edit/']
+        login_required_views = ['/questions/',
+                                '/edit_profile/', '/questions/1/edit/']
         for url in login_required_views:
             response = self.client.get(url)
             self.assertRedirects(response, '/login/?next=' + url)
-
 
     def test_editing_profile(self):
         self._login()
@@ -97,24 +102,26 @@ class ViewTest(TestCase):
         get_response = self.client.get('/signup/')
         self.assertEqual(get_response.status_code, 200)
         form_entries = {
-            'username' : 'NewUser',
-            'password1' : 'password123',
-            'password2' : 'password123'
+            'username': 'NewUser',
+            'password1': 'password123',
+            'password2': 'password123'
         }
         response = self.client.post('/signup/', data=form_entries)
         self.assertRedirects(response, '/')
-        self.assertTrue(User.objects.filter(username=form_entries['username']).exists())
+        self.assertTrue(User.objects.filter(
+            username=form_entries['username']).exists())
 
     def test_asking_questions(self):
         response = self.client.get('/questions/')
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/login/?next=/questions/')
 
-        form_data = {'title': 'test question',
-                     'content': "test content",
-                     'tag': 'testing'}
-
-        response = self.client.post('/questions/', data= form_data)
+        form_data = {
+            'title': 'test question',
+            'content': "test content",
+            'tag': 'testing'
+        }
+        response = self.client.post('/questions/', data=form_data)
         self.assertEqual(response.url, "/login/?next=/questions/")
         self._login()
         response = self.client.get('/questions/')
@@ -124,11 +131,12 @@ class ViewTest(TestCase):
         post_questions_count = Questions.objects.count()
         tags = last_question.tag.slugs()
 
-        self.assertRedirects(response, '/questions/{}/'.format(last_question.id))
+        self.assertRedirects(
+            response, '/questions/{}/'.format(last_question.id))
         self.assertEqual(post_questions_count, 1)
         self.assertEqual(tags[0], form_data['tag'])
 
-        form_data= {'wrong' : 'form'}
+        form_data = {'wrong': 'form'}
         response = self.client.post('/questions/', data=form_data)
         self.assertTemplateUsed(response, 'qa_web/questionspage.html')
 
@@ -138,12 +146,16 @@ class ViewTest(TestCase):
         q = _populate_db(user, num_answers, comments_per_answer)
         response = self.client.get('/questions/{}/'.format(q.id))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "0 visits") # Only authenticated users increment the view counter
+        # Only authenticated users increment the view counter
+        self.assertContains(response, "0 visits")
         self.assertEqual(response.context['currentQuestion'], q)
         # Matches score items to count number of posts displayed on the page
-        matches = re.findall(r'score_\d+_(answer|comment|question)', response.content.decode())
-        self.assertEqual(len(matches), num_answers*comments_per_answer + num_answers + 1)
-        self.assertNotContains(response, 'Be the first to answer this question!')
+        matches = re.findall(
+            r'score_\d+_(answer|comment|question)', response.content.decode())
+        self.assertEqual(len(matches), num_answers *
+                         comments_per_answer + num_answers + 1)
+        self.assertNotContains(
+            response, 'Be the first to answer this question!')
         self.assertFalse(response.context['bestAnswer'])
 
     def test_answers_select_best(self):
@@ -160,7 +172,8 @@ class ViewTest(TestCase):
         response = self.client.post('/questions/{}/'.format(q.id), data=values)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'good_answer')
-        response = self.client.post('/questions/{}/'.format(q.id), data={'deselect': 'Deselect as Best Answer'})
+        response = self.client.post(
+            '/questions/{}/'.format(q.id), data={'deselect': 'Deselect as Best Answer'})
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, 'good_answer')
 
@@ -189,7 +202,8 @@ class ViewTest(TestCase):
         }
         response = self.client.post('/questions/{}/'.format(q.id), data=values)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(Comments.objects.count(), num_answers * comments_per_answer + 1)
+        self.assertEqual(Comments.objects.count(),
+                         num_answers * comments_per_answer + 1)
 
     def test_answers_view_count(self):
         user = User.objects.get(pk=1)
@@ -202,9 +216,8 @@ class ViewTest(TestCase):
         self.assertContains(response, '{} visits'.format(amount))
 
     def test_ordering_answers(self):
-
         user = User.objects.get(pk=1)
-        q = _populate_db(user,1,1)
+        q = _populate_db(user, 1, 1)
         self.assertIsNotNone(q)
         response = self.client.get('/questions/{}/'.format(q.id))
         self.assertEqual(response.status_code, 200)
@@ -213,9 +226,9 @@ class ViewTest(TestCase):
 
         for ordering in options:
             context = {
-                'sort_by_form_select' : ordering
+                'sort_by_form_select': ordering
             }
-            self.client.post('/questions/{}/'.format(q.id), data= context)
+            self.client.post('/questions/{}/'.format(q.id), data=context)
             self.assertEqual(response.status_code, 200)
 
         context = {
@@ -232,9 +245,8 @@ class ViewTest(TestCase):
             'button': 'upvote_{}_question'.format(q.id)
         }
         response = self.client.post('/vote/', data=values)
-        self.assertEqual(response.json(), {'id':'score_{}_question'.format(q.id), 'new_score': 1})
-
-
+        self.assertEqual(response.json(), {
+                         'id': 'score_{}_question'.format(q.id), 'new_score': 1})
 
     def test_vote_answer(self):
         user = User.objects.get(pk=1)
@@ -242,27 +254,34 @@ class ViewTest(TestCase):
         a = Answers.objects.get(question=q)
         self._login()
 
-        #exhaustive testing for coverage
         values = {
             'button': 'downvote_{}_answer'.format(a.id)
         }
-        response = self.client.post('/vote/', data=values) #downvote
-        self.assertEqual(response.json(), {'id':'score_{}_answer'.format(a.id), 'new_score': -1})
-        response = self.client.post('/vote/', data=values) #cancel downvote
-        self.assertEqual(response.json(), {'id': 'score_{}_answer'.format(a.id), 'new_score': 0})
-        values['button']= 'upvote_{}_answer'.format(a.id)
-        response = self.client.post('/vote/', data=values) #upvote
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {'id': 'score_{}_answer'.format(a.id), 'new_score': +1})
-        response = self.client.post('/vote/', data=values) #cancel upvote
-        self.assertEqual(response.json(), {'id': 'score_{}_answer'.format(a.id), 'new_score': 0})
-        self.client.post('/vote/', data=values) #back to +1
-        values['button'] = 'downvote_{}_answer'.format(a.id)
-        response = self.client.post('/vote/', data=values) #override upvote with downvote
-        self.assertEqual(response.json(), {'id': 'score_{}_answer'.format(a.id), 'new_score': -1})
+        response = self.client.post('/vote/', data=values)  # downvote
+        self.assertEqual(response.json(), {
+                         'id': 'score_{}_answer'.format(a.id), 'new_score': -1})
+        response = self.client.post('/vote/', data=values)  # cancel downvote
+        self.assertEqual(response.json(), {
+                         'id': 'score_{}_answer'.format(a.id), 'new_score': 0})
         values['button'] = 'upvote_{}_answer'.format(a.id)
-        response = self.client.post('/vote/', data=values) #override downvote with upvote
-        self.assertEqual(response.json(), {'id': 'score_{}_answer'.format(a.id), 'new_score': +1})
+        response = self.client.post('/vote/', data=values)  # upvote
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {
+                         'id': 'score_{}_answer'.format(a.id), 'new_score': +1})
+        response = self.client.post('/vote/', data=values)  # cancel upvote
+        self.assertEqual(response.json(), {
+                         'id': 'score_{}_answer'.format(a.id), 'new_score': 0})
+        self.client.post('/vote/', data=values)  # back to +1
+        values['button'] = 'downvote_{}_answer'.format(a.id)
+        # override upvote with downvote
+        response = self.client.post('/vote/', data=values)
+        self.assertEqual(response.json(), {
+                         'id': 'score_{}_answer'.format(a.id), 'new_score': -1})
+        values['button'] = 'upvote_{}_answer'.format(a.id)
+        # override downvote with upvote
+        response = self.client.post('/vote/', data=values)
+        self.assertEqual(response.json(), {
+                         'id': 'score_{}_answer'.format(a.id), 'new_score': +1})
 
     def test_vote_comment(self):
         user = User.objects.get(pk=1)
@@ -273,7 +292,8 @@ class ViewTest(TestCase):
             'button': 'upvote_{}_comment'.format(c.id)
         }
         response = self.client.post('/vote/', data=values)
-        self.assertEqual(response.json(), {'id':'score_{}_comment'.format(q.id), 'new_score': 1})
+        self.assertEqual(response.json(), {
+                         'id': 'score_{}_comment'.format(q.id), 'new_score': 1})
 
     def test_question_comment(self):
         user = User.objects.get(pk=1)
@@ -287,7 +307,6 @@ class ViewTest(TestCase):
         response = self.client.post('/questions/{}/'.format(q.id), data=values)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, values['content'])
-
 
     def test_vote_no_ajax(self):
         self._login()
@@ -304,20 +323,25 @@ class ViewTest(TestCase):
             'content': 'New content displayed! {}'.format(hash(q)),
             'title': 'A new title! {}'.format(hash(q))
         }
-        response = self.client.post('/questions/{}/edit/'.format(q.id), data=values)
+        response = self.client.post(
+            '/questions/{}/edit/'.format(q.id), data=values)
         self.assertRedirects(response, '/questions/{}/'.format(q.id))
-        self.assertEqual(Questions.objects.get(pk=q.id).content, values['content'])
+        self.assertEqual(Questions.objects.get(
+            pk=q.id).content, values['content'])
         self.assertEqual(Questions.objects.get(pk=q.id).title, values['title'])
 
     def test_edit_profile_forbidden(self):
-        other_user = User.objects.create_user(username='other_user', password='wat')
+        other_user = User.objects.create_user(
+            username='other_user', password='wat')
         self._login()
         q = _populate_db(other_user, 1, 1)
         response = self.client.get('/questions/{}/edit/'.format(q.id))
-        self.assertEqual(response.status_code, 403) # Forbidden since other_user owns q
+        # Forbidden since other_user owns q
+        self.assertEqual(response.status_code, 403)
 
     def test_delete_post(self):
-        other_user = User.objects.create_user(username='other_user', password='wat')
+        other_user = User.objects.create_user(
+            username='other_user', password='wat')
         self._login()
         q = _populate_db(other_user, 1, 1)
         response = self.client.get('/questions/{}/delete/'.format(q.id))
@@ -326,14 +350,13 @@ class ViewTest(TestCase):
         q = _populate_db(User.objects.get(pk=1), 1, 1)
         response = self.client.get('/questions/{}/delete/'.format(q.id))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(Questions.objects.count(),0)
-        self.assertEqual(Comments.objects.count(),0)
-        self.assertEqual(Answers.objects.count(),0)
+        self.assertEqual(Questions.objects.count(), 0)
+        self.assertEqual(Comments.objects.count(), 0)
+        self.assertEqual(Answers.objects.count(), 0)
 
 
 class QuestionDisplayViewTest(TestCase):
     """This class contains test cases for the QuestionDisplayView"""
-
     def setUp(self):
         User.objects.create_user(**credentials)
 
@@ -345,25 +368,31 @@ class QuestionDisplayViewTest(TestCase):
         questions = []
         num_questions, num_answers, comments_per_answer = 50, 10, 3
         for i in range(num_questions):
-            questions.append(_populate_db(user, num_answers, comments_per_answer))
+            questions.append(_populate_db(
+                user, num_answers, comments_per_answer))
 
         response = self.client.get('/question_index/')
-        self.assertEqual(len(response.context['latest_current_page']), QuestionDisplayView.paginate_by)
+        self.assertEqual(
+            len(response.context['latest_current_page']), QuestionDisplayView.paginate_by)
         self.assertEqual(response.context['left'], [])
-        self.assertEqual(response.context['right'], range(2,4)) # [2, 3]
+        self.assertEqual(response.context['right'], range(2, 4))  # [2, 3]
         self.assertEqual(response.context['latest_current_page'].number, 1)
 
-        response = self.client.get('/question_index/', data={'question_page': 3})
-        self.assertEqual(len(response.context['latest_current_page']), QuestionDisplayView.paginate_by)
-        self.assertEqual(response.context['left'], range(1,3))
-        self.assertEqual(response.context['right'], range(4,6))
+        response = self.client.get(
+            '/question_index/', data={'question_page': 3})
+        self.assertEqual(
+            len(response.context['latest_current_page']), QuestionDisplayView.paginate_by)
+        self.assertEqual(response.context['left'], range(1, 3))
+        self.assertEqual(response.context['right'], range(4, 6))
         self.assertEqual(response.context['latest_current_page'].number, 3)
 
-        response = self.client.get('/question_index/', data={'question_page': 5})
+        response = self.client.get(
+            '/question_index/', data={'question_page': 5})
         self.assertEqual(response.status_code, 200)
+
+
 class QuestionsByTagViewTest(TestCase):
     """Test cases for QuestionByTagView"""
-
     def setUp(self):
         User.objects.create_user(**credentials)
 
@@ -374,7 +403,7 @@ class QuestionsByTagViewTest(TestCase):
 
         for i, q in enumerate(Questions.objects.all()):
             q.tag.add('test')
-            if i % 3 == 0: # 0, 3, 6, 9...
+            if i % 3 == 0:  # 0, 3, 6, 9...
                 q.tag.add('other')
             q.save()
 
