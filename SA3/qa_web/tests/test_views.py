@@ -145,7 +145,7 @@ class ViewTest(TestCase):
         self.assertEqual(len(matches), num_answers*comments_per_answer + num_answers + 1)
         self.assertNotContains(response, 'Be the first to answer this question!')
         self.assertFalse(response.context['bestAnswer'])
-    
+
     def test_answers_select_best(self):
         user = User.objects.get(pk=1)
         num_answers = 3
@@ -298,7 +298,7 @@ class ViewTest(TestCase):
         self.assertTemplateUsed(response, 'qa_web/edit.html')
         values = {
             'content': 'New content displayed! {}'.format(hash(q)),
-            'title': 'A new title! {}'.format(hash(q)) 
+            'title': 'A new title! {}'.format(hash(q))
         }
         response = self.client.post('/questions/{}/edit/'.format(q.id), data=values)
         self.assertRedirects(response, '/questions/{}/'.format(q.id))
@@ -311,6 +311,15 @@ class ViewTest(TestCase):
         q = _populate_db(other_user, 1, 1)
         response = self.client.get('/questions/{}/edit/'.format(q.id))
         self.assertEqual(response.status_code, 403) # Forbidden since other_user owns q
+
+    def test_delete_post(self):
+        self._login()
+        q = _populate_db(User.objects.get(pk=1), 1, 1)
+        response = self.client.get('/questions/{}/delete/'.format(q.id))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Questions.objects.count(),0)
+        self.assertTemplateNotUsed(response, 'qa_web/questions_display_page.html')
+
 
 
 class QuestionDisplayViewTest(TestCase):
@@ -345,10 +354,10 @@ class QuestionDisplayViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 class QuestionsByTagViewTest(TestCase):
     """Test cases for QuestionByTagView"""
-    
+
     def setUp(self):
         User.objects.create_user(**credentials)
-    
+
     def test_tagview(self):
         user = User.objects.get(pk=1)
         for i in range(10):
