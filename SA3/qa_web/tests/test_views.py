@@ -51,7 +51,7 @@ class ViewTest(TestCase):
 
     def test_login_protected(self):
         """Pages that require a logged in user should redirect to the login page"""
-        login_required_views = ['/questions/', '/editprofile/', '/questions/1/edit/']
+        login_required_views = ['/questions/', '/edit_profile/', '/questions/1/edit/']
         for url in login_required_views:
             response = self.client.get(url)
             self.assertRedirects(response, '/login/?next=' + url)
@@ -59,7 +59,7 @@ class ViewTest(TestCase):
 
     def test_editing_profile(self):
         self._login()
-        response = self.client.get('/editprofile/')
+        response = self.client.get('/edit_profile/')
         self.assertEqual(response.status_code, 200)
         values = {
             'prename': 'Test',
@@ -72,13 +72,13 @@ class ViewTest(TestCase):
             'major': 'Test',
             'city': 'Test'
         }
-        response = self.client.post('/editprofile/', data=values)
+        response = self.client.post('/edit_profile/', data=values)
         user = User.objects.get_by_natural_key(credentials['username'])
         self.assertRedirects(response, '/profile/{}/'.format(user.id))
         self.assertEqual(user.birthday, date(1960, 1, 1))
         self.assertEqual(user.email, values['email'])
         values['birthday'] = 'wrong format'
-        response = self.client.post('/editprofile/', data=values)
+        response = self.client.post('/edit_profile/', data=values)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Enter a valid date.")
 
@@ -335,7 +335,7 @@ class QuestionDisplayViewTest(TestCase):
 
     def test_pagination(self):
         user = User.objects.get(pk=1)
-        response = self.client.get('/QuestionIndex/')
+        response = self.client.get('/question_index/')
         self.assertEqual(response.status_code, 200)
 
         questions = []
@@ -343,19 +343,19 @@ class QuestionDisplayViewTest(TestCase):
         for i in range(num_questions):
             questions.append(_populate_db(user, num_answers, comments_per_answer))
 
-        response = self.client.get('/QuestionIndex/')
+        response = self.client.get('/question_index/')
         self.assertEqual(len(response.context['latest_current_page']), QuestionDisplayView.paginate_by)
         self.assertEqual(response.context['left'], [])
         self.assertEqual(response.context['right'], range(2,4)) # [2, 3]
         self.assertEqual(response.context['latest_current_page'].number, 1)
 
-        response = self.client.get('/QuestionIndex/', data={'question_page': 3})
+        response = self.client.get('/question_index/', data={'question_page': 3})
         self.assertEqual(len(response.context['latest_current_page']), QuestionDisplayView.paginate_by)
         self.assertEqual(response.context['left'], range(1,3))
         self.assertEqual(response.context['right'], range(4,6))
         self.assertEqual(response.context['latest_current_page'].number, 3)
 
-        response = self.client.get('/QuestionIndex/', data={'question_page': 5})
+        response = self.client.get('/question_index/', data={'question_page': 5})
         self.assertEqual(response.status_code, 200)
 class QuestionsByTagViewTest(TestCase):
     """Test cases for QuestionByTagView"""
