@@ -12,12 +12,10 @@ Since this project is built using django, all commands must go through the `mana
   - Tests: `python SA3/manage.py test SA3/qa_web`
   - Starting the server: `python SA3/manage.py runserver`
 
-
 ## Django config
   - Database: SQLite3
-  - Project module: SA3
   - App module: qa_web
-  - Settings found under `SA3/SA3/settings.py`
+  - Settings found under `SA3/qa_web/settings.py`
 
 ## Superuser credentials:
 

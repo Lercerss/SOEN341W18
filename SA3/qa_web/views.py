@@ -59,7 +59,7 @@ def display_profile(request, id_):
     user_questions = Questions.objects.filter(owner_id=id_)
     user_answers = Answers.objects.filter(owner_id=id_)
     user_votes = Vote.objects.filter(user_id=id_)
-    return render(request, 'qa_web/UserProfile.html', context={'displayed_user': displayed_user,
+    return render(request, 'qa_web/user_profile.html', context={'displayed_user': displayed_user,
                                                                'questions': user_questions,
                                                                'answers': user_answers,
                                                                'votes': user_votes})

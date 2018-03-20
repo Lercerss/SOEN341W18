@@ -167,15 +167,15 @@ class ViewTest(TestCase):
         }
         response = self.client.post('/questions/{}/'.format(q.id), data=values)
         self.assertEqual(response.status_code, 200)
-        self.assertNotContains(response, 'good_answer')
+        self.assertNotContains(response, 'good-answer')
         self._login()
         response = self.client.post('/questions/{}/'.format(q.id), data=values)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'good_answer')
+        self.assertContains(response, 'good-answer')
         response = self.client.post(
             '/questions/{}/'.format(q.id), data={'deselect': 'Deselect as Best Answer'})
         self.assertEqual(response.status_code, 200)
-        self.assertNotContains(response, 'good_answer')
+        self.assertNotContains(response, 'good-answer')
 
     def test_answers_add_answer(self):
         user = User.objects.get(pk=1)
