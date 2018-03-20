@@ -34,6 +34,10 @@ class CommentModel(TestCase):
         _, q, _ = obtain_sample_objects_as_tuple()
         self.assertEqual(str(q), q.title)
 
+    def test_get_answer_queryset(self):
+        _, q, a = obtain_sample_objects_as_tuple()
+        self.assertEqual(None, q.get_answer_queryset().first())
+
     def test_question_comment_instantiation(self):
 
         # testing comments for question only

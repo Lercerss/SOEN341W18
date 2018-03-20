@@ -6,4 +6,4 @@ __pycache__/
 *.pyc
 .coverage
 
-qa_web/whoosh_index/
+SA3/qa_web/whoosh_index/

@@ -11,6 +11,10 @@ This project uses Python 3.X. To install requirements simply `pip install -r req
 Since this project is built using django, all commands must go through the `manage.py` entrypoint.
   - Tests: `python SA3/manage.py test SA3/qa_web`
   - Starting the server: `python SA3/manage.py runserver`
+  - build search index: `python SA3/manage.py rebuild_index`
+  - update search index: `python SA3/manage.py update_index`
+
+User can enable search index automatically updated by setting HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor' in qa_web/settings.py. Currently search index is updated manually.  
 
 
 ## Django config
