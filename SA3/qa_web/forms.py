@@ -98,6 +98,3 @@ class UserProfile(forms.Form):
 class EditForm(forms.Form):
     content = forms.Textarea()
 
-class DeleteForm(forms.Form):
-    title = forms.CharField(),
-    content = forms.Textarea

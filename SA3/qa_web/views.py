@@ -2,7 +2,7 @@ from .models import Answers, Questions, User, Comments, Vote
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
-from .forms import LoginForm, QuestionsForm, AnswersForm, EditForm, UserProfile, DeleteForm
+from .forms import LoginForm, QuestionsForm, AnswersForm, EditForm, UserProfile
 from django.http import HttpResponseRedirect, Http404, JsonResponse, HttpResponseForbidden
 from django.contrib.auth import login, authenticate, get_user_model, logout
 from django.contrib.auth.forms import UserCreationForm
@@ -468,7 +468,6 @@ def delete(request, id_):
         return HttpResponseForbidden()
     q.delete()
     return HttpResponseRedirect('/QuestionIndex')
-    return render(request, 'qa_web/answerspage.html', context={'currentQ':q})
 
 
 
