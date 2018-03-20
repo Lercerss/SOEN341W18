@@ -2,6 +2,14 @@
 For more information: https://docs.djangoproject.com/en/2.0/topics/forms/
 """
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from qa_web.models import User
+
+
+class CustomUserCreationForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = UserCreationForm.Meta.fields
 
 
 class LoginForm(forms.Form):
