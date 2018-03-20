@@ -53,7 +53,7 @@
         <a id='downvote_{{ currentQuestion.id }}_question'><button class="btn btn-primary btn-xl rounded-pill mt-5">Downvote</button></a>
         <a href="./edit" class="btn btn-primary btn-xl rounded-pill mt-5">Edit</a>
         {% for comment in q_comments %}
-        <p>{{ comment.content }} (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
+        <p><span class="marked">{{ comment.content }}</span> (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
              <a id='upvote_{{ comment.id }}_comment'><button>Upvote</button></a>
              <span id='score_{{ comment.id }}_comment'>{{ comment.score }}</span>
              <a id='downvote_{{ comment.id }}_comment'><button>Downvote</button></a>
