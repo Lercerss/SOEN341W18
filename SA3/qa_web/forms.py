@@ -1,9 +1,11 @@
-__author__ = 'jet'
-
+"""Forms used in the qa_web app.
+For more information: https://docs.djangoproject.com/en/2.0/topics/forms/
+"""
 from django import forms
 
 
 class LoginForm(forms.Form):
+    """Form used to login a user to the website"""
     username = forms.CharField(
         required=True,
         label='username',
@@ -20,10 +22,11 @@ class LoginForm(forms.Form):
         if not self.is_valid():
             raise forms.ValidationError("username and password are required")
         else:
-            cleaned_data = super(LoginForm, self).clean()
+            self.cleaned_data = super(LoginForm, self).clean()
 
 
 class QuestionsForm(forms.Form):
+    """Form used to create a question"""
     title = forms.CharField(
         required=True,
         label='title',
@@ -34,10 +37,12 @@ class QuestionsForm(forms.Form):
 
 
 class AnswersForm(forms.Form):
+    """Form used to add an answer to a question"""
     content = forms.Textarea()
 
+
 class UserProfile(forms.Form):
-    # a form is created to intake the user's personal information
+    """Form used to modify user profile information"""
     prename = forms.CharField(
         required=True,
         label='Prename',
@@ -80,21 +85,22 @@ class UserProfile(forms.Form):
     school = forms.CharField(
         required=True,
         label="School",
-        error_messages = {'required': 'Please insert the name of your school'},
+        error_messages={'required': 'Please insert the name of your school'},
     )
 
     major = forms.CharField(
         required=True,
         label="Major",
-        error_messages = {'required': 'Please insert your main subject of studies. Ex: Software Engineering'},
+        error_messages={'required': 'Please insert your main subject of studies. Ex: Software Engineering'},
     )
 
     city = forms.CharField(
         required=True,
         label="city",
-        error_messages = {'required': 'Please insert the name of your current city'},
+        error_messages={'required': 'Please insert the name of your current city'},
     )
 
-class EditForm(forms.Form):
-    content = forms.Textarea()
 
+class EditForm(forms.Form):
+    """Form used to edit a question"""
+    content = forms.Textarea()
