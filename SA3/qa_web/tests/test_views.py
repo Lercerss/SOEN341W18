@@ -313,13 +313,17 @@ class ViewTest(TestCase):
         self.assertEqual(response.status_code, 403) # Forbidden since other_user owns q
 
     def test_delete_post(self):
+        other_user = User.objects.create_user(username='other_user', password='wat')
         self._login()
+        q = _populate_db(other_user, 1, 1)
+        response = self.client.get('/questions/{}/delete/'.format(q.id))
+        self.assertEqual(response.status_code, 403)
+        q.delete()
         q = _populate_db(User.objects.get(pk=1), 1, 1)
         response = self.client.get('/questions/{}/delete/'.format(q.id))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Questions.objects.count(),0)
         self.assertTemplateNotUsed(response, 'qa_web/questions_display_page.html')
-
 
 
 class QuestionDisplayViewTest(TestCase):
