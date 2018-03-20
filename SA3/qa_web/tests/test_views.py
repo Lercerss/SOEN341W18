@@ -323,7 +323,8 @@ class ViewTest(TestCase):
         response = self.client.get('/questions/{}/delete/'.format(q.id))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Questions.objects.count(),0)
-        self.assertTemplateNotUsed(response, 'qa_web/questions_display_page.html')
+        self.assertEqual(Comments.objects.count(),0)
+        self.assertEqual(Answers.objects.count(),0)
 
 
 class QuestionDisplayViewTest(TestCase):
