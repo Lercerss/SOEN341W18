@@ -5,4 +5,4 @@ omit =
     */migrations/*
     SA3/qa_web/tests/*
     SA3/qa_web/wsgi.py
-	SA3/qa_web/search_indexes.py
+    SA3/qa_web/search_indexes.py

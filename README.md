@@ -14,7 +14,7 @@ Since this project is built using django, all commands must go through the `mana
   - build search index: `python SA3/manage.py rebuild_index`
   - update search index: `python SA3/manage.py update_index`
 
-User can enable search index automatically updated by setting HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor' in qa_web/settings.py. Currently search index is updated manually.  
+User can enable search index automatically updated by setting `HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'` in `qa_web/settings.py`. Currently search index is updated manually.  
 
 
 ## Django config
