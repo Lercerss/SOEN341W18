@@ -9,7 +9,7 @@ from qa_web.models import Questions
 # has an associated SearchIndex.
 
 class QuestionsIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
+    text = indexes.CharField(document=True, use_template=True, template_name='search/indexes/qa_web/questions_text.txt')
     owner = indexes.CharField(model_attr='owner')
     creation_date = indexes.DateTimeField(model_attr='creation_date')
 
