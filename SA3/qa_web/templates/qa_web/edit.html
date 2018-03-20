@@ -12,14 +12,17 @@
     {% include "qa_web/editor_style.html" %}
 </head>
 <body>
-    <a href="../"><button>Discard Changes</button></a>
+
+    <a href="/questions/{% if isAnswer %}{{ Post.question.id }}{% else %}{{ Post.id }}{% endif %}"><button>Discard Changes</button></a>
     <form method="post">
       {% csrf_token %}
-      <input id="title" name = "title" type="text" placeholder="question title" value="{{ currentQ.title }}" required/>
-      <div id="wmd-button-bar"></div>
-      <textarea id="wmd-input" name="content" class="wmd-input" placeholder="type your description here" required>{{ currentQ.content}}</textarea>
-      <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
-      <input type="submit" href="../" value="Submit"/>
+        {% if not isAnswer %}
+          <input id="title" name = "title" type="text" placeholder="question title" value="{{ Post.title }}" required/>
+        {% endif %}
+          <div id="wmd-button-bar"></div>
+          <textarea id="wmd-input" name="content" class="wmd-input" placeholder="type your description here" required>{{ Post.content}}</textarea>
+          <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+          <input type="submit" href="../" value="Submit"/>
     </form>
     <script>
       var converter = Markdown.getSanitizingConverter();
