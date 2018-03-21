@@ -27,11 +27,14 @@
     <a href="/"><button>Back to Index</button></a>
     <form method="post">
         {% csrf_token %}
-        <input id="title" name = "title" type="text" placeholder="question title" required/>
+        <input id="title" name = "title" type="text" 
+            placeholder="question title" required/>
         <div id="wmd-button-bar"></div>
-        <textarea id="wmd-input" name="content" class="wmd-input" placeholder="type your description here" required></textarea>
+        <textarea id="wmd-input" name="content" class="wmd-input" 
+            placeholder="type your description here" required></textarea>
         <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
-        tags:<input name = "tag" type="text" placeholder="Semi-colon-separated tags."/>
+        Tags:<input name = "tag" type="text" 
+            placeholder="Semi-colon-separated tags."/>
         <div></div>
         <input type="submit" value="Submit"/>
     </form>

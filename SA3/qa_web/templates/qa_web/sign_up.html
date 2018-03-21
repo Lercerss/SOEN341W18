@@ -23,7 +23,9 @@
                     {{ field.label_tag }}<br>
                     {{ field }}<br>
                     {% if field.help_text %}<br>
-                        <small style="color: grey">{{ field.help_text|safe }}</small>
+                        <small style="color: grey">
+                            {{ field.help_text|safe }}
+                        </small>
                     {% endif %}
                     {% for error in field.errors %}
                         <p style="color: red">{{ error }}</p>

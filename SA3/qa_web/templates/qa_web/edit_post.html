@@ -4,14 +4,20 @@
     {% include "qa_web/includes/editor_style.html" %}
 {% endblock %}
 {% block content %}
-    <a href="/questions/{% if is_answer %}{{ post.question.id }}{% else %}{{ post.id }}{% endif %}"><button>Discard Changes</button></a>
+    <a href="/questions/{% if is_answer %}{{ post.question.id }}{% else %}{{ post.id }}{% endif %}">
+        <button>Discard Changes</button>
+    </a>
     <form method="post">
         {% csrf_token %}
         {% if not is_answer %}
-            <input id="title" name = "title" type="text" placeholder="question title" value="{{ post.title }}" required/>
+            <input id="title" name = "title" type="text" 
+                placeholder="question title" value="{{ post.title }}" required/>
         {% endif %}
         <div id="wmd-button-bar"></div>
-        <textarea id="wmd-input" name="content" class="wmd-input" placeholder="type your description here" required>{{ post.content }}</textarea>
+        <textarea id="wmd-input" name="content" class="wmd-input" 
+            placeholder="type your description here" required>
+                {{ post.content }}
+        </textarea>
         <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
         <input type="submit" value="Submit"/>
     </form>

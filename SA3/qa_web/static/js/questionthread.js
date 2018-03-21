@@ -1,7 +1,7 @@
 /*JAVASCRIPT for QA_Web*/
 
-/*Function that populates all the necessary divs with markdown, using markdown-it library
-This is only proper to answerspage.html for now
+/*Function that populates all the necessary divs with markdown, 
+using markdown-it library. This is only proper to answerspage.html for now
 */
 function prepareMarkdown() {
     var md = window.markdownit();
