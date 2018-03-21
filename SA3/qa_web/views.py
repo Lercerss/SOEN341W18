@@ -489,15 +489,12 @@ class QuestionsByTagView(ListView):
 
         context['total_question_num'] = Question.objects.count()
         context['total_answer_num'] = Answer.objects.count()
-<<<<<<< HEAD
-=======
         # Pass tags to html.
         question_contenttype = ContentType.objects.get_for_model(Question)
         items = TaggedItem.objects.filter(content_type=question_contenttype)
         context['tags'] = Tag.objects.filter(
             taggit_taggeditem_items__in=items).exclude(
                 slug__exact='').order_by('-id').distinct()
->>>>>>> 0f14d0b... Fixed line length across whole project #84
         return context
 
 
