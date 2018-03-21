@@ -26,7 +26,11 @@
     <div class="row">
 <div class="col-sm-4">
     <div class="p-5">
-             <img class="img-fluid rounded-circle" src="{% static 'img/default.jpg' %}" alt="">
+        {% if displayed_user.image %}
+            <img class="img-fluid rounded-circle" src="{{ displayed_user.image.url }} " alt="" width="250" height = "250">
+        {% else %}
+            <img class="img-fluid rounded-circle" src="{% static 'img/default.jpg' %}" alt="" width="250" height = "250">
+        {% endif %}
           </div>
         {% if user.id == displayed_user.id %}
             <p class="info">First Name: {{ displayed_user.first_name }}</p>

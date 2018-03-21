@@ -10,6 +10,7 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 
+from .forms import UploadProfilePicForm
 from django.db.models import Count, F
 from taggit.models import Tag, TaggedItem
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -36,7 +37,7 @@ def edit_profile(request):
         # return render_to_response('qa_web/UserProfile.html', RequestContext(request, {'form': form, }))
         return render(request,'qa_web/EditUserProfile.html', context={'form': form})
     else:
-        form = UserProfile(request.POST)
+        form = UserProfile(request.POST, request.FILES)
         # validating the form occurs below and then saving the results entered by the user
         if form.is_valid():
             user = request.user
@@ -50,6 +51,7 @@ def edit_profile(request):
             user.school = request.POST['school']
             user.major = request.POST['major']
             user.city = request.POST['city']
+            user.image = form.cleaned_data.get('image')
 
             user.save()
 

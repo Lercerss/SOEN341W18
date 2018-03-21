@@ -18,7 +18,7 @@ class User(AbstractUser):
     school = models.TextField(max_length=100, null =True)
     major = models.CharField(max_length=50, null =True)
     city = models.TextField(max_length=100, null=True)
-
+    image = models.ImageField(upload_to='profile_img', blank=True)
     """
       The below code has a purpose that a user profile will be created when
       a user is created

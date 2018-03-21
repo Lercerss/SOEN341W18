@@ -95,6 +95,15 @@ class UserProfile(forms.Form):
         error_messages = {'required': 'Please insert the name of your current city'},
     )
 
+    image = forms.ImageField(
+        required=False,
+        label="profile_picture"
+    )
+
 class EditForm(forms.Form):
     content = forms.Textarea()
 
+
+class UploadProfilePicForm(forms.Form):
+    title = forms.CharField(max_length=50)
+    file = forms.ImageField()

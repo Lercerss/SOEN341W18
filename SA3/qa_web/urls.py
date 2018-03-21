@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -17,4 +19,4 @@ urlpatterns = [
     url(r'^tag/(?P<tag>[-\w]+)/$', views.QuestionsByTagView.as_view(), name='question_by_tag'),
     path('editprofile/', views.edit_profile, name='UserProfile'),
     path('profile/<int:id_>/', views.display_profile, name='UserProfile'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
