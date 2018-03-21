@@ -1,9 +1,10 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf.urls import url
 from . import views
 
 urlpatterns = [
+    path(r'search/', include('haystack.urls')),
     path('admin/', admin.site.urls),
     path(r'login/', views.login, name='login'),
     path(r'logout/', views.logout_view, name='logout'),
@@ -17,4 +18,6 @@ urlpatterns = [
     url(r'^tag/(?P<tag>[-\w]+)/$', views.QuestionsByTagView.as_view(), name='question_by_tag'),
     path('editprofile/', views.edit_profile, name='UserProfile'),
     path('profile/<int:id_>/', views.display_profile, name='UserProfile'),
+    path('questions/<int:id_>/delete/', views.delete, name='delete'),
+    path('questions/<int:id_>/editAnswers/<int:a_id>/', views.edit_answers, name='editAnswers'),
 ]

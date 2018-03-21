@@ -56,6 +56,9 @@ class Questions(Post):
 
     def __str__(self):
         return self.title
+
+    def get_answer_queryset(self):
+        return Answers.objects.filter(question=self)
     
 class Answers(Post):
     """
