@@ -41,8 +41,12 @@ button:hover, a:hover {
     opacity: 0.7;
 }
 
-#container {
-    width: 100%;
+a.voted button{
+    background-color: #bd0760;
+}
+
+#container{
+    width:100%;
 }
 
 #left {
