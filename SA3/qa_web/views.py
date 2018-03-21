@@ -457,7 +457,7 @@ def edit(request, id_):
         q.owner = request.user
         q.save()
         return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
-    return render(request,'qa_web/edit.html', context={'currentQ':q})
+    return render(request,'qa_web/edit.html', context={'post':q, 'isAnswer': False})
 
 
 #delete posts
@@ -468,6 +468,23 @@ def delete(request, id_):
         return HttpResponseForbidden()
     q.delete()
     return HttpResponseRedirect('/QuestionIndex')
+
+
+# edit Answers
+@login_required(login_url='/login/')
+def edit_answers(request, id_, a_id):
+
+    a = get_object_or_404(Answers, pk=a_id)
+    if a.owner != request.user:
+        return HttpResponseForbidden()
+
+    form = EditForm(request.POST)
+    if request.POST and form.is_valid():
+        a.content = request.POST['content']
+        a.owner = request.user
+        a.save()
+        return HttpResponseRedirect('/questions/{id}/'.format(id=id_))
+    return render(request,'qa_web/edit.html', context={'post':a, 'is_answer': True})
 
 
 
