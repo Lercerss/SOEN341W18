@@ -2,3 +2,4 @@ django==2.0
 django-taggit==0.22.2
 codecov==2.0.15
 coverage==4.5.1
+Pillow==5.0.0
