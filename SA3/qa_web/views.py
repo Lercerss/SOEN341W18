@@ -24,7 +24,7 @@ def edit_profile(request):
     """
     if request.method == 'GET':
         form = UserProfile()
-        return render(request, 'qa_web/EditUserProfile.html', context={'form': form})
+        return render(request, 'qa_web/edit_user_profile.html', context={'form': form})
     else:
         form = UserProfile(request.POST)
         if form.is_valid():
@@ -44,7 +44,7 @@ def edit_profile(request):
 
             return HttpResponseRedirect('/profile/{}/'.format(user.id))
         else:
-            return render(request, 'qa_web/EditUserProfile.html', context={'form': form})
+            return render(request, 'qa_web/edit_user_profile.html', context={'form': form})
 
 
 def display_profile(request, id_):
@@ -133,7 +133,7 @@ def questions(request):
     :return: Rendered template displaying the posting question form on a GET, else redirects to the question thread
     """
     if request.method == 'GET':
-        return render(request, 'qa_web/questionspage.html', context={})
+        return render(request, 'qa_web/posting_question.html', context={})
     else:
         form = QuestionsForm(request.POST)
         if form.is_valid():
@@ -151,7 +151,7 @@ def questions(request):
 
             return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
         else:
-            return render(request, 'qa_web/questionspage.html', context={})
+            return render(request, 'qa_web/posting_question.html', context={})
 
 
 def answers(request, id_):
@@ -226,7 +226,7 @@ def answers(request, id_):
 
     if len(q_best_answer) > 0:
         q_best_answer = q_best_answer.last()
-    return render(request, 'qa_web/answerspage.html',
+    return render(request, 'qa_web/question_thread.html',
                   {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer, 'q_comments': q_comments,
                    'a_comments': a_comments, 'initial_select_value': initial_select_value})
 
@@ -292,7 +292,7 @@ class QuestionDisplayView(ListView):
     model = Questions
     paginate_by = 10
     context_object_name = 'questions'
-    template_name = 'qa_web/question_display_page.html'
+    template_name = 'qa_web/question_index.html'
     ordering = '-creation_date'
 
     def get_context_data(self, *args, **kwargs):
@@ -420,7 +420,7 @@ class QuestionsByTagView(ListView):
     model = Questions
     paginate_by = 10
     context_object_name = 'questions'
-    template_name = 'qa_web/question_display_page.html'
+    template_name = 'qa_web/question_index.html'
 
     def get_queryset(self, **kwargs):
         return Questions.objects.order_by('-creation_date').filter(tag__slug=self.kwargs['tag']) \
@@ -462,7 +462,7 @@ def edit(request, id_):
         q.owner = request.user
         q.save()
         return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
-    return render(request, 'qa_web/edit.html', context={'currentQ': q})
+    return render(request, 'qa_web/edit_question.html', context={'currentQ': q})
 
 
 @login_required(login_url='/login/')

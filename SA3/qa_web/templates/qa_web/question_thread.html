@@ -4,40 +4,14 @@
 {% block scripts %}
     <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
     <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
-    <script src="{% static 'js/Markdown.Sanitizer.min.js'%}"></script>
+    <script src="{% static 'js/Markdown.Sanitizer.min.js' %}"></script>
     <script src="{% static 'js/questionthread.js' %}"></script>
 {% endblock %}
 
 {% block styles %}
     <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
-    <style>
-      .wmd-button > span {
-        background-image: url("{% static 'img/wmd-buttons.svg' %}");
-        background-repeat: no-repeat;
-        background-position: 0px 0px;
-        width: 20px;
-        height: 20px;
-        display: inline-block;
-      }
-      #wmd-input {
-        padding: 10px;
-        background-color: white;
-        max-width: 660px;
-        min-width: 660px;
-      }
-      .wmd-spacer {
-        background-color: white;
-        width: 0;
-      }
-      #wmd-button-bar {
-        height: 44px;
-        padding: 0 12px;
-        width: 660px;
-        border: 1px solid #c8ccd0;
-        box-sizing: border-box;
-      }
-    </style>
+    {% include "qa_web/includes/editor_style.html" %}
 {% endblock %}
 
 <main>
@@ -82,7 +56,7 @@
             {% if user == currentQuestion.owner %}
                 <h3 class="good-answer">You have selected this as the best answer!</h3>
             {% else %}
-                <h3 class="good-answer">{{currentQuestion.owner}} has selected this as the best answer!</h3>
+                <h3 class="good-answer">{{ currentQuestion.owner }} has selected this as the best answer!</h3>
             {% endif %}
             <p><span class="marked" id="content_answer_{{ bestAnswer.id }}">{{ bestAnswer.content }}</span></p>
             <!--Allow one to deselect the best answer if user is logged in and is the user who asked the question-->
@@ -116,7 +90,7 @@
     <form id="sort_by_form" method="POST">
       {% csrf_token %}
       Sort by:
-      <select name="sort_by_form_select" id="selectSortBy" selected="{{initial_select_value}}"onchange="this.form.submit()">
+      <select name="sort_by_form_select" id="selectSortBy" selected="{{ initial_select_value }}"onchange="this.form.submit()">
           {% if initial_select_value == "highestScore" %}
             <option value="highestScore" selected="selected">Highest Score</option>
           {% else %}

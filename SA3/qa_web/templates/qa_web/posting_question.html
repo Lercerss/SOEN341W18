@@ -12,40 +12,14 @@
 {% endblock %}
 {% block styles %}
     <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
-    <style>
-        .wmd-button > span {
-            background-image: url('{% static "img/wmd-buttons.svg" %}');
-            background-repeat: no-repeat;
-            background-position: 0px 0px;
-            width: 20px;
-            height: 20px;
-            display: inline-block;
-        }
-        #wmd-input {
-            padding: 10px;
-            background-color: white;
-            max-width: 660px;
-            min-width: 660px;
-        }
-        .wmd-spacer {
-            background-color: white;
-            width: 0;
-        }
-        #wmd-button-bar {
-            height: 44px;
-            padding: 0 12px;
-            width: 660px;
-            border: 1px solid #c8ccd0;
-            box-sizing: border-box;
-        }
-    </style>
+    {% include "qa_web/includes/editor_style.html" %}
 {% endblock %}
 {% block header %}
     <div class="masthead-content">
         <div class="container">
             <h1 class="masthead-heading mb-0">Got Questions</h1>
             <h1 class="masthead-heading mb-0"> ? ! </h1>
-            <BR><BR><BR>
+            <br><br><br>
         </div>
     </div>
 {% endblock %}

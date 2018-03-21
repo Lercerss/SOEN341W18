@@ -125,7 +125,7 @@ class ViewTest(TestCase):
         self.assertEqual(response.url, "/login/?next=/questions/")
         self._login()
         response = self.client.get('/questions/')
-        self.assertTemplateUsed(response, 'qa_web/questionspage.html')
+        self.assertTemplateUsed(response, 'qa_web/posting_question.html')
         response = self.client.post('/questions/', data=form_data)
         last_question = Questions.objects.last()
         post_questions_count = Questions.objects.count()
@@ -138,7 +138,7 @@ class ViewTest(TestCase):
 
         form_data = {'wrong': 'form'}
         response = self.client.post('/questions/', data=form_data)
-        self.assertTemplateUsed(response, 'qa_web/questionspage.html')
+        self.assertTemplateUsed(response, 'qa_web/posting_question.html')
 
     def test_answers_simple(self):
         user = User.objects.get(pk=1)
@@ -318,7 +318,7 @@ class ViewTest(TestCase):
         q = _populate_db(User.objects.get(pk=1), 1, 1)
         response = self.client.get('/questions/{}/edit/'.format(q.id))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'qa_web/edit.html')
+        self.assertTemplateUsed(response, 'qa_web/edit_question.html')
         values = {
             'content': 'New content displayed! {}'.format(hash(q)),
             'title': 'A new title! {}'.format(hash(q))

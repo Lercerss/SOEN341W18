@@ -1,0 +1,30 @@
+{% extends "qa_web/base.html" %}
+{% load static %}
+{% block header %}
+    <div class="masthead-content">
+        <div class="container">
+            <h1 class="masthead-heading mb-0">Edit Your Profile</h1>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <p>
+                {{ field.label_tag }}<br>
+                {{ field }}
+                {% if field.help_text %}
+                    <small style="color: grey">{{ field.help_text|safe }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                    <p style="color: red">{{ error }}</p>
+                {% endfor %}
+            </p>
+        {% endfor %}
+        <input type="submit" value="Submit">
+    </form>
+    <br><br>
+    <p>Clicking Submit will save and update your profile page.</p>
+    <p>You will then be redirected to your profile page.</p>
+{% endblock %}

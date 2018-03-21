@@ -3,8 +3,8 @@
 {% block scripts %}
     <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
     <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
-    <script src="{% static 'js/Markdown.Sanitizer.min.js'%}"></script>
-    <script src="{% static 'js/questionthread.js'%}"></script>
+    <script src="{% static 'js/Markdown.Sanitizer.min.js' %}"></script>
+    <script src="{% static 'js/questionthread.js' %}"></script>
 {% endblock %}
 {% block styles %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}"/>
@@ -31,7 +31,7 @@
                 {% endif %}
                 <p class="info">Age: {{ displayed_user.age }}</p>
                 <p class="info">Birthday: {{ displayed_user.birthday }}</p>
-                <p class="info">Motherland: {{ displayed_user.motherland}}</p>
+                <p class="info">Motherland: {{ displayed_user.motherland }}</p>
                 <p class="info">School: {{ displayed_user.school }}</p>
                 <p class="info">Major: {{ displayed_user.major }}</p>
                 <p class="info">City: {{ displayed_user.city }}</p>
