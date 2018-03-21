@@ -1,13 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit User Profile</title>
-    </br>
-    <h1> Edit User Profile</h1>
+{% extends "qa_web/base.html" %}
+{% load staticfiles %}
 
-</head>
-<body>
+{% block scripts %}
+<script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
+<script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
+<script src="{% static 'js/Markdown.Sanitizer.min.js'%}"></script>
+<script src="{% static 'js/base.js'%}"></script>
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/base.css' %}"/>
+{% endblock %}
+
+{% block header %}
+<div class="masthead-content">
+    <div class="container">
+        <h1 class="masthead-heading mb-0">{{ user }}</h1>
+        <BR><BR><BR>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
 
 
     <form method="post">
@@ -33,5 +48,5 @@
 
 <p>Clicking Submit will save and update your profile page.</p>
 <p> You will now be redirected to your profile page.</p>
-</body>
-</html>
+
+{% endblock content %}
