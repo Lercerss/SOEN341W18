@@ -25,9 +25,15 @@
                     <img class="img-fluid rounded-circle" src="{% static 'img/default.jpg' %}" alt="">
                 </div>
                 {% if user.id == displayed_user.id %}
-                    <p class="info">First Name: {{ displayed_user.first_name }}</p>
-                    <p class="info">Last Name: {{ displayed_user.last_name }}</p>
-                    <p class="info">Email: {{ displayed_user.email }}</p>
+                    <p class="info">
+                        First Name: {{ displayed_user.first_name }}
+                    </p>
+                    <p class="info">
+                        Last Name: {{ displayed_user.last_name }}
+                    </p>
+                    <p class="info">
+                        Email: {{ displayed_user.email }}
+                    </p>
                 {% endif %}
                 <p class="info">Age: {{ displayed_user.age }}</p>
                 <p class="info">Birthday: {{ displayed_user.birthday }}</p>
@@ -36,7 +42,9 @@
                 <p class="info">Major: {{ displayed_user.major }}</p>
                 <p class="info">City: {{ displayed_user.city }}</p>
                 <a href="/"><button>Click for Home Page</button></a>
-                <a href="{% url 'edit_user_profile' %}"><button>EDIT MY PROFILE</button></a>
+                <a href="{% url 'edit_user_profile' %}">
+                    <button>EDIT MY PROFILE</button>
+                </a>
             </div>
             <div class="col-sm-4">
                 <h1>Recent Posts</h1>

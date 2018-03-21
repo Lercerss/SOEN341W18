@@ -43,7 +43,8 @@ class CommentModel(TestCase):
     def test_question_comment_instantiation(self):
         user1, q, _ = obtain_sample_objects_as_tuple()
 
-        c = Comment.objects.create(content="This is my comment", owner=user1, question=q)
+        c = Comment.objects.create(content="This is my comment",
+                                   owner=user1, question=q)
         c.content = "This is my updated comment"
         c.save()
 
@@ -56,7 +57,8 @@ class CommentModel(TestCase):
 
     def test_question_answer_instantiation(self):
         user1, _, a = obtain_sample_objects_as_tuple()
-        c = Comment.objects.create(content="This is my comment to your answer", owner=user1, answer=a)
+        c = Comment.objects.create(
+            content="This is my comment to your answer", owner=user1, answer=a)
         c.content = "This is my updated comment"
         c.save()
 

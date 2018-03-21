@@ -38,13 +38,24 @@
                 {% if latest_current_page %}
                     {% for question in latest_current_page %}
                         <div class="row">
-                        <div class="col-sm-1 ans"><small><div class="ques">{{ question.num_answers }}</div>Answers</small></div>
-                        <div class="col-sm-1 ans"><small><div class="ques">{{ question.visits }}</div>Views</small></div>
+                        <div class="col-sm-1 ans"><small>
+                            <div class="ques">
+                                {{ question.num_answers }}
+                            </div>Answers</small>
+                        </div>
+                        <div class="col-sm-1 ans"><small>
+                            <div class="ques">
+                                {{ question.visits }}
+                            </div>Views</small>
+                        </div>
                         <p>
                             {# if answered more than 3 times means this quetion is hot. #}
-                            <h3><a href="{% url 'answers' question.id %}">{{ question.title }}</a></h3>
+                            <h3><a href="{% url 'answers' question.id %}">
+                                {{ question.title }}
+                            </a></h3>
                             {% if question.num_answers > 3 %}
-                            <span style="padding:0.85%" class="fas fa-fire" aria-hidden="true"></span>{% endif %}
+                                <span style="padding:0.85%" class="fas fa-fire" aria-hidden="true"></span>
+                            {% endif %}
                             <br>
                             <div class="container" align="right">
                                 {% if question.num_tag != 0 %}
@@ -52,7 +63,9 @@
                                 {% endif %}
                                 {% for tag in question.tag.all %}
                                 {% if tag.slug != '' %}
-                                    <a href="{% url 'question_by_tag' tag.slug %}"><tag>{{ tag.slug }}</tag></a>
+                                    <a href="{% url 'question_by_tag' tag.slug %}">
+                                        <tag>{{ tag.slug }}</tag>
+                                    </a>
                                 {% endif %}
                                 {% endfor %}
                             <small> {{ question.creation_date }}</small>
@@ -76,7 +89,10 @@
                                         <a href="?question_page={{ i }}">{{ i }}</a>
                                     {% endfor %}
                                 {% endif %}
-                                <a href="?question_page={{ latest_current_page.number }}" style="color: red">{{ latest_current_page.number }}</a>
+                                <a href="?question_page={{ latest_current_page.number }}" 
+                                    style="color: red">
+                                    {{ latest_current_page.number }}
+                                </a>
                                 {% if right %}
                                     {% for i in right %}
                                         <a href="?question_page={{ i }}">{{ i }}</a>
@@ -86,13 +102,17 @@
                                     {% endif %}
                                 {% endif %}
                                 {% if last %}
-                                    <a href="?question_page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a>
+                                    <a href="?question_page={{ paginator.num_pages }}">
+                                        {{ paginator.num_pages }}
+                                    </a>
                                 {% endif %}
                             </div>
                         </div>
                     {% endif %}
                 {% else %}
-                    <div class="alert alert-warning" role="alert">No Questions are available!</div>
+                    <div class="alert alert-warning" role="alert">
+                        No Questions are available!
+                    </div>
                 {% endif %}
             </div>
         </div>
@@ -107,11 +127,15 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title"><span class="glyphicon glyphicon-tag"></span> Tags</h3>
+                <h3 class="panel-title">
+                    <span class="glyphicon glyphicon-tag"></span> Tags
+                </h3>
             </div>
             <div class="panel-body">
                 {% for tag in tags %}
-                    <a href="{% url 'question_by_tag' tag.slug %}"><tag>{{ tag.slug }}</tag></a>
+                    <a href="{% url 'question_by_tag' tag.slug %}">
+                        <tag>{{ tag.slug }}</tag>
+                    </a>
                 {% endfor %}
             </div>
         </div>

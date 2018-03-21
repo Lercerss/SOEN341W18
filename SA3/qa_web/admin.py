@@ -2,7 +2,8 @@
 Used to register models for interaction through the admin website.
 Superuser credentials are found in the README or create through manage.py.
 
-For more information: https://docs.djangoproject.com/en/2.0/ref/contrib/admin/
+For more information: 
+    https://docs.djangoproject.com/en/2.0/ref/contrib/admin/
 """
 from django.contrib import admin
 from .models import Question, Answer, Comment, User

@@ -16,7 +16,8 @@ def _populate_db(user, num_answers, comments_per_answer):
             content="answer content " + str(i), owner=user, question=q)
         for j in range(comments_per_answer):
             Comment.objects.create(
-                content="comment content {}-{}".format(i, j), owner=user, answer=a)
+                content="comment content {}-{}".format(i, j),
+                owner=user, answer=a)
 
     return q
 
@@ -55,7 +56,9 @@ class ViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_login_protected(self):
-        """Pages that require a logged in user should redirect to the login page"""
+        """Pages that require a logged in user should redirect to the 
+        login page
+        """
         login_required_views = ['/questions/',
                                 '/edit_profile/', '/questions/1/edit/']
         for url in login_required_views:
@@ -162,8 +165,9 @@ class ViewTest(TestCase):
         user = User.objects.get(pk=1)
         num_answers = 3
         q = _populate_db(user, num_answers, 0)
+        key = 'select_{}'.format(Answer.objects.filter(question=q)[0].id)
         values = {
-            'select_{}'.format(Answer.objects.filter(question=q)[0].id): 'Select as Best Answer'
+            key: 'Select as Best Answer'
         }
         response = self.client.post('/questions/{}/'.format(q.id), data=values)
         self.assertEqual(response.status_code, 200)
@@ -172,8 +176,9 @@ class ViewTest(TestCase):
         response = self.client.post('/questions/{}/'.format(q.id), data=values)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'good-answer')
-        response = self.client.post(
-            '/questions/{}/'.format(q.id), data={'deselect': 'Deselect as Best Answer'})
+        response = self.client.post('/questions/{}/'.format(q.id), data={
+            'deselect': 'Deselect as Best Answer'
+        })
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, 'good-answer')
 
@@ -196,8 +201,10 @@ class ViewTest(TestCase):
         num_answers, comments_per_answer = 3, 3
         q = _populate_db(user, num_answers, comments_per_answer)
         self._login()
+        key = 'comment_form_answer_{}'.format(
+            Answer.objects.filter(question=q)[0].id)
         values = {
-            'comment_form_answer_{}'.format(Answer.objects.filter(question=q)[0].id): '',
+            key: '',
             'content': 'Some content'
         }
         response = self.client.post('/questions/{}/'.format(q.id), data=values)
@@ -355,24 +362,29 @@ class ViewTest(TestCase):
         self.assertEqual(Answer.objects.count(), 0)
 
     def test_edit_answers(self):
-        other_user = User.objects.create_user(username='other_user', password='wat')
+        other_user = User.objects.create_user(
+            username='other_user', password='wat')
         self._login()
         q = _populate_db(other_user, 1, 1)
         a = Answer.objects.get(question=q)
-        response = self.client.get('/questions/{}/edit_answers/{}/'.format(q.id, a.id))
+        response = self.client.get(
+            '/questions/{}/edit_answers/{}/'.format(q.id, a.id))
         self.assertEqual(response.status_code, 403)
         q.delete()
         a.delete()
         self._login()
         q = _populate_db(User.objects.get(pk=1), 1, 1)
         a = Answer.objects.get(question=q)
-        response = self.client.get('/questions/{}/edit_answers/{}/'.format(q.id, a.id))
+        response = self.client.get(
+            '/questions/{}/edit_answers/{}/'.format(q.id, a.id))
         self.assertEqual(response.status_code, 200)
         values = {
             'content': 'New content displayed!'
         }
-        self.client.post('/questions/{}/edit_answers/{}/'.format(q.id, a.id), data=values)
-        self.assertEqual(Answer.objects.get(pk=a.id).content, values['content'])
+        self.client.post(
+            '/questions/{}/edit_answers/{}/'.format(q.id, a.id), data=values)
+        self.assertEqual(Answer.objects.get(
+            pk=a.id).content, values['content'])
 
 
 class QuestionDisplayViewTest(TestCase):
@@ -393,16 +405,16 @@ class QuestionDisplayViewTest(TestCase):
                 user, num_answers, comments_per_answer))
 
         response = self.client.get('/question_index/')
-        self.assertEqual(
-            len(response.context['latest_current_page']), QuestionDisplayView.paginate_by)
+        self.assertEqual(len(response.context['latest_current_page']),
+                         QuestionDisplayView.paginate_by)
         self.assertEqual(response.context['left'], [])
         self.assertEqual(response.context['right'], range(2, 4))  # [2, 3]
         self.assertEqual(response.context['latest_current_page'].number, 1)
 
         response = self.client.get(
             '/question_index/', data={'question_page': 3})
-        self.assertEqual(
-            len(response.context['latest_current_page']), QuestionDisplayView.paginate_by)
+        self.assertEqual(len(response.context['latest_current_page']),
+                         QuestionDisplayView.paginate_by)
         self.assertEqual(response.context['left'], range(1, 3))
         self.assertEqual(response.context['right'], range(4, 6))
         self.assertEqual(response.context['latest_current_page'].number, 3)
