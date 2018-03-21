@@ -246,7 +246,7 @@ class ViewTest(TestCase):
         }
         response = self.client.post('/vote/', data=values)
         self.assertEqual(response.json(), {
-                         'id': 'score_{}_question'.format(q.id), 'new_score': 1})
+            'id': 'score_{}_question'.format(q.id), 'new_score': 1})
 
     def test_vote_answer(self):
         user = User.objects.get(pk=1)
@@ -259,29 +259,29 @@ class ViewTest(TestCase):
         }
         response = self.client.post('/vote/', data=values)  # downvote
         self.assertEqual(response.json(), {
-                         'id': 'score_{}_answer'.format(a.id), 'new_score': -1})
+            'id': 'score_{}_answer'.format(a.id), 'new_score': -1})
         response = self.client.post('/vote/', data=values)  # cancel downvote
         self.assertEqual(response.json(), {
-                         'id': 'score_{}_answer'.format(a.id), 'new_score': 0})
+            'id': 'score_{}_answer'.format(a.id), 'new_score': 0})
         values['button'] = 'upvote_{}_answer'.format(a.id)
         response = self.client.post('/vote/', data=values)  # upvote
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {
-                         'id': 'score_{}_answer'.format(a.id), 'new_score': +1})
+            'id': 'score_{}_answer'.format(a.id), 'new_score': +1})
         response = self.client.post('/vote/', data=values)  # cancel upvote
         self.assertEqual(response.json(), {
-                         'id': 'score_{}_answer'.format(a.id), 'new_score': 0})
+            'id': 'score_{}_answer'.format(a.id), 'new_score': 0})
         self.client.post('/vote/', data=values)  # back to +1
         values['button'] = 'downvote_{}_answer'.format(a.id)
         # override upvote with downvote
         response = self.client.post('/vote/', data=values)
         self.assertEqual(response.json(), {
-                         'id': 'score_{}_answer'.format(a.id), 'new_score': -1})
+            'id': 'score_{}_answer'.format(a.id), 'new_score': -1})
         values['button'] = 'upvote_{}_answer'.format(a.id)
         # override downvote with upvote
         response = self.client.post('/vote/', data=values)
         self.assertEqual(response.json(), {
-                         'id': 'score_{}_answer'.format(a.id), 'new_score': +1})
+            'id': 'score_{}_answer'.format(a.id), 'new_score': +1})
 
     def test_vote_comment(self):
         user = User.objects.get(pk=1)
@@ -293,7 +293,7 @@ class ViewTest(TestCase):
         }
         response = self.client.post('/vote/', data=values)
         self.assertEqual(response.json(), {
-                         'id': 'score_{}_comment'.format(q.id), 'new_score': 1})
+            'id': 'score_{}_comment'.format(q.id), 'new_score': 1})
 
     def test_question_comment(self):
         user = User.objects.get(pk=1)
@@ -357,6 +357,7 @@ class ViewTest(TestCase):
 
 class QuestionDisplayViewTest(TestCase):
     """This class contains test cases for the QuestionDisplayView"""
+
     def setUp(self):
         User.objects.create_user(**credentials)
 
@@ -393,6 +394,7 @@ class QuestionDisplayViewTest(TestCase):
 
 class QuestionsByTagViewTest(TestCase):
     """Test cases for QuestionByTagView"""
+
     def setUp(self):
         User.objects.create_user(**credentials)
 

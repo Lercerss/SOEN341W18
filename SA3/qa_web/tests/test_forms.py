@@ -7,6 +7,7 @@ credentials = {'username': 'test', 'password': 'test'}
 
 class FormTest(TestCase):
     """Test cases for forms used in views."""
+
     def setUp(self):
         User.objects.create_user(**credentials)
 
@@ -23,7 +24,7 @@ class FormTest(TestCase):
         form = UserProfile(data=form_data)
         self.assertTrue(form.is_valid())
 
-        invalid_dates= ['1960-08-32', '1960/08/24', '2030-08-32', '1960-24-08']
+        invalid_dates = ['1960-08-32', '1960/08/24', '2030-08-32', '1960-24-08']
 
         for date in invalid_dates:
             form_data['birthday'] = date
@@ -53,9 +54,10 @@ class FormTest(TestCase):
         form_data = {'username': None, 'password': None}
         login = LoginForm(data=form_data)
         self.assertFalse(login.is_valid())
-        self.assertJSONEqual(login.errors.as_json(), {"password": [{"message": "please input password", "code": "required"}],
-                                                  "__all__": [{"message": "username and password are required", "code": ""}],
-                                                  "username": [{"message": "please input username", "code": "required"}]})
+        self.assertJSONEqual(login.errors.as_json(),
+                             {"password": [{"message": "please input password", "code": "required"}],
+                              "__all__": [{"message": "username and password are required", "code": ""}],
+                              "username": [{"message": "please input username", "code": "required"}]})
 
     def test_correct_login(self):
         form_data = {'username': 'heartbroken_python',

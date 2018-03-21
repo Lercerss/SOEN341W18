@@ -23,6 +23,7 @@ def create_many_users():
 
 class CommentModel(TestCase):
     """Test cases for Comment model"""
+
     def setUp(self):
         user1 = User.objects.create_user(**credentials)
         title = "What is life?"
@@ -77,6 +78,7 @@ class CommentModel(TestCase):
 
 class VoteModel(TestCase):
     """Test cases for Vote model"""
+
     def setUp(self):
         user1 = User.objects.first()
         title = "What is life?"
