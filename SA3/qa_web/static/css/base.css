@@ -10,7 +10,6 @@ ul {
   list-style-type: none;
 }
 
-
 .masthead-subheading{
   font-size: 2rem !important;
   size
@@ -72,7 +71,6 @@ button:hover, a:hover {
 }
 
 header.masthead {
-    height: 50%;
     height: 100px;
     padding: 100px;
     padding-bottom: 150px;
