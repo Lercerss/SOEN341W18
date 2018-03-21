@@ -86,7 +86,7 @@ class CommentModel(TestCase):
 class VoteModel(TestCase):
 
     def setUp(self):
-        user1 = User.objects.first()
+        user1 = User.objects.create_user(**credentials)
         title = "What is life?"
         content = "Someone please explain to me the purpose of life"
         q = Questions.objects.create(title=title, content=content, owner=user1)
