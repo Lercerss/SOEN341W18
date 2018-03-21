@@ -462,7 +462,7 @@ def edit(request, id_):
         q.owner = request.user
         q.save()
         return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
-    return render(request, 'qa_web/edit_question.html', context={'currentQ': q})
+    return render(request, 'qa_web/edit_post.html', context={'post': q, 'isAnswer': False})
 
 
 @login_required(login_url='/login/')
@@ -479,3 +479,31 @@ def delete(request, id_):
         return HttpResponseForbidden()
     q.delete()
     return HttpResponseRedirect('/question_index/')
+
+
+@login_required(login_url='/login/')
+def edit_answers(request, id_, a_id):
+    """Displays answer editing form on a GET and modifies the answer on a successful validation.
+    Can only be accessed by the answer's owner
+
+    :param request: Request data provided by the WSGI
+    :param id_: The id of the question to which the answer belongs
+    :param a_id: The id of the answer being edited
+    :return: Rendered template displaying the form to edit an answer on a GET or unsuccessful validation,
+             else redirects to the question's answers page.
+    """
+    a = get_object_or_404(Answers, pk=a_id)
+    if a.owner != request.user:
+        return HttpResponseForbidden()
+
+    form = EditForm(request.POST)
+    if request.POST and form.is_valid():
+        a.content = request.POST['content']
+        a.owner = request.user
+        a.save()
+        return HttpResponseRedirect('/questions/{id}/'.format(id=id_))
+    return render(request, 'qa_web/edit_post.html', context={'post': a, 'is_answer': True})
+
+
+
+

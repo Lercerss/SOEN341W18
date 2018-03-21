@@ -318,7 +318,7 @@ class ViewTest(TestCase):
         q = _populate_db(User.objects.get(pk=1), 1, 1)
         response = self.client.get('/questions/{}/edit/'.format(q.id))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'qa_web/edit_question.html')
+        self.assertTemplateUsed(response, 'qa_web/edit_post.html')
         values = {
             'content': 'New content displayed! {}'.format(hash(q)),
             'title': 'A new title! {}'.format(hash(q))
@@ -353,6 +353,26 @@ class ViewTest(TestCase):
         self.assertEqual(Questions.objects.count(), 0)
         self.assertEqual(Comments.objects.count(), 0)
         self.assertEqual(Answers.objects.count(), 0)
+
+    def test_edit_answers(self):
+        other_user = User.objects.create_user(username='other_user', password='wat')
+        self._login()
+        q = _populate_db(other_user, 1, 1)
+        a = Answers.objects.get(question=q)
+        response = self.client.get('/questions/{}/editAnswers/{}/'.format(q.id, a.id))
+        self.assertEqual(response.status_code, 403)
+        q.delete()
+        a.delete()
+        self._login()
+        q = _populate_db(User.objects.get(pk=1), 1, 1)
+        a = Answers.objects.get(question=q)
+        response = self.client.get('/questions/{}/editAnswers/{}/'.format(q.id, a.id))
+        self.assertEqual(response.status_code, 200)
+        values = {
+            'content': 'New content displayed!'
+        }
+        self.client.post('/questions/{}/editAnswers/{}/'.format(q.id, a.id), data=values)
+        self.assertEqual(Answers.objects.get(pk=a.id).content, values['content'])
 
 
 class QuestionDisplayViewTest(TestCase):

@@ -43,6 +43,9 @@ class Questions(Post):
     def __str__(self):
         return self.title
 
+    def get_answer_queryset(self):
+        return Answers.objects.filter(question=self)
+
 
 class Answers(Post):
     """An Answer is a response to a Question, the first level of reply in the discussion.

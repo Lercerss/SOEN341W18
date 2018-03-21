@@ -59,6 +59,9 @@
         <a id='upvote_{{ bestAnswer.id }}_answer'><button>Upvote</button></a>
         <span id='score_{{ bestAnswer.id }}_answer'>{{ bestAnswer.score }}</span>
         <a id='downvote_{{ bestAnswer.id }}_answer'><button>Downvote</button></a><br><br>
+        {% if user.is_authenticated and bestAnswer.owner.id == user.id %}
+            <a href="./editAnswers/{{ bestAnswer.id }}"><button>Edit Answer</button></a>
+        {% endif %}
         {% for comment in a_comments %}
             {% if comment.answer.id == bestAnswer.id %}
                 <span class="marked">{{ comment.content }}</span>
@@ -66,6 +69,7 @@
                     <a id='upvote_{{ comment.id }}_comment'><button>Upvote</button></a>
                     <span id='score_{{ comment.id }}_comment'>{{ comment.score }}</span>
                     <a id='downvote_{{ comment.id }}_comment'><button>Downvote</button></a><br><br>
+
                 </h6>
             {% endif %}
         {% endfor %}
@@ -115,7 +119,10 @@
         <a id='upvote_{{ answer.id }}_answer'><button>Upvote</button></a>
         <span id='score_{{ answer.id }}_answer'>{{ answer.score }}</span>
         <a id='downvote_{{ answer.id }}_answer'><button>Downvote</button></a><br><br>
-         {% for comment in a_comments %}
+        {% if user.is_authenticated and answer.owner.id == user.id %}
+            <a href="./editAnswers/{{ answer.id }}"><button>Edit Answer</button></a>
+        {% endif %}
+        {% for comment in a_comments %}
              {% if comment.answer.id == answer.id %}
                 <span class="marked">{{ comment.content }}</span>
                 <h6>(Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
