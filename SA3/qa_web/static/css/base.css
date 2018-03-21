@@ -9,8 +9,11 @@ main {
 ul {
   list-style-type: none;
 }
+
+
 .masthead-subheading{
   font-size: 2rem !important;
+  size
 }
 
 .card {
@@ -66,4 +69,17 @@ button:hover, a:hover {
 #question span:hover{
     background-color: #ee0979 !important;
     border-color:#ee0979 !important;
+}
+
+header.masthead {
+    height: 50%;
+    height: 100px;
+    padding: 100px;
+    padding-bottom: 150px;
+    border: 1px solid;
+    display: block;
+    font-size: 2em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
 }
