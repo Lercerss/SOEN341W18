@@ -472,7 +472,7 @@ def delete(request, id_):
 
 # edit Answers
 @login_required(login_url='/login/')
-def editAnswers(request, id_, a_id):
+def edit_answers(request, id_, a_id):
 
     a = get_object_or_404(Answers, pk=a_id)
     if a.owner != request.user:
@@ -484,7 +484,7 @@ def editAnswers(request, id_, a_id):
         a.owner = request.user
         a.save()
         return HttpResponseRedirect('/questions/{id}/'.format(id=id_))
-    return render(request,'qa_web/edit.html', context={'Post':a, 'isAnswer': True})
+    return render(request,'qa_web/edit.html', context={'Post':a, 'is_answer': True})
 
 
 

@@ -230,8 +230,6 @@ class ViewTest(TestCase):
         response = self.client.post('/vote/', data=values)
         self.assertEqual(response.json(), {'id':'score_{}_question'.format(q.id), 'new_score': 1})
 
-
-
     def test_vote_answer(self):
         user = User.objects.get(pk=1)
         q = _populate_db(user, 1, 1)
@@ -284,7 +282,6 @@ class ViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, values['content'])
 
-
     def test_vote_no_ajax(self):
         self._login()
         response = self.client.get('/vote/')
@@ -325,6 +322,26 @@ class ViewTest(TestCase):
         self.assertEqual(Questions.objects.count(),0)
         self.assertEqual(Comments.objects.count(),0)
         self.assertEqual(Answers.objects.count(),0)
+
+    def test_edit_answers(self):
+        other_user = User.objects.create_user(username='other_user', password='wat')
+        self._login()
+        q = _populate_db(other_user, 1, 1)
+        a = Answers.objects.get(question=q)
+        response = self.client.get('/questions/{}/editAnswers/{}/'.format(q.id, a.id))
+        self.assertEqual(response.status_code, 403)
+        q.delete()
+        a.delete()
+        self._login()
+        q = _populate_db(User.objects.get(pk=1), 1, 1)
+        a = Answers.objects.get(question=q)
+        response = self.client.get('/questions/{}/editAnswers/{}/'.format(q.id, a.id))
+        self.assertEqual(response.status_code, 200)
+        values = {
+            'content' : 'New content displayed!'
+        }
+        response = self.client.post('/questions/{}/editAnswers/{}/'.format(q.id, a.id), data=values)
+        self.assertEqual(Answers.objects.get(pk=a.id).content, values['content'])
 
 
 class QuestionDisplayViewTest(TestCase):
