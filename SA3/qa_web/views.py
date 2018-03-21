@@ -465,7 +465,7 @@ def edit(request, id_):
         q.owner = request.user
         q.save()
         return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
-    return render(request, 'qa_web/edit_post.html', context={'post': q, 'isAnswer': False})
+    return render(request, 'qa_web/edit_post.html', context={'post': q, 'is_answer': False})
 
 
 @login_required(login_url='/login/')
