@@ -1,3 +1,8 @@
+"""Models define how data is to be stored in the database using ORM.
+For more information on how this works: https://docs.djangoproject.com/en/2.0/topics/db/models/
+For more information on how the project's data is organised:
+    https://github.com/Lercerss/SOEN341W18/wiki/Architecture-Block-Diagram
+"""
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser

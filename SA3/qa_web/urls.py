@@ -1,3 +1,4 @@
+"""Url configuration for qa_web website."""
 from django.contrib import admin
 from django.urls import path, include
 from qa_web import views

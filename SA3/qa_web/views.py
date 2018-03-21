@@ -1,3 +1,6 @@
+"""Views handle requests sent to the server.
+Views are registered to urls, handle a request provided by the WSGI and return a response.
+"""
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth

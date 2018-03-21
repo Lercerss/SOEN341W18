@@ -1,3 +1,4 @@
+"""Search Indexes are used to define which Models are indexed and how to handle data flow for indexing."""
 from django.utils import timezone
 from haystack import indexes
 from qa_web.models import Questions
