@@ -503,7 +503,3 @@ def edit_answers(request, id_, a_id):
         a.save()
         return HttpResponseRedirect('/questions/{id}/'.format(id=id_))
     return render(request, 'qa_web/edit_post.html', context={'post': a, 'is_answer': True})
-
-
-
-
