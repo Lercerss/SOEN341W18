@@ -25,28 +25,16 @@
     <br>
     <div class="col-md-8">
         <ul class="nav nav-tabs">
-            <li {% if active_tab == 'latest' %}class="active"{% endif %}>
+            <li class="active">
                 <a href="#latest" data-toggle="tab">
                     <span class="fas fa-clock"></span>
                         Latest
                 </a>
             </li>
-            <li {% if active_tab == 'hottest' %}class="active"{% endif %}>
-                <a href="#latest" data-toggle="tab">
-                    <span class="fas fa-fire"></span>
-                        Hottest
-                </a>
-            </li>
-            <li {% if active_tab == 'most_votes' %}class="active"{% endif %}>
-                <a href="#latest" data-toggle="tab">
-                    <span class="fas fa-trophy"></span>
-                        Most votes
-                </a>
-            </li>
         </ul>
         <br>
         <div class="tab-content">
-            <div class="tab-pane {% if active_tab == 'latest' %}active{% endif %}" id="latest">
+            <div class="tab-pane active" id="latest">
                 {% if latest_current_page %}
                     {% for question in latest_current_page %}
                         <div class="row">

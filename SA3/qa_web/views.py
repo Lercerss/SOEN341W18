@@ -330,11 +330,6 @@ class QuestionDisplayView(ListView):
         pagination_data = self._pagination_data(paginator_all_questions, page_obj, context['is_paginated'])
         context.update(pagination_data)
 
-        # Make this tab active
-        context['active_tab'] = self.request.GET.get('active_tab', 'latest')
-        tabs = ['latest', 'un_answered']
-        context['active_tab'] = 'latest' if context['active_tab'] not in tabs else context['active_tab']
-
         # Pass tags to html.
         question_contenttype = ContentType.objects.get_for_model(Question)
         items = TaggedItem.objects.filter(content_type=question_contenttype)
@@ -435,12 +430,13 @@ class QuestionsByTagView(ListView):
         # Get default display objects from get_queryset.
         context['latest_current_page'] = context['questions']
 
-        context['active_tab'] = self.request.GET.get('active_tab', 'latest')
-        tabs = ['latest', 'un_answered']
-        context['active_tab'] = 'latest' if context['active_tab'] not in tabs else context['active_tab']
-
         context['total_question_num'] = Question.objects.count()
         context['total_answer_num'] = Answer.objects.count()
+        # Pass tags to html.
+        question_contenttype = ContentType.objects.get_for_model(Question)
+        items = TaggedItem.objects.filter(content_type=question_contenttype)
+        context['tags'] = Tag.objects.filter(
+            taggit_taggeditem_items__in=items).exclude(slug__exact='').order_by('-id').distinct()
         return context
 
 
