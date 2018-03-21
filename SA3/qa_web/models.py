@@ -36,7 +36,7 @@ class Post(models.Model):
         return self.upvotes - self.downvotes
 
 
-class Questions(Post):
+class Question(Post):
     """A Question is the first element of a thread in the website which serves to start a discussion.
     All other data elements relate to one or multiple Questions.
     """
@@ -49,24 +49,24 @@ class Questions(Post):
         return self.title
 
     def get_answer_queryset(self):
-        return Answers.objects.filter(question=self)
+        return Answer.objects.filter(question=self)
 
 
-class Answers(Post):
+class Answer(Post):
     """An Answer is a response to a Question, the first level of reply in the discussion.
     An Answer cannot exist without a Question.
     """
-    question = models.ForeignKey(Questions, null=True, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, null=True, on_delete=models.CASCADE)
     correct_answer = models.BooleanField(default=False)
     voters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='a_voters', through='Vote')
 
 
-class Comments(Post):
+class Comment(Post):
     """A Comment is a lower-level response to either an Answer or Question.
     It is the second level of discussion as it might not directly relate to the Question's matter.
     """
-    question = models.ForeignKey(Questions, null=True, on_delete=models.CASCADE)
-    answer = models.ForeignKey(Answers, null=True, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, null=True, on_delete=models.CASCADE)
+    answer = models.ForeignKey(Answer, null=True, on_delete=models.CASCADE)
     voters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='c_voters', through='Vote')
 
 
@@ -74,8 +74,8 @@ class Vote(models.Model):
     """Defines the relationship between a user voting and the post.
     A vote can be positive or negative (not positive), allowing the full range of integer scores.
     """
-    question = models.ForeignKey(Questions, on_delete=models.CASCADE, null=True)
-    answer = models.ForeignKey(Answers, on_delete=models.CASCADE, null=True)
-    comment = models.ForeignKey(Comments, on_delete=models.CASCADE, null=True)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, null=True)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     positive = models.BooleanField()

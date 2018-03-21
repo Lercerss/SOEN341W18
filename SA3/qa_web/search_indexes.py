@@ -1,7 +1,7 @@
 """Search Indexes are used to define which Models are indexed and how to handle data flow for indexing."""
 from django.utils import timezone
 from haystack import indexes
-from qa_web.models import Questions
+from qa_web.models import Question
 
 
 class QuestionsIndex(indexes.SearchIndex, indexes.Indexable):
@@ -11,7 +11,7 @@ class QuestionsIndex(indexes.SearchIndex, indexes.Indexable):
     creation_date = indexes.DateTimeField(model_attr='creation_date')
 
     def get_model(self):
-        return Questions
+        return Question
 
     def index_queryset(self, using=None):
         """Used when the entire index for model is updated."""

@@ -13,7 +13,7 @@ from taggit.models import Tag, TaggedItem
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.contrib.contenttypes.models import ContentType
 from qa_web.forms import LoginForm, QuestionsForm, AnswersForm, EditForm, UserProfile, CustomUserCreationForm
-from qa_web.models import Answers, Questions, User, Comments, Vote
+from qa_web.models import Answer, Question, User, Comment, Vote
 
 
 @login_required(login_url='/login/')
@@ -59,8 +59,8 @@ def display_profile(request, id_):
     :return: Rendered template for displaying the given user's profile
     """
     displayed_user = get_object_or_404(User, pk=id_)
-    user_questions = Questions.objects.filter(owner_id=id_)
-    user_answers = Answers.objects.filter(owner_id=id_)
+    user_questions = Question.objects.filter(owner_id=id_)
+    user_answers = Answer.objects.filter(owner_id=id_)
     user_votes = Vote.objects.filter(user_id=id_)
     return render(request, 'qa_web/user_profile.html', context={'displayed_user': displayed_user,
                                                                 'questions': user_questions,
@@ -144,7 +144,7 @@ def questions(request):
             title = request.POST['title']
             tag = request.POST['tag'].split(';')
             owner = request.user
-            q = Questions(content=content, title=title, owner=owner)
+            q = Question(content=content, title=title, owner=owner)
             q.save()
 
             # Since a question can be submitted with no tag, filtering empty and blank strings.
@@ -170,57 +170,57 @@ def answers(request, id_):
     :return: Rendered template displaying the question's thread including answers and comments
              as well as the answering/commenting form
     """
-    q = get_object_or_404(Questions, pk=id_)
+    q = get_object_or_404(Question, pk=id_)
     answer_id = [int(key.replace('select_', '')) for key in request.POST.keys() if key.startswith('select_')]
     if request.method == 'POST' and 'answer_form' in request.POST:
         # Answering a question
         form = AnswersForm(request.POST)
         if form.is_valid():
-            Answers.objects.create(content=request.POST['content'], owner=request.user, question=q)
+            Answer.objects.create(content=request.POST['content'], owner=request.user, question=q)
 
     elif request.method == 'POST' and 'deselect' in request.POST and q.owner.id == request.user.id:
         # Deselecting best answer
-        update_answer = Answers.objects.filter(question=q, correct_answer=True).last()
+        update_answer = Answer.objects.filter(question=q, correct_answer=True).last()
         update_answer.correct_answer = False
         update_answer.save()
     elif answer_id and q.owner.id == request.user.id:
         # Selecting best answer
-        update_answer = Answers.objects.get(id=answer_id[0])
+        update_answer = Answer.objects.get(id=answer_id[0])
         update_answer.correct_answer = True
         update_answer.save()
     elif any(key.startswith("comment_form_answer") for key in request.POST.keys()):
         # Commenting on an answer
         answer_id = [int(key.replace('comment_form_answer_', '')) for key in request.POST.keys() if
                      key.startswith('comment_form')]
-        a = Answers.objects.get(id=answer_id[0])
-        c = Comments(content=request.POST['content'], owner=request.user, answer=a)
+        a = Answer.objects.get(id=answer_id[0])
+        c = Comment(content=request.POST['content'], owner=request.user, answer=a)
         c.save()
     elif request.method == 'POST' and 'comment_form_question' in request.POST:
         # Commenting on the question
-        c = Comments(content=request.POST['content'], owner=request.user, question=q)
+        c = Comment(content=request.POST['content'], owner=request.user, question=q)
         c.save()
 
     # Ordering answers
     if request.method == 'POST' and 'sort_by_form_select' in request.POST:
         initial_select_value = request.POST['sort_by_form_select']
         if request.POST['sort_by_form_select'] == 'lowestScore':
-            q_answers = Answers.objects.filter(question=q, correct_answer=False).annotate(
+            q_answers = Answer.objects.filter(question=q, correct_answer=False).annotate(
                 points=F('upvotes') - F('downvotes')).order_by('points')
         elif request.POST['sort_by_form_select'] == 'highestScore':
-            q_answers = Answers.objects.filter(question=q, correct_answer=False).annotate(
+            q_answers = Answer.objects.filter(question=q, correct_answer=False).annotate(
                 points=F('upvotes') - F('downvotes')).order_by('-points')
         elif request.POST['sort_by_form_select'] == 'leastRecent':
-            q_answers = Answers.objects.filter(question=q, correct_answer=False).order_by('creation_date')
+            q_answers = Answer.objects.filter(question=q, correct_answer=False).order_by('creation_date')
         else:  # Most Recent
-            q_answers = Answers.objects.filter(question=q, correct_answer=False).order_by('-creation_date')
+            q_answers = Answer.objects.filter(question=q, correct_answer=False).order_by('-creation_date')
     else:
         initial_select_value = "highestScore"
-        q_answers = Answers.objects.filter(question=q, correct_answer=False).annotate(
+        q_answers = Answer.objects.filter(question=q, correct_answer=False).annotate(
             points=F('upvotes') - F('downvotes')).order_by('-points')
 
-    q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
-    q_comments = Comments.objects.filter(question=q)
-    a_comments = Comments.objects.filter(answer__question=q)
+    q_best_answer = Answer.objects.filter(question=q, correct_answer=True)
+    q_comments = Comment.objects.filter(question=q)
+    a_comments = Comment.objects.filter(answer__question=q)
 
     # Increment the visits counter of the question by one
     if request.user.is_authenticated:
@@ -244,7 +244,7 @@ def vote(request):
     if request.method == 'POST' and request.user.is_authenticated:
         vote_direction, button_id, post_type = request.POST['button'].split('_')
         vote_direction = vote_direction == 'upvote'
-        post_subclass = Questions if post_type == 'question' else Answers if post_type == 'answer' else Comments
+        post_subclass = Question if post_type == 'question' else Answer if post_type == 'answer' else Comment
         post = get_object_or_404(post_subclass, pk=int(button_id))
         foreign_key_args = {post_type: post}  # Workaround to provide the correct kwarg depending on post_type
         if request.user not in post.voters.all():
@@ -292,7 +292,7 @@ def homepage(request):
 
 class QuestionDisplayView(ListView):
     """View for displaying the list of questions currently available."""
-    model = Questions
+    model = Question
     paginate_by = 10
     context_object_name = 'questions'
     template_name = 'qa_web/question_index.html'
@@ -302,15 +302,15 @@ class QuestionDisplayView(ListView):
         context = super(
             QuestionDisplayView, self).get_context_data(*args, **kwargs)
 
-        context['total_question_num'] = Questions.objects.count()
-        context['total_answer_num'] = Answers.objects.count()
+        context['total_question_num'] = Question.objects.count()
+        context['total_answer_num'] = Answer.objects.count()
 
         # Try to page the question page
         context['is_paginated'] = True  # whether the paginator is needed. It's a must.
-        all_questions_qs = Questions.objects.order_by('-creation_date') \
+        all_questions_qs = Question.objects.order_by('-creation_date') \
             .select_related('owner') \
-            .annotate(num_answers=Count('answers', distinct=True),
-                      num_question_comments=Count('comments', distinct=True),
+            .annotate(num_answers=Count('answer', distinct=True),
+                      num_question_comments=Count('comment', distinct=True),
                       num_tag=Count('tag', distinct=True))
         paginator_all_questions = Paginator(all_questions_qs, QuestionDisplayView.paginate_by)
 
@@ -336,7 +336,7 @@ class QuestionDisplayView(ListView):
         context['active_tab'] = 'latest' if context['active_tab'] not in tabs else context['active_tab']
 
         # Pass tags to html.
-        question_contenttype = ContentType.objects.get_for_model(Questions)
+        question_contenttype = ContentType.objects.get_for_model(Question)
         items = TaggedItem.objects.filter(content_type=question_contenttype)
         context['tags'] = Tag.objects.filter(
             taggit_taggeditem_items__in=items).exclude(slug__exact='').order_by('-id').distinct()
@@ -346,8 +346,8 @@ class QuestionDisplayView(ListView):
     def get_queryset(self):
         queryset = super(QuestionDisplayView, self).get_queryset() \
             .select_related('owner') \
-            .annotate(num_answers=Count('answers', distinct=True),
-                      num_question_comments=Count('comments', distinct=True))
+            .annotate(num_answers=Count('answer', distinct=True),
+                      num_question_comments=Count('comment', distinct=True))
         return queryset
 
     def _pagination_data(self, paginator, page, is_paginated):
@@ -420,14 +420,14 @@ class QuestionDisplayView(ListView):
 
 class QuestionsByTagView(ListView):
     """View to call all the questions classified under one specific tag."""
-    model = Questions
+    model = Question
     paginate_by = 10
     context_object_name = 'questions'
     template_name = 'qa_web/question_index.html'
 
     def get_queryset(self, **kwargs):
-        return Questions.objects.order_by('-creation_date').filter(tag__slug=self.kwargs['tag']) \
-            .annotate(num_answers=Count('answers', distinct=True))
+        return Question.objects.order_by('-creation_date').filter(tag__slug=self.kwargs['tag']) \
+            .annotate(num_answers=Count('answer', distinct=True))
 
     def get_context_data(self, *args, **kwargs):
         context = super(QuestionsByTagView, self).get_context_data(*args, **kwargs)
@@ -439,8 +439,8 @@ class QuestionsByTagView(ListView):
         tabs = ['latest', 'un_answered']
         context['active_tab'] = 'latest' if context['active_tab'] not in tabs else context['active_tab']
 
-        context['total_question_num'] = Questions.objects.count()
-        context['total_answer_num'] = Answers.objects.count()
+        context['total_question_num'] = Question.objects.count()
+        context['total_answer_num'] = Answer.objects.count()
         return context
 
 
@@ -454,7 +454,7 @@ def edit(request, id_):
     :return: Rendered template displaying the form to edit a question on a GET or unsuccessful validation,
              else redirects to the question's answers page.
     """
-    q = get_object_or_404(Questions, pk=id_)
+    q = get_object_or_404(Question, pk=id_)
     if q.owner != request.user:
         return HttpResponseForbidden()
 
@@ -477,7 +477,7 @@ def delete(request, id_):
     :param id_: The question's id
     :return: Redirects to the question index
     """
-    q = get_object_or_404(Questions, pk=id_)
+    q = get_object_or_404(Question, pk=id_)
     if q.owner != request.user:
         return HttpResponseForbidden()
     q.delete()
@@ -495,7 +495,7 @@ def edit_answers(request, id_, a_id):
     :return: Rendered template displaying the form to edit an answer on a GET or unsuccessful validation,
              else redirects to the question's answers page.
     """
-    a = get_object_or_404(Answers, pk=a_id)
+    a = get_object_or_404(Answer, pk=a_id)
     if a.owner != request.user:
         return HttpResponseForbidden()
 

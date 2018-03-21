@@ -2,20 +2,20 @@ import re
 from datetime import date
 from django.test import TestCase
 from django.http import HttpResponseRedirect
-from qa_web.models import User, Questions, Answers, Comments, Vote
+from qa_web.models import User, Question, Answer, Comment, Vote
 from qa_web.views import QuestionDisplayView, QuestionsByTagView
 
 credentials = {'username': 'test', 'password': 'test'}
 
 
 def _populate_db(user, num_answers, comments_per_answer):
-    q = Questions.objects.create(
+    q = Question.objects.create(
         title="Test question", content="Test content", owner=user)
     for i in range(num_answers):
-        a = Answers.objects.create(
+        a = Answer.objects.create(
             content="answer content " + str(i), owner=user, question=q)
         for j in range(comments_per_answer):
-            Comments.objects.create(
+            Comment.objects.create(
                 content="comment content {}-{}".format(i, j), owner=user, answer=a)
 
     return q
@@ -127,8 +127,8 @@ class ViewTest(TestCase):
         response = self.client.get('/questions/')
         self.assertTemplateUsed(response, 'qa_web/posting_question.html')
         response = self.client.post('/questions/', data=form_data)
-        last_question = Questions.objects.last()
-        post_questions_count = Questions.objects.count()
+        last_question = Question.objects.last()
+        post_questions_count = Question.objects.count()
         tags = last_question.tag.slugs()
 
         self.assertRedirects(
@@ -163,7 +163,7 @@ class ViewTest(TestCase):
         num_answers = 3
         q = _populate_db(user, num_answers, 0)
         values = {
-            'select_{}'.format(Answers.objects.filter(question=q)[0].id): 'Select as Best Answer'
+            'select_{}'.format(Answer.objects.filter(question=q)[0].id): 'Select as Best Answer'
         }
         response = self.client.post('/questions/{}/'.format(q.id), data=values)
         self.assertEqual(response.status_code, 200)
@@ -197,12 +197,12 @@ class ViewTest(TestCase):
         q = _populate_db(user, num_answers, comments_per_answer)
         self._login()
         values = {
-            'comment_form_answer_{}'.format(Answers.objects.filter(question=q)[0].id): '',
+            'comment_form_answer_{}'.format(Answer.objects.filter(question=q)[0].id): '',
             'content': 'Some content'
         }
         response = self.client.post('/questions/{}/'.format(q.id), data=values)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(Comments.objects.count(),
+        self.assertEqual(Comment.objects.count(),
                          num_answers * comments_per_answer + 1)
 
     def test_answers_view_count(self):
@@ -251,7 +251,7 @@ class ViewTest(TestCase):
     def test_vote_answer(self):
         user = User.objects.get(pk=1)
         q = _populate_db(user, 1, 1)
-        a = Answers.objects.get(question=q)
+        a = Answer.objects.get(question=q)
         self._login()
 
         values = {
@@ -286,7 +286,7 @@ class ViewTest(TestCase):
     def test_vote_comment(self):
         user = User.objects.get(pk=1)
         q = _populate_db(user, 1, 1)
-        c = Comments.objects.all()[0]
+        c = Comment.objects.all()[0]
         self._login()
         values = {
             'button': 'upvote_{}_comment'.format(c.id)
@@ -326,9 +326,9 @@ class ViewTest(TestCase):
         response = self.client.post(
             '/questions/{}/edit/'.format(q.id), data=values)
         self.assertRedirects(response, '/questions/{}/'.format(q.id))
-        self.assertEqual(Questions.objects.get(
+        self.assertEqual(Question.objects.get(
             pk=q.id).content, values['content'])
-        self.assertEqual(Questions.objects.get(pk=q.id).title, values['title'])
+        self.assertEqual(Question.objects.get(pk=q.id).title, values['title'])
 
     def test_edit_profile_forbidden(self):
         other_user = User.objects.create_user(
@@ -350,29 +350,29 @@ class ViewTest(TestCase):
         q = _populate_db(User.objects.get(pk=1), 1, 1)
         response = self.client.get('/questions/{}/delete/'.format(q.id))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(Questions.objects.count(), 0)
-        self.assertEqual(Comments.objects.count(), 0)
-        self.assertEqual(Answers.objects.count(), 0)
+        self.assertEqual(Question.objects.count(), 0)
+        self.assertEqual(Comment.objects.count(), 0)
+        self.assertEqual(Answer.objects.count(), 0)
 
     def test_edit_answers(self):
         other_user = User.objects.create_user(username='other_user', password='wat')
         self._login()
         q = _populate_db(other_user, 1, 1)
-        a = Answers.objects.get(question=q)
+        a = Answer.objects.get(question=q)
         response = self.client.get('/questions/{}/edit_answers/{}/'.format(q.id, a.id))
         self.assertEqual(response.status_code, 403)
         q.delete()
         a.delete()
         self._login()
         q = _populate_db(User.objects.get(pk=1), 1, 1)
-        a = Answers.objects.get(question=q)
+        a = Answer.objects.get(question=q)
         response = self.client.get('/questions/{}/edit_answers/{}/'.format(q.id, a.id))
         self.assertEqual(response.status_code, 200)
         values = {
             'content': 'New content displayed!'
         }
         self.client.post('/questions/{}/edit_answers/{}/'.format(q.id, a.id), data=values)
-        self.assertEqual(Answers.objects.get(pk=a.id).content, values['content'])
+        self.assertEqual(Answer.objects.get(pk=a.id).content, values['content'])
 
 
 class QuestionDisplayViewTest(TestCase):
@@ -423,7 +423,7 @@ class QuestionsByTagViewTest(TestCase):
         for i in range(10):
             _populate_db(user, 1, 1)
 
-        for i, q in enumerate(Questions.objects.all()):
+        for i, q in enumerate(Question.objects.all()):
             q.tag.add('test')
             if i % 3 == 0:  # 0, 3, 6, 9...
                 q.tag.add('other')
