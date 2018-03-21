@@ -34,6 +34,10 @@ class CommentModel(TestCase):
         _, q, _ = obtain_sample_objects_as_tuple()
         self.assertEqual(str(q), q.title)
 
+    def test_get_answer_queryset(self):
+        _, q, a = obtain_sample_objects_as_tuple()
+        self.assertEqual(None, q.get_answer_queryset().first())
+
     def test_question_comment_instantiation(self):
 
         # testing comments for question only
@@ -82,7 +86,7 @@ class CommentModel(TestCase):
 class VoteModel(TestCase):
 
     def setUp(self):
-        user1 = User.objects.first()
+        user1 = User.objects.create_user(**credentials)
         title = "What is life?"
         content = "Someone please explain to me the purpose of life"
         q = Questions.objects.create(title=title, content=content, owner=user1)
