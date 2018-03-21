@@ -457,7 +457,7 @@ def edit(request, id_):
         q.owner = request.user
         q.save()
         return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
-    return render(request,'qa_web/edit.html', context={'Post':q, 'isAnswer': False})
+    return render(request,'qa_web/edit.html', context={'post':q, 'isAnswer': False})
 
 
 #delete posts
@@ -484,7 +484,7 @@ def edit_answers(request, id_, a_id):
         a.owner = request.user
         a.save()
         return HttpResponseRedirect('/questions/{id}/'.format(id=id_))
-    return render(request,'qa_web/edit.html', context={'Post':a, 'is_answer': True})
+    return render(request,'qa_web/edit.html', context={'post':a, 'is_answer': True})
 
 
 
