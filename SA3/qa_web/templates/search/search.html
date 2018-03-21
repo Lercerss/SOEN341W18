@@ -1,8 +1,6 @@
 {% extends 'qa_web/base.html' %}
-
 {% block content %}
     <h2>Search</h2>
-
     <form method="get" action=".">
         <table>
             {{ form.as_table }}
@@ -13,10 +11,8 @@
                 </td>
             </tr>
         </table>
-
         {% if query %}
             <h3>Results</h3>
-
             {% for result in page.object_list %}
                 <p>
                     <a href="{% url 'answers' result.object.id %}">{{ result.object.title }} &nbsp &nbsp {{ result.object.creation_date }}</a>
@@ -24,7 +20,6 @@
             {% empty %}
                 <p>No results found.</p>
             {% endfor %}
-
             {% if page.has_previous or page.has_next %}
                 <div>
                     {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
