@@ -251,6 +251,26 @@ def answers(request, id_):
     q_comments = Comment.objects.filter(question=q)
     a_comments = Comment.objects.filter(answer__question=q)
 
+    # Voting indicators
+    if request.user.is_authenticated:
+        vote_on_q = Vote.objects.filter(user=request.user, question=q)
+        votes_on_answers = Vote.objects.filter(user=request.user, answer__in=q_answers)
+        vote_on_best_answer = Vote.objects.filter(user=request.user,
+                                                  answer_id=q_best_answer[0].id if len(q_best_answer) else -1)
+        votes_on_q_comments = Vote.objects.filter(user=request.user, comment__in=q_comments)
+        votes_on_a_comments = Vote.objects.filter(user=request.user, comment__in=a_comments)
+        pos_vote_q = len(vote_on_q) and vote_on_q[0].positive
+        neg_vote_q = len(vote_on_q) and not vote_on_q[0].positive
+
+        pos_vote_a = [v.answer.id for v in list(votes_on_answers) + list(vote_on_best_answer) if v.positive]
+        neg_vote_a = [v.answer.id for v in list(votes_on_answers) + list(vote_on_best_answer) if not v.positive]
+
+        pos_vote_c = [v.comment.id for v in list(votes_on_a_comments) + list(votes_on_q_comments) if v.positive]
+        neg_vote_c = [v.comment.id for v in list(votes_on_a_comments) + list(votes_on_q_comments) if not v.positive]
+    else:
+        pos_vote_a, pos_vote_c, pos_vote_q = [], [], False
+        neg_vote_a, neg_vote_c, neg_vote_q = [], [], False
+
     # Increment the visits counter of the question by one
     if request.user.is_authenticated:
         q.visits += 1
@@ -259,10 +279,11 @@ def answers(request, id_):
     if len(q_best_answer) > 0:
         q_best_answer = q_best_answer.last()
     return render(request, 'qa_web/question_thread.html',
-                  {'currentQuestion': q, 'answers': q_answers,
-                   'bestAnswer': q_best_answer, 'q_comments': q_comments,
-                   'a_comments': a_comments,
-                   'initial_select_value': initial_select_value})
+                  {'currentQuestion': q, 'answers': q_answers, 'bestAnswer': q_best_answer, 'q_comments': q_comments,
+                   'a_comments': a_comments, 'initial_select_value': initial_select_value,
+                   'pos_v_q': pos_vote_q, 'neg_v_q': neg_vote_q,
+                   'pos_v_a': pos_vote_a, 'neg_v_a': neg_vote_a,
+                   'pos_v_c': pos_vote_c, 'neg_v_c': neg_vote_c})
 
 
 def vote(request):
