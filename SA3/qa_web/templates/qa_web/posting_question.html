@@ -1,0 +1,41 @@
+{% extends "qa_web/base.html" %}
+{% load static %}
+{% block scripts %}
+    <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
+    <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
+    <script src="{% static 'js/Markdown.Sanitizer.min.js' %}"></script>
+    <script>
+        var converter = Markdown.getSanitizingConverter();
+        var editor = new Markdown.Editor(converter);
+        editor.run();
+    </script>
+{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/pagedown.css' %}" />
+    {% include "qa_web/includes/editor_style.html" %}
+{% endblock %}
+{% block header %}
+    <div class="masthead-content">
+        <div class="container">
+            <h1 class="masthead-heading mb-0">Got Questions</h1>
+            <h1 class="masthead-heading mb-0"> ? ! </h1>
+            <br><br><br>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <a href="/"><button>Back to Index</button></a>
+    <form method="post">
+        {% csrf_token %}
+        <input id="title" name = "title" type="text" 
+            placeholder="question title" required/>
+        <div id="wmd-button-bar"></div>
+        <textarea id="wmd-input" name="content" class="wmd-input" 
+            placeholder="type your description here" required></textarea>
+        <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+        Tags:<input name = "tag" type="text" 
+            placeholder="Semi-colon-separated tags."/>
+        <div></div>
+        <input type="submit" value="Submit"/>
+    </form>
+{% endblock %}
