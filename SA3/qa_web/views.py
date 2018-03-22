@@ -24,12 +24,6 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = UserCreationForm.Meta.fields
 
-
-def index(request):
-    # return render(request, 'qa_web/index.html', context={'posts': Post.objects.all()})
-    return render(request, 'qa_web/index.html', context={'questions': Questions.objects.all()})
-
-
 @login_required(login_url='/login/')
 def edit_profile(request):
     if request.method=='GET':
@@ -179,7 +173,7 @@ def answers(request, id_):
     else:
          initialSelectValue = "highestScore"
          q_answers = Answers.objects.filter(question=q, correct_answer=False).annotate(points=F('upvotes')-F('downvotes')).order_by('-points')
-        
+
 
     q_best_answer = Answers.objects.filter(question=q, correct_answer=True)
     q_comments = Comments.objects.filter(question=q)
@@ -465,5 +459,35 @@ def edit(request, id_):
         q.owner = request.user
         q.save()
         return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
-    return render(request,'qa_web/edit.html', context={'currentQ':q})
+    return render(request,'qa_web/edit.html', context={'post':q, 'isAnswer': False})
+
+
+#delete posts
+@login_required(login_url='/login/')
+def delete(request, id_):
+    q = get_object_or_404(Questions, pk=id_)
+    if q.owner != request.user:
+        return HttpResponseForbidden()
+    q.delete()
+    return HttpResponseRedirect('/QuestionIndex')
+
+
+# edit Answers
+@login_required(login_url='/login/')
+def edit_answers(request, id_, a_id):
+
+    a = get_object_or_404(Answers, pk=a_id)
+    if a.owner != request.user:
+        return HttpResponseForbidden()
+
+    form = EditForm(request.POST)
+    if request.POST and form.is_valid():
+        a.content = request.POST['content']
+        a.owner = request.user
+        a.save()
+        return HttpResponseRedirect('/questions/{id}/'.format(id=id_))
+    return render(request,'qa_web/edit.html', context={'post':a, 'is_answer': True})
+
+
+
 

@@ -1,7 +1,9 @@
-# folder
+# folders
 .idea
 venv/
 __pycache__/
-#file
+SA3/qa_web/whoosh_index/
+
+# files
 *.pyc
 .coverage

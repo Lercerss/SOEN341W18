@@ -31,6 +31,43 @@ function vote_callback(event){
   });
 }
 
+//When somebody wants to answer or comment, modify modal settings depending on whether the user is posting an answer or to a comment.
+function post_reply(event) {
+  var comment_button = event.currentTarget;
+  var form_id;
+  var content_id;
+  var modal_title;
+  var modal_content;
+
+  var reply_type = comment_button.id.slice(4); //4 since character deciding whether it's answer or comment is 5th character.
+  modal_title = $("#title_question").html();
+
+  $("#wmd-input").val("");                  //Clear textbox each time we open the modal (since closing the modal beforehand presumes that user didn't want to reply)
+  $("#wmd-preview").html("");               //Similar story with preview pane.
+  if (reply_type[0] == "A") {
+    form_id = "answer_form";
+    modal_content = $("#content_question").html();
+    $("#modalTitle").html("Posting Answer");
+    $("#postTitle").html("<h3>" + modal_title + "</h3>");
+    $("#postContent").html(modal_content);
+  }
+  else {
+    form_id = "comment_form_";
+    content_id = "content_"
+    var comment_type = reply_type.slice(1);    //Data on whether replying to question or answer starts at 6th character. Slice off 5th character.
+    form_id += comment_type;
+    content_id += comment_type;
+    modal_content = $("#" + content_id).html();
+    $("#modalTitle").html("Posting Comment");
+    if (comment_type == "question")
+      $("#postTitle").html("<h3>" + modal_title + "</h3>");
+    else
+      $("#postTitle").html("");
+    $("#postContent").html(modal_content);
+  }
+  $('#submitForm').attr('name', form_id);
+}
+
 // From Django docs on CSRF
 function getCookie(name) {
   var cookieValue = null;
@@ -72,9 +109,17 @@ $(document).ready(function(){
     return this.id.match(/(up|down)vote_\d+/);
   });
 
+  var post_buttons = $('button').filter(function(){
+    return this.id.match(/^post/);
+  });
+
   // Register click listeners for voting buttons
   for(let i = 0; i < vote_buttons.length; i++){
     vote_buttons[i].onclick = vote_callback;
+  }
+
+  for(let i = 0; i < post_buttons.length; i++){
+    post_buttons[i].onclick = post_reply;
   }
 });
 
