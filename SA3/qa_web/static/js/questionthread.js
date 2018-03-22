@@ -18,7 +18,16 @@ function prepareMarkdown() {
 // Callback for voting, sends ajax request to server 
 // then updates the corresponding score.
 function voteCallback(event) {
-    var voteButton = event.currentTarget;
+    var voteButton = event.currentTarget,
+        otherId = voteButton.id.replace('up', '^^');
+    otherId = otherId.replace('down', 'up');
+    otherId = otherId.replace('^^vote', 'downvote');
+    $('#' + voteButton.id).toggleClass("voted");
+    var otherButton = $("#" + otherId);
+    if (otherButton.hasClass('voted')) {
+        otherButton.removeClass('voted');
+    }
+
     $.ajax({
         url: '/vote/',
         method: "POST",
