@@ -110,14 +110,16 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'qa_web/static/media')
+
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),  # static file path
+    os.path.join(BASE_DIR, 'qa_web/static'),  # static file path
 )
 
 # User identification and custom profile
 AUTH_USER_MODEL = 'qa_web.User'
 
-import os
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',

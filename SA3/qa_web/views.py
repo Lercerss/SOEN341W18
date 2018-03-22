@@ -1,5 +1,5 @@
 """Views handle requests sent to the server.
-Views are registered to urls, handle a request provided by the WSGI and 
+Views are registered to urls, handle a request provided by the WSGI and
 return a response.
 """
 from django.shortcuts import render_to_response
@@ -21,12 +21,12 @@ from qa_web.models import Answer, Question, User, Comment, Vote
 
 @login_required(login_url='/login/')
 def edit_profile(request):
-    """Displays the user profile editing form on a GET request, on a POST 
+    """Displays the user profile editing form on a GET request, on a POST
     validates and saves the user's information.
     Must be logged in to edit one's profile.
 
     :param request: Request data provided by the WSGI
-    :return: Rendered template for editing user template on GET or 
+    :return: Rendered template for editing user template on GET or
              unsuccessful validation.
              Upon successful validation, redirects to the user's profile
     """
@@ -35,7 +35,7 @@ def edit_profile(request):
         return render(request, 'qa_web/edit_user_profile.html',
                       context={'form': form})
     else:
-        form = UserProfile(request.POST)
+        form = UserProfile(request.POST, request.FILES)
         if form.is_valid():
             user = request.user
 
@@ -48,6 +48,7 @@ def edit_profile(request):
             user.school = form.cleaned_data.get('school')
             user.major = form.cleaned_data.get('major')
             user.city = form.cleaned_data.get('city')
+            user.image = form.cleaned_data.get('image')
 
             user.save()
 
@@ -78,12 +79,12 @@ def display_profile(request, id_):
 
 @csrf_exempt
 def login(request):
-    """Displays the login form on a GET request, otherwise validates and signs 
+    """Displays the login form on a GET request, otherwise validates and signs
     in the user on a POST.
 
     :param request: Request data provided by the WSGI
-    :return: Rendered template displaying the login form on a GET or 
-            unsuccessful validation, else redirects to given `next` parameter  
+    :return: Rendered template displaying the login form on a GET or
+            unsuccessful validation, else redirects to given `next` parameter
             or website index.
     """
     if request.method == 'GET':
@@ -121,11 +122,11 @@ def logout_view(request):
 
 @csrf_exempt
 def signup(request):
-    """Displays the signup form on a GET, otherwise redirects to the home page 
+    """Displays the signup form on a GET, otherwise redirects to the home page
     on a successful signup.
 
     :param request: Request data provided by the WSGI
-    :return: Rendered template displaying the signup form on a GET or 
+    :return: Rendered template displaying the signup form on a GET or
             unsuccessful validation, else redirects to the homepage
     """
     if request.method == 'POST':
@@ -144,12 +145,12 @@ def signup(request):
 
 @login_required(login_url='/login/')
 def questions(request):
-    """Displays the form to post a question or redirects to the question's 
+    """Displays the form to post a question or redirects to the question's
     thread once it has been successfully created.
     Requires the user to be logged in.
 
     :param request: Request data provided by the WSGI
-    :return: Rendered template displaying the posting question form on a GET, 
+    :return: Rendered template displaying the posting question form on a GET,
             else redirects to the question thread
     """
     if request.method == 'GET':
@@ -185,7 +186,7 @@ def answers(request, id_):
 
     :param request: Request data provided by the WSGI
     :param id_: The question's id
-    :return: Rendered template displaying the question's thread including 
+    :return: Rendered template displaying the question's thread including
             answers and comments as well as the answering/commenting form
     """
     q = get_object_or_404(Question, pk=id_)
@@ -287,12 +288,12 @@ def answers(request, id_):
 
 
 def vote(request):
-    """Receives AJAX queries to vote on Posts, updates the corresponding Post 
+    """Receives AJAX queries to vote on Posts, updates the corresponding Post
     and returns the new score.
     Should not be accessed directly, only in asynchronous queries.
 
     :param request: Request data provided by the WSGI
-    :return: JSONResponse with the post's `new_score` and the post's score 
+    :return: JSONResponse with the post's `new_score` and the post's score
             tag `id` in the DOM tree
     """
     if request.method == 'POST' and request.user.is_authenticated:
@@ -521,14 +522,14 @@ class QuestionsByTagView(ListView):
 
 @login_required(login_url='/login/')
 def edit(request, id_):
-    """Displays question editing form on a GET and modifies the question on a 
+    """Displays question editing form on a GET and modifies the question on a
     successful validation.
     Can only be accessed by the question's owner
 
     :param request: Request data provided by the WSGI
     :param id_: The question being edited's id
     :return: Rendered template displaying the form to edit a question on a GET
-            or unsuccessful validation, else redirects to the question's 
+            or unsuccessful validation, else redirects to the question's
             answers page.
     """
     q = get_object_or_404(Question, pk=id_)
@@ -564,15 +565,15 @@ def delete(request, id_):
 
 @login_required(login_url='/login/')
 def edit_answers(request, id_, a_id):
-    """Displays answer editing form on a GET and modifies the answer on a 
+    """Displays answer editing form on a GET and modifies the answer on a
     successful validation.
     Can only be accessed by the answer's owner
 
     :param request: Request data provided by the WSGI
     :param id_: The id of the question to which the answer belongs
     :param a_id: The id of the answer being edited
-    :return: Rendered template displaying the form to edit an answer on a GET 
-            or unsuccessful validation, else redirects to the question's 
+    :return: Rendered template displaying the form to edit an answer on a GET
+            or unsuccessful validation, else redirects to the question's
             answers page.
     """
     a = get_object_or_404(Answer, pk=a_id)

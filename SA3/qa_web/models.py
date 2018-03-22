@@ -1,5 +1,5 @@
 """Models define how data is to be stored in the database using ORM.
-For more information on how this works: 
+For more information on how this works:
     https://docs.djangoproject.com/en/2.0/topics/db/models/
 For more information on how the project's data is organised:
     https://github.com/Lercerss/SOEN341W18/wiki/Architecture-Block-Diagram
@@ -11,7 +11,7 @@ from taggit.managers import TaggableManager
 
 
 class User(AbstractUser):
-    """Model for Users of the website, including personal information 
+    """Model for Users of the website, including personal information
     as well as data required for authentication
     """
     age = models.IntegerField(null=True)
@@ -20,10 +20,11 @@ class User(AbstractUser):
     school = models.TextField(max_length=100, null=True)
     major = models.CharField(max_length=50, null=True)
     city = models.TextField(max_length=100, null=True)
+    image = models.ImageField(upload_to='profile_img', blank=True)
 
 
 class Post(models.Model):
-    """Parent meta class that describes a post as a publication 
+    """Parent meta class that describes a post as a publication
     on the website
     """
     content = models.TextField(null=True)
@@ -43,7 +44,7 @@ class Post(models.Model):
 
 
 class Question(Post):
-    """A Question is the first element of a thread in the website which 
+    """A Question is the first element of a thread in the website which
     serves to start a discussion.
     All other data elements relate to one or multiple Questions.
     """
@@ -61,7 +62,7 @@ class Question(Post):
 
 
 class Answer(Post):
-    """An Answer is a response to a Question, the first level of reply in 
+    """An Answer is a response to a Question, the first level of reply in
     the discussion.
     An Answer cannot exist without a Question.
     """

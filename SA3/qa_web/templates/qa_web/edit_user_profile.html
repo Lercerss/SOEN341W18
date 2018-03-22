@@ -3,12 +3,12 @@
 {% block header %}
     <div class="masthead-content">
         <div class="container">
-            <h1 class="masthead-heading mb-0">Edit Your Profile</h1>
+            <h1 class="masthead-heading mb-0">{{ user }}</h1>
         </div>
     </div>
 {% endblock %}
 {% block content %}
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% for field in form %}
             <p>

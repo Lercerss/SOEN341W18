@@ -2,6 +2,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from qa_web import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path(r'search/', include('haystack.urls')),
@@ -25,3 +27,4 @@ urlpatterns = [
     path('questions/<int:id_>/edit_answers/<int:a_id>/', views.edit_answers,
          name='edit_answers'),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

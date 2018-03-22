@@ -22,7 +22,16 @@
         <div class="row">
             <div class="col-sm-4">
                 <div class="p-5">
-                    <img class="img-fluid rounded-circle" src="{% static 'img/default.jpg' %}" alt="">
+                    {% if displayed_user.image %}
+                        <img class="img-fluid rounded-circle"
+                             src="{{ displayed_user.image.url }} "
+                             alt="Profile picture" width="250" height = "250"/>
+                    {% else %}
+                        <img class="img-fluid rounded-circle"
+                             src="{% static 'img/default.jpg' %}"
+                             alt="Default Profile Picture" width="250"
+                             height = "250"/>
+                    {% endif %}
                 </div>
                 {% if user.id == displayed_user.id %}
                     <p class="info">
@@ -42,9 +51,11 @@
                 <p class="info">Major: {{ displayed_user.major }}</p>
                 <p class="info">City: {{ displayed_user.city }}</p>
                 <a href="/"><button>Click for Home Page</button></a>
-                <a href="{% url 'edit_user_profile' %}">
-                    <button>EDIT MY PROFILE</button>
-                </a>
+                {% if user.id == displayed_user.id %}
+                    <a href="{% url 'edit_user_profile' %}">
+                        <button>EDIT MY PROFILE</button>
+                    </a>
+                {% endif %}
             </div>
             <div class="col-sm-4">
                 <h1>Recent Posts</h1>
@@ -58,12 +69,6 @@
                 {% for ans in answers %}
                     <span class="marked">{{ ans.content }}</span>
                     <small>{{ ans.creation_date }}</small>
-                    <br><br>
-                {% endfor %}
-                <h1>Recent Votes</h1>
-                {% for vts in votes %}
-                    <span class="marked">{{ vts.content }}</span>
-                    <small>{{ vts.creation_date }}</small>
                     <br><br>
                 {% endfor %}
             </div>
