@@ -1,42 +1,37 @@
 {% extends "qa_web/base.html" %}
 {% load staticfiles %}
-
 {% block styles %}
-		<link href="{% static 'css/reglogin.css' %}" rel='stylesheet' type='text/css' />
-    	<link rel="stylesheet" href="{% static 'css/base.css' %}" />
+	<link href="{% static 'css/reglogin.css' %}" rel='stylesheet' type='text/css' />
+	<link rel="stylesheet" href="{% static 'css/base.css' %}" />
 {% endblock %}
-
 {% block header %}
-<div class="masthead-content">
-      <div class="container">
-        <h1 class="masthead-heading mb-0">Login</h1>
-      </div>
-</div>
+    <div class="masthead-content">
+        <div class="container">
+            <h1 class="masthead-heading mb-0">Login</h1>
+        </div>
+    </div>
 {% endblock %}
-
 {% block content %}
-
     {% if password_is_wrong %}
         <div class="alert alert-error">
             <h5>Incorrect username or password</h5>
         </div>
     {% endif %}
-		<div align="center">
-			<br> <br>
-			<h4>To Enter GOT ANSWERS </h4>
-			<h4> You Must Login <h4> </div>
-			<a href="/"><button>No, Take Me Back Home!</button></a>
-	<BR><BR>
-	<form method="post">
-		<ul class="reg-form">
-		<h2>Login Information:</h2>
-		<li><input type="text" name="username" placeholder="Username" required/></li>
-		<li><input type="password" name="password" placeholder="Password" required/></li>
-		<input type="submit" value="Login" >
-        <input type="button" value="Signup" onclick="location.href='http://localhost:8000/signup'">
-		<div class="clear"> </div>
-		</ul>
-	</form>
+	<div align="center">
+		<h1>Welcome to QA_Web</h1>
+		<a href="/"><button>Home</button></a>
+		<br><br>
+		<form method="post">
+			<ul class="reg-form">
+				<h2>Login Information:</h2>
+				<li><input type="text" name="username" placeholder="Username" required/>
+				</li>
+				<li><input type="password" name="password" placeholder="Password" required/>
+				</li>
+				<input type="submit" value="Login"/>
+				<input type="button" value="Signup" onclick="location.href='/signup'"/>
+				<div class="clear"> </div>
+			</ul>
+		</form>
 	</div>
-
 {% endblock %}

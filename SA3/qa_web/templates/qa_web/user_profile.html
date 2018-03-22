@@ -1,0 +1,78 @@
+{% extends "qa_web/base.html" %}
+{% load staticfiles %}
+{% block scripts %}
+    <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
+    <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
+    <script src="{% static 'js/Markdown.Sanitizer.min.js' %}"></script>
+    <script src="{% static 'js/questionthread.js' %}"></script>
+{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}"/>
+{% endblock %}
+{% block header %}
+    <div class="masthead-content">
+        <div class="container">
+            <h1 class="masthead-heading mb-0">{{ displayed_user.username }}</h1>
+            <br><br><br>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="p-5">
+                    {% if displayed_user.image %}
+                        <img class="img-fluid rounded-circle"
+                             src="{{ displayed_user.image.url }} "
+                             alt="Profile picture" width="250" height = "250"/>
+                    {% else %}
+                        <img class="img-fluid rounded-circle"
+                             src="{% static 'img/default.jpg' %}"
+                             alt="Default Profile Picture" width="250"
+                             height = "250"/>
+                    {% endif %}
+                </div>
+                {% if user.id == displayed_user.id %}
+                    <p class="info">
+                        First Name: {{ displayed_user.first_name }}
+                    </p>
+                    <p class="info">
+                        Last Name: {{ displayed_user.last_name }}
+                    </p>
+                    <p class="info">
+                        Email: {{ displayed_user.email }}
+                    </p>
+                {% endif %}
+                <p class="info">Age: {{ displayed_user.age }}</p>
+                <p class="info">Birthday: {{ displayed_user.birthday }}</p>
+                <p class="info">Motherland: {{ displayed_user.motherland }}</p>
+                <p class="info">School: {{ displayed_user.school }}</p>
+                <p class="info">Major: {{ displayed_user.major }}</p>
+                <p class="info">City: {{ displayed_user.city }}</p>
+                <a href="/"><button>Click for Home Page</button></a>
+                {% if user.id == displayed_user.id %}
+                    <a href="{% url 'edit_user_profile' %}">
+                        <button>EDIT MY PROFILE</button>
+                    </a>
+                {% endif %}
+            </div>
+            <div class="col-sm-4">
+                <h1>Recent Posts</h1>
+                {% for qs in questions %}
+                    <h3><span class="marked">{{ qs.title }}</span></h3>
+                    <span class="marked">{{ qs.content }}</span>
+                    <small>{{ qs.creation_date }}</small>
+                    <br><br>
+                {% endfor %}
+                <h1>Recent Answers/Comments</h1>
+                {% for ans in answers %}
+                    <span class="marked">{{ ans.content }}</span>
+                    <small>{{ ans.creation_date }}</small>
+                    <br><br>
+                {% endfor %}
+            </div>
+            <div class="col-sm-4"></div>
+        </div>
+    </div>
+{% endblock content %}
