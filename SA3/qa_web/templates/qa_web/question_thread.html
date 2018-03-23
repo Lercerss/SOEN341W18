@@ -106,14 +106,14 @@
             </h6>
         </form>
          <a id='upvote_{{ bestAnswer.id }}_answer'
-            class="{% if answer.id in pos_v_a %}voted{% endif %}">
+            class="{% if bestAnswer.id in pos_v_a %}voted{% endif %}">
              <button>Upvote</button>
          </a>
         <span id='score_{{ bestAnswer.id }}_answer'>
             {{ bestAnswer.score }}
         </span>
         <a id='downvote_{{ bestAnswer.id }}_answer'
-           class="{% if answer.id in neg_v_a %}voted{% endif %}">
+           class="{% if bestAnswer.id in neg_v_a %}voted{% endif %}">
             <button>Downvote</button>
         </a><br><br>
         {% if user.is_authenticated and bestAnswer.owner.id == user.id %}
