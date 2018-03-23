@@ -95,6 +95,9 @@ class ViewTest(TestCase):
         user = User.objects.get_by_natural_key(credentials['username'])
         num_answers, comments_per_answer = 5, 2
         q = _populate_db(user, num_answers, comments_per_answer)
+        c = Comment(content = "test", question=q, owner= user)
+        c.save()
+
         self.assertIsNotNone(q)
         response = self.client.get('/profile/{}/'.format(user.id))
         self.assertEqual(response.status_code, 200)
