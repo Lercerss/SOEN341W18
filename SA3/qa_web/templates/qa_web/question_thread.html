@@ -13,7 +13,6 @@
 {% endblock %}
 {% block header %}
     <div class="masthead-content">
-        <br><br><br>
         <div class="container" id="question">
             <h1 class="masthead-heading mb-0">
                 <span id="title_question">
@@ -30,20 +29,31 @@
                 Question by {{ currentQuestion.owner }} on 
                 {{ currentQuestion.creation_date }}
             </h6>
-            <a id='upvote_{{ currentQuestion.id }}_question'
-               class="{% if pos_v_q %}voted{% endif %}">
-                <button class="btn btn-primary btn-xl
-                rounded-pill mt-5">Upvote</button>
-            </a>
-            <span class="btn btn-primary btn-xl rounded-pill mt-5" 
-                id='score_{{ currentQuestion.id }}_question'>
-                {{ currentQuestion.score }}
-            </span>
-             <a id='downvote_{{ currentQuestion.id }}_question'
-                class="{% if neg_v_q %}voted{% endif %}">
-                 <button class="btn btn-primary btn-xl
-                 rounded-pill mt-5">Downvote</button>
-             </a>
+            <br/><br/>
+            <table align="center">
+                <tr>
+                    <td>
+                        <a id='upvote_{{ currentQuestion.id }}_question'
+                           class="{% if pos_v_q %}voted{% endif %}">
+                            <button class="btn btn-primary btn-xl
+                            rounded-pill mt-5">Upvote</button>
+                        </a>
+                    </td>
+                    <td>
+                        <span class="btn btn-primary btn-xl rounded-pill mt-5"
+                            id='score_{{ currentQuestion.id }}_question'>
+                            {{ currentQuestion.score }}
+                        </span>
+                    </td>
+                    <td>
+                        <a id='downvote_{{ currentQuestion.id }}_question'
+                           class="{% if neg_v_q %}voted{% endif %}">
+                            <button class="btn btn-primary btn-xl
+                            rounded-pill mt-5">Downvote</button>
+                        </a>
+                    </td>
+                </tr>
+            </table><br/>
             {% if user.is_authenticated and user.id == currentQuestion.owner_id %}
                 <a href="./edit" class="btn btn-primary btn-xl
                 rounded-pill mt-5">

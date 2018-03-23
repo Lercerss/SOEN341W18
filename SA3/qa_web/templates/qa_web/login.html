@@ -5,12 +5,11 @@
 	<link rel="stylesheet" href="{% static 'css/base.css' %}" />
 {% endblock %}
 {% block header %}
-	<div class="masthead-content">
-		<div class="container">
-			<h1 class="masthead-heading mb-0">Log in</h1>
-			<h2 class="masthead-heading mb-0">!!!</h2>
-		</div>
-	</div>
+    <div class="masthead-content">
+        <div class="container">
+            <h1 class="masthead-heading mb-0">Login</h1>
+        </div>
+    </div>
 {% endblock %}
 {% block content %}
     {% if password_is_wrong %}
@@ -24,7 +23,7 @@
 		<br><br>
 		<form method="post">
 			<ul class="reg-form">
-				<h2>Login:</h2>
+				<h2>Login Information:</h2>
 				<li><input type="text" name="username" placeholder="Username" required/>
 				</li>
 				<li><input type="password" name="password" placeholder="Password" required/>
