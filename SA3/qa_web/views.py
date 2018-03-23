@@ -31,7 +31,20 @@ def edit_profile(request):
              Upon successful validation, redirects to the user's profile
     """
     if request.method == 'GET':
-        form = UserProfile()
+        active_user = request.user
+        existing_data = {
+            'prename': active_user.first_name,
+            'surname': active_user.last_name,
+            'age': active_user.age,
+            'email': active_user.email,
+            'birthday': active_user.birthday,
+            'motherland': active_user.motherland,
+            'school': active_user.school,
+            'major': active_user.major,
+            'city': active_user.city,
+            'image': active_user.image,
+        }
+        form = UserProfile(initial= existing_data)
         return render(request, 'qa_web/edit_user_profile.html',
                       context={'form': form})
     else:
@@ -69,12 +82,12 @@ def display_profile(request, id_):
     displayed_user = get_object_or_404(User, pk=id_)
     user_questions = Question.objects.filter(owner_id=id_)
     user_answers = Answer.objects.filter(owner_id=id_)
-    user_votes = Vote.objects.filter(user_id=id_)
+    user_comments = Comment.objects.filter(owner_id = id_)
     return render(request, 'qa_web/user_profile.html',
                   context={'displayed_user': displayed_user,
                            'questions': user_questions,
                            'answers': user_answers,
-                           'votes': user_votes})
+                           'comments': user_comments})
 
 
 @csrf_exempt
