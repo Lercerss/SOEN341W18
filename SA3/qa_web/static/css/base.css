@@ -70,6 +70,17 @@ a.voted button{
     border-color: #ee0979 !important;
 }
 
+header.masthead {
+    height: 100px;
+    padding: 100px;
+    padding-bottom: 150px;
+    border: 1px solid;
+    display: block;
+    font-size: 2em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
 html, body {
     width: 100%;
 }
