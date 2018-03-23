@@ -31,7 +31,20 @@ def edit_profile(request):
              Upon successful validation, redirects to the user's profile
     """
     if request.method == 'GET':
-        form = UserProfile()
+        active_user = request.user
+        existing_data = {
+            'prename': active_user.first_name,
+            'surname': active_user.last_name,
+            'age': active_user.age,
+            'email': active_user.email,
+            'birthday': active_user.birthday,
+            'motherland': active_user.motherland,
+            'school': active_user.school,
+            'major': active_user.major,
+            'city': active_user.city,
+            'image': active_user.image,
+        }
+        form = UserProfile(initial= existing_data)
         return render(request, 'qa_web/edit_user_profile.html',
                       context={'form': form})
     else:
