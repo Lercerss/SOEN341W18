@@ -1,5 +1,6 @@
 {% extends "qa_web/base.html" %}
 {% load staticfiles %}
+{% load utils %}
 {% block scripts %}
     <script src="{% static 'js/Markdown.Converter.min.js' %}"></script>
     <script src="{% static 'js/Markdown.Editor.min.js' %}"></script>
@@ -65,12 +66,32 @@
                     <small>{{ qs.creation_date }}</small>
                     <br><br>
                 {% endfor %}
-                <h1>Recent Answers/Comments</h1>
-                {% for ans in answers %}
-                    <span class="marked">{{ ans.content }}</span>
-                    <small>{{ ans.creation_date }}</small>
-                    <br><br>
-                {% endfor %}
+                {% if answers %}
+                    <h1>Recent Answers</h1>
+                    {% for ans in answers %}
+                        <span class="marked">{{ ans.content }}</span>
+                        <small>{{ ans.creation_date }}</small>
+                        <small>Answer to question:
+                            <b><a href="/questions/{{ ans.question_id }}" target="_blank">
+                                {% get_answer_parent_title ans.question_id %}
+                            </a></b>
+                        </small>
+                        <br><br>
+                    {% endfor %}
+                {% endif %}
+                {% if comments %}
+                <h1>Recent Comments</h1>
+                    {% for comment in comments %}
+                        <span class="marked">{{ comment.content }}</span>
+                        <small>{{ comment.creation_date }}</small>
+                        <small>Comment to
+                            <b><a href="/questions/{% get_comment_question_id comment.question_id comment.answer_id %}" target="_blank">
+                                {% get_comment_parent comment.id %}
+                            </a></b>
+                        </small>
+                        <br><br>
+                    {% endfor %}
+                {% endif %}
             </div>
             <div class="col-sm-4"></div>
         </div>

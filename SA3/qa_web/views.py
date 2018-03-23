@@ -82,12 +82,12 @@ def display_profile(request, id_):
     displayed_user = get_object_or_404(User, pk=id_)
     user_questions = Question.objects.filter(owner_id=id_)
     user_answers = Answer.objects.filter(owner_id=id_)
-    user_votes = Vote.objects.filter(user_id=id_)
+    user_comments = Comment.objects.filter(owner_id = id_)
     return render(request, 'qa_web/user_profile.html',
                   context={'displayed_user': displayed_user,
                            'questions': user_questions,
                            'answers': user_answers,
-                           'votes': user_votes})
+                           'comments': user_comments})
 
 
 @csrf_exempt
