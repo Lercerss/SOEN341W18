@@ -69,3 +69,11 @@ a.voted button{
     background-color: #ee0979 !important;
     border-color: #ee0979 !important;
 }
+
+html, body {
+    width: 100%;
+}
+
+table {
+    margin: auto;
+}

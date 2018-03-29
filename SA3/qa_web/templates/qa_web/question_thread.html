@@ -13,7 +13,6 @@
 {% endblock %}
 {% block header %}
     <div class="masthead-content">
-        <br><br><br>
         <div class="container" id="question">
             <h1 class="masthead-heading mb-0">
                 <span id="title_question">
@@ -30,52 +29,66 @@
                 Question by {{ currentQuestion.owner }} on 
                 {{ currentQuestion.creation_date }}
             </h6>
-            <a id='upvote_{{ currentQuestion.id }}_question'
-               class="{% if pos_v_q %}voted{% endif %}">
-                <button class="btn btn-primary btn-xl
-                rounded-pill mt-5">Upvote</button>
-            </a>
-            <span class="btn btn-primary btn-xl rounded-pill mt-5" 
-                id='score_{{ currentQuestion.id }}_question'>
-                {{ currentQuestion.score }}
-            </span>
-             <a id='downvote_{{ currentQuestion.id }}_question'
-                class="{% if neg_v_q %}voted{% endif %}">
-                 <button class="btn btn-primary btn-xl
-                 rounded-pill mt-5">Downvote</button>
-             </a>
-            {% if user.is_authenticated and user.id == currentQuestion.owner_id %}
-                <a href="./edit" class="btn btn-primary btn-xl
-                rounded-pill mt-5">
-                    Edit
-                </a>
-                <a href="./delete/" class="btn btn-primary btn-xl
-                rounded-pill mt-5"
-                    onclick="return confirm('Are you sure you want to delete')">
-                    Delete
-                </a>
-            {% endif %}
-            {% for comment in q_comments %}
-                <p>
-                    <span class="marked">{{ comment.content }}</span>
-                    (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
-                     <a id='upvote_{{ comment.id }}_comment'
-                        class="{% if comment.id in pos_v_c %}voted{% endif %}">
-                         <button>Upvote</button>
-                     </a>
-                    <span id='score_{{ comment.id }}_comment'>
-                        {{ comment.score }}
-                    </span>
-                      <a id='downvote_{{ comment.id }}_comment'
-                         class="{% if comment.id in neg_v_c %}voted{% endif %}">
-                          <button>Downvote</button>
-                      </a>
-                </p>
-            {% endfor %}
-            {% if user.is_authenticated %}
-                <button type="button" id="postCquestion" data-toggle="modal" 
-                    data-target="#formModal">Post comment!</button>
-            {% endif %}
+            <table>
+                <tr>
+                    <td>
+                        <a id='upvote_{{ currentQuestion.id }}_question'
+                            class="{% if pos_v_q %}voted{% endif %}">
+                             <button class="btn btn-primary btn-xl
+                             rounded-pill mt-5">Upvote</button>
+                        </a>
+                        <span class="btn btn-primary btn-xl rounded-pill mt-5" 
+                            id='score_{{ currentQuestion.id }}_question'>
+                            {{ currentQuestion.score }}
+                        </span>
+                        <a id='downvote_{{ currentQuestion.id }}_question'
+                            class="{% if neg_v_q %}voted{% endif %}">
+                             <button class="btn btn-primary btn-xl
+                             rounded-pill mt-5">Downvote</button>
+                         </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {% if user.is_authenticated and user.id == currentQuestion.owner_id %}
+                            <a href="./edit" class="btn btn-primary btn-xl
+                            rounded-pill mt-5">
+                                Edit
+                            </a>
+                            <a href="./delete/" class="btn btn-primary btn-xl
+                            rounded-pill mt-5"
+                                onclick="return confirm('Are you sure you want to delete')">
+                                Delete
+                            </a>
+                        {% endif %}
+                        {% for comment in q_comments %}
+                            <p>
+                                <span class="marked">{{ comment.content }}</span>
+                                (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
+                                 <a id='upvote_{{ comment.id }}_comment'
+                                    class="{% if comment.id in pos_v_c %}voted{% endif %}">
+                                     <button>Upvote</button>
+                                 </a>
+                                <span id='score_{{ comment.id }}_comment'>
+                                    {{ comment.score }}
+                                </span>
+                                  <a id='downvote_{{ comment.id }}_comment'
+                                     class="{% if comment.id in neg_v_c %}voted{% endif %}">
+                                      <button>Downvote</button>
+                                  </a>
+                            </p>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {% if user.is_authenticated %}
+                            <button type="button" id="postCquestion" data-toggle="modal" 
+                             data-target="#formModal">Post comment!</button>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 {% endblock %}
