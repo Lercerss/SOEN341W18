@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
 from django.http import HttpResponseRedirect, JsonResponse, \
-    HttpResponseForbidden
+    HttpResponseForbidden, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
@@ -592,3 +592,11 @@ def edit_answers(request, id_, a_id):
         return HttpResponseRedirect('/questions/{id}/'.format(id=id_))
     return render(request, 'qa_web/edit_post.html',
                   context={'post': a, 'is_answer': True})
+
+
+@csrf_exempt
+def quick_search(request):
+    if request.method == 'GET':
+        keyword = request.GET['keyword']
+        return HttpResponseRedirect('/search/?q=' + keyword)
+
