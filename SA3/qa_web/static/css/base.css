@@ -70,6 +70,14 @@ a.voted button{
     border-color: #ee0979 !important;
 }
 
+html, body {
+    width: 100%;
+}
+
+table {
+    margin: auto;
+}
+
 header.masthead {
     height: 100px;
     padding: 100px;
