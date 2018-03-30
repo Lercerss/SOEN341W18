@@ -26,6 +26,6 @@ urlpatterns = [
     path('questions/<int:id_>/delete/', views.delete, name='delete_question'),
     path('questions/<int:id_>/edit_answers/<int:a_id>/', views.edit_answers,
          name='edit_answers'),
-    path('quick_search', views.quick_search, name='search_keyword')
+    path('quick_search/', views.quick_search, name='search_keyword')
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

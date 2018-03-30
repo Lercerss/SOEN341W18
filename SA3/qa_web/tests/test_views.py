@@ -389,6 +389,13 @@ class ViewTest(TestCase):
         self.assertEqual(Answer.objects.get(
             pk=a.id).content, values['content'])
 
+    def test_quick_search(self):
+        form_entries = {
+            'keyword': 'python'
+        }
+        get_response = self.client.get('/quick_search/', data=form_entries)
+        self.assertEqual(get_response.status_code, 302)
+
 
 class QuestionDisplayViewTest(TestCase):
     """This class contains test cases for the QuestionDisplayView"""
