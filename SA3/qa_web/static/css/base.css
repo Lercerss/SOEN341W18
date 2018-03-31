@@ -81,7 +81,7 @@ table {
 header.masthead {
     height: 100px;
     padding: 100px;
-    padding-bottom: 150px;
+    padding-bottom: 60%;
     border: 1px solid;
     display: block;
     font-size: 2em;
@@ -95,4 +95,17 @@ html, body {
 
 table {
     margin: auto;
+}
+
+.h-answers{
+    background-color: #ff88008c;
+}
+.answers{
+    background-color: #ed1476c4;
+    width: 500px;
+}
+
+.comments{
+    background-color: #eef0f1;
+    width: 500px;
 }
