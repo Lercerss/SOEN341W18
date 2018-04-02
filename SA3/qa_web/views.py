@@ -592,3 +592,11 @@ def edit_answers(request, id_, a_id):
         return HttpResponseRedirect('/questions/{id}/'.format(id=id_))
     return render(request, 'qa_web/edit_post.html',
                   context={'post': a, 'is_answer': True})
+
+
+@csrf_exempt
+def quick_search(request):
+    if request.method == 'GET':
+        keyword = request.GET['keyword']
+        return HttpResponseRedirect('/search/?q=' + keyword)
+

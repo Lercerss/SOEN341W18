@@ -20,6 +20,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
+                <form class="navbar-form navbar-right" action="{% url 'search_keyword' %}" method="get">
+                    <input type="text" name="keyword" placeholder="Search">
+                </form>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href='/profile/{{ user.id }}'>
@@ -27,17 +30,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href='/search'>search</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="/logout/">Log Out</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="/signup/">Sign Up</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href='/search'>search</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/login/">Log In</a>
