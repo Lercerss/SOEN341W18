@@ -100,6 +100,11 @@ table {
 .h-answers{
     background-color: #ff88008c;
 }
+
+.h-questions{
+    background-color: #ffff00ab;
+}
+
 .answers{
     background-color: #ed1476c4;
     width: 500px;

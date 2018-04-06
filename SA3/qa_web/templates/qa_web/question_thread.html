@@ -61,23 +61,6 @@
                                 Delete
                             </a>
                         {% endif %}
-                        {% for comment in q_comments %}
-                            <p>
-                                <span class="marked">{{ comment.content }}</span>
-                                (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
-                                 <a id='upvote_{{ comment.id }}_comment'
-                                    class="{% if comment.id in pos_v_c %}voted{% endif %}">
-                                     <button>Upvote</button>
-                                 </a>
-                                <span id='score_{{ comment.id }}_comment'>
-                                    {{ comment.score }}
-                                </span>
-                                  <a id='downvote_{{ comment.id }}_comment'
-                                     class="{% if comment.id in neg_v_c %}voted{% endif %}">
-                                      <button>Downvote</button>
-                                  </a>
-                            </p>
-                        {% endfor %}
                     </td>
                 </tr>
                 <tr>
@@ -94,6 +77,28 @@
 {% endblock %}
 {% block content %}
     <br>
+    <hr>
+    <h3 class='h-questions'>Question Comments:</h3>
+    <div class='comments'>
+        {% for comment in q_comments %}
+            <p>
+                <span class="marked">{{ comment.content }}</span>
+                (Comment by: {{ comment.owner }}. Date posted: {{ comment.creation_date }})
+                <a id='upvote_{{ comment.id }}_comment'
+                    class="{% if comment.id in pos_v_c %}voted{% endif %}">
+                    <button>Upvote</button>
+                </a>
+                <span id='score_{{ comment.id }}_comment'>
+                    {{ comment.score }}
+                </span>
+                <a id='downvote_{{ comment.id }}_comment'
+                    class="{% if comment.id in neg_v_c %}voted{% endif %}">
+                    <button>Downvote</button>
+                </a>
+            </p>
+        {% endfor %}
+    </div>
+
     <div id="answers">
     {% if bestAnswer %}
         <form class='answers' id="deselect_form" method="post">
