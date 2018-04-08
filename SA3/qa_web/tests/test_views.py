@@ -215,7 +215,7 @@ class ViewTest(TestCase):
         self.assertEqual(Comment.objects.count(),
                          num_answers * comments_per_answer + 1)
 
-    def test_answers_view_count(self):
+    def test_questions_view_count(self):
         user = User.objects.get(pk=1)
         q = _populate_db(user, 1, 1)
         self._login()
