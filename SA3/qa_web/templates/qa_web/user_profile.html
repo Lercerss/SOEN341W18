@@ -72,7 +72,8 @@
                         <span class="marked">{{ ans.content }}</span>
                         <small>{{ ans.creation_date }}</small>
                         <small>Answer to question:
-                            <b><a href="/questions/{{ ans.question_id }}" target="_blank">
+                            <b><a href="/questions/{{ ans.question_id }}"
+                                  target="_blank">
                                 {% get_answer_parent_title ans.question_id %}
                             </a></b>
                         </small>
@@ -85,7 +86,8 @@
                         <span class="marked">{{ comment.content }}</span>
                         <small>{{ comment.creation_date }}</small>
                         <small>Comment to
-                            <b><a href="/questions/{% get_comment_question_id comment.question_id comment.answer_id %}" target="_blank">
+                            <b><a href="/questions/{% get_comment_question_id comment.question_id comment.answer_id %}"
+                                  target="_blank">
                                 {% get_comment_parent comment.id %}
                             </a></b>
                         </small>

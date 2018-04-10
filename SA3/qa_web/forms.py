@@ -82,7 +82,8 @@ class UserProfile(forms.Form):
         required=True,
         label='Birthday (YYYY-MM-DD)',
         error_messages={'required':
-                            'Please insert birthday in the format of (yyyy-mm-dd)'}
+                            """Please insert birthday in the \
+                            format of (yyyy-mm-dd)"""}
     )
 
     motherland = forms.CharField(
@@ -102,7 +103,8 @@ class UserProfile(forms.Form):
         required=True,
         label="Major",
         error_messages={'required':
-                            'Please insert your main subject of studies. Ex: Software Engineering'}
+                            """Please insert your main subject of studies. \
+                             Ex: Software Engineering"""}
     )
 
     city = forms.CharField(
