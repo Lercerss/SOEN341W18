@@ -1,193 +1,14 @@
-"""Views handle requests sent to the server.
-Views are registered to urls, handle a request provided by the WSGI and
-return a response.
-"""
-from django.shortcuts import render_to_response
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib import auth
-from django.http import HttpResponseRedirect, JsonResponse, \
-    HttpResponseForbidden
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView
+from django.shortcuts import get_object_or_404, render, HttpResponseRedirect
+from django.http import JsonResponse
 from django.db.models import Count, F
-from taggit.models import Tag, TaggedItem
+from django.views.generic import ListView
+from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.contrib.contenttypes.models import ContentType
-from qa_web.forms import LoginForm, QuestionsForm, AnswersForm, EditForm, \
-    UserProfile, CustomUserCreationForm
-from qa_web.models import Answer, Question, User, Comment, Vote
-
-
-@login_required(login_url='/login/')
-def edit_profile(request):
-    """Displays the user profile editing form on a GET request, on a POST
-    validates and saves the user's information.
-    Must be logged in to edit one's profile.
-
-    :param request: Request data provided by the WSGI
-    :return: Rendered template for editing user template on GET or
-             unsuccessful validation.
-             Upon successful validation, redirects to the user's profile
-    """
-    if request.method == 'GET':
-        active_user = request.user
-        existing_data = {
-            'prename': active_user.first_name,
-            'surname': active_user.last_name,
-            'age': active_user.age,
-            'email': active_user.email,
-            'birthday': active_user.birthday,
-            'motherland': active_user.motherland,
-            'school': active_user.school,
-            'major': active_user.major,
-            'city': active_user.city,
-            'image': active_user.image,
-        }
-        form = UserProfile(initial= existing_data)
-        return render(request, 'qa_web/edit_user_profile.html',
-                      context={'form': form})
-    else:
-        form = UserProfile(request.POST, request.FILES)
-        if form.is_valid():
-            user = request.user
-
-            user.first_name = form.cleaned_data.get('prename')
-            user.last_name = form.cleaned_data.get('surname')
-            user.age = form.cleaned_data.get('age')
-            user.email = form.cleaned_data.get('email')
-            user.birthday = form.cleaned_data.get('birthday')
-            user.motherland = form.cleaned_data.get('motherland')
-            user.school = form.cleaned_data.get('school')
-            user.major = form.cleaned_data.get('major')
-            user.city = form.cleaned_data.get('city')
-            user.image = form.cleaned_data.get('image')
-
-            user.save()
-
-            return HttpResponseRedirect('/profile/{}/'.format(user.id))
-        else:
-            return render(request, 'qa_web/edit_user_profile.html',
-                          context={'form': form})
-
-
-def display_profile(request, id_):
-    """Displays a User's profile information and recent post activity
-    Any user can look at a user's profile page
-
-    :param request: Request data provided by the WSGI
-    :param id_: The user to be displayed's id
-    :return: Rendered template for displaying the given user's profile
-    """
-    displayed_user = get_object_or_404(User, pk=id_)
-    user_questions = Question.objects.filter(owner_id=id_)
-    user_answers = Answer.objects.filter(owner_id=id_)
-    user_comments = Comment.objects.filter(owner_id = id_)
-    return render(request, 'qa_web/user_profile.html',
-                  context={'displayed_user': displayed_user,
-                           'questions': user_questions,
-                           'answers': user_answers,
-                           'comments': user_comments})
-
-
-@csrf_exempt
-def login(request):
-    """Displays the login form on a GET request, otherwise validates and signs
-    in the user on a POST.
-
-    :param request: Request data provided by the WSGI
-    :return: Rendered template displaying the login form on a GET or
-            unsuccessful validation, else redirects to given `next` parameter
-            or website index.
-    """
-    if request.method == 'GET':
-        form = LoginForm()
-        return render_to_response('qa_web/login.html', context={'form': form})
-    else:
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = request.POST.get('username', '')
-            password = request.POST.get('password', '')
-            user = auth.authenticate(username=username, password=password)
-            if user is not None and user.is_active:
-                auth.login(request, user)
-                # Use parameter from login_required decorator to redirect to a
-                # specific page, otherwise index
-                return HttpResponseRedirect(request.GET.get('next', '/'))
-            else:
-                return render_to_response('qa_web/login.html',
-                                          context={'form': form,
-                                                   'password_is_wrong': True})
-        else:
-            return render_to_response('qa_web/login.html',
-                                      context={'form': form})
-
-
-def logout_view(request):
-    """Logs out the user and redirects to login
-
-    :param request: Request data provided by the WSGI
-    :return: Redirect to login page
-    """
-    auth.logout(request)
-    return HttpResponseRedirect('/login/')
-
-
-@csrf_exempt
-def signup(request):
-    """Displays the signup form on a GET, otherwise redirects to the home page
-    on a successful signup.
-
-    :param request: Request data provided by the WSGI
-    :return: Rendered template displaying the signup form on a GET or
-            unsuccessful validation, else redirects to the homepage
-    """
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = auth.authenticate(username=username, password=raw_password)
-            auth.login(request, user)
-            return HttpResponseRedirect('/')
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'qa_web/sign_up.html', {'form': form})
-
-
-@login_required(login_url='/login/')
-def questions(request):
-    """Displays the form to post a question or redirects to the question's
-    thread once it has been successfully created.
-    Requires the user to be logged in.
-
-    :param request: Request data provided by the WSGI
-    :return: Rendered template displaying the posting question form on a GET,
-            else redirects to the question thread
-    """
-    if request.method == 'GET':
-        return render(request, 'qa_web/posting_question.html', context={})
-    else:
-        form = QuestionsForm(request.POST)
-        if form.is_valid():
-            content = request.POST['content']
-            title = request.POST['title']
-            tag = request.POST['tag'].split(';')
-            owner = request.user
-            q = Question(content=content, title=title, owner=owner)
-            q.save()
-
-            # Since a question can be submitted with no tag, filtering empty
-            # and blank strings.
-            for each_tag in tag:
-                if each_tag.strip() != '':
-                    q.tag.add(each_tag)
-
-            return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
-        else:
-            return render(request, 'qa_web/posting_question.html', context={})
-
+from django.contrib.auth.decorators import login_required
+from taggit.models import Tag, TaggedItem
+from qa_web.models import Answer, Comment, Question, Vote
+from qa_web.forms import AnswersForm
 
 def answers(request, id_):
     """Manages the different actions that occur when displaying a question:
@@ -310,7 +131,6 @@ def answers(request, id_):
                    'pos_v_a': pos_vote_a, 'neg_v_a': neg_vote_a,
                    'pos_v_c': pos_vote_c, 'neg_v_c': neg_vote_c})
 
-
 def vote(request):
     """Receives AJAX queries to vote on Posts, updates the corresponding Post
     and returns the new score.
@@ -362,16 +182,6 @@ def vote(request):
                              'score_{}_{}'.format(post.id, post_type)})
     # Accessing url without using Post or unauthenticated
     return HttpResponseRedirect('/')
-
-
-def homepage(request):
-    """Displays the website's home page.
-
-    :param request: Request data provided by the WSGI
-    :return: Rendered template displaying the home page
-    """
-    return render(request, "qa_web/home.html")
-
 
 class QuestionDisplayView(ListView):
     """View for displaying the list of questions currently available."""
@@ -534,80 +344,8 @@ class QuestionsByTagView(ListView):
                 slug__exact='').order_by('-id').distinct()
         return context
 
-
-@login_required(login_url='/login/')
-def edit(request, id_):
-    """Displays question editing form on a GET and modifies the question on a
-    successful validation.
-    Can only be accessed by the question's owner
-
-    :param request: Request data provided by the WSGI
-    :param id_: The question being edited's id
-    :return: Rendered template displaying the form to edit a question on a GET
-            or unsuccessful validation, else redirects to the question's
-            answers page.
-    """
-    q = get_object_or_404(Question, pk=id_)
-    if q.owner != request.user:
-        return HttpResponseForbidden()
-
-    form = EditForm(request.POST)
-    if request.POST and form.is_valid():
-        q.content = request.POST['content']
-        q.title = request.POST['title']
-        q.owner = request.user
-        q.save()
-        return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
-    return render(request, 'qa_web/edit_post.html',
-                  context={'post': q, 'is_answer': False})
-
-
-@login_required(login_url='/login/')
-def delete(request, id_):
-    """Deletes a question and redirects to the question index
-    Only the question's owner can delete it.
-
-    :param request: Request data provided by the WSGI
-    :param id_: The question's id
-    :return: Redirects to the question index
-    """
-    q = get_object_or_404(Question, pk=id_)
-    if q.owner != request.user:
-        return HttpResponseForbidden()
-    q.delete()
-    return HttpResponseRedirect('/question_index/')
-
-
-@login_required(login_url='/login/')
-def edit_answers(request, id_, a_id):
-    """Displays answer editing form on a GET and modifies the answer on a
-    successful validation.
-    Can only be accessed by the answer's owner
-
-    :param request: Request data provided by the WSGI
-    :param id_: The id of the question to which the answer belongs
-    :param a_id: The id of the answer being edited
-    :return: Rendered template displaying the form to edit an answer on a GET
-            or unsuccessful validation, else redirects to the question's
-            answers page.
-    """
-    a = get_object_or_404(Answer, pk=a_id)
-    if a.owner != request.user:
-        return HttpResponseForbidden()
-
-    form = EditForm(request.POST)
-    if request.POST and form.is_valid():
-        a.content = request.POST['content']
-        a.owner = request.user
-        a.save()
-        return HttpResponseRedirect('/questions/{id}/'.format(id=id_))
-    return render(request, 'qa_web/edit_post.html',
-                  context={'post': a, 'is_answer': True})
-
-
 @csrf_exempt
 def quick_search(request):
     if request.method == 'GET':
         keyword = request.GET['keyword']
         return HttpResponseRedirect('/search/?q=' + keyword)
-
