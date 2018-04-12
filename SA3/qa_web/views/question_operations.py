@@ -1,3 +1,7 @@
+"""
+Controller for Q&A website additional features operations
+"""
+
 from django.shortcuts import get_object_or_404, render, HttpResponseRedirect
 from django.http import JsonResponse
 from django.db.models import Count, F
@@ -23,7 +27,7 @@ def answers(request, id_):
     :return: Rendered template displaying the question's thread including
             answers and comments as well as the answering/commenting form
     """
-    q = get_object_or_404(Question, pk=id_)
+    question = get_object_or_404(Question, pk=id_)
     answer_id = [int(key.replace('select_', ''))
                  for key in request.POST.keys() if key.startswith('select_')]
     if request.method == 'POST' and 'answer_form' in request.POST:
@@ -31,16 +35,17 @@ def answers(request, id_):
         form = AnswersForm(request.POST)
         if form.is_valid():
             Answer.objects.create(
-                content=request.POST['content'], owner=request.user, question=q)
+                content=request.POST['content'], owner=request.user,
+                question=question)
 
     elif request.method == 'POST' and 'deselect' in request.POST and \
-            q.owner.id == request.user.id:
+            question.owner.id == request.user.id:
         # Deselecting best answer
         update_answer = Answer.objects.filter(
-            question=q, correct_answer=True).last()
+            question=question, correct_answer=True).last()
         update_answer.correct_answer = False
         update_answer.save()
-    elif answer_id and q.owner.id == request.user.id:
+    elif answer_id and question.owner.id == request.user.id:
         # Selecting best answer
         update_answer = Answer.objects.get(id=answer_id[0])
         update_answer.correct_answer = True
@@ -49,46 +54,51 @@ def answers(request, id_):
         # Commenting on an answer
         answer_id = [int(key.replace('comment_form_answer_', '')) for key
                      in request.POST.keys() if key.startswith('comment_form')]
-        a = Answer.objects.get(id=answer_id[0])
-        c = Comment(content=request.POST['content'],
-                    owner=request.user, answer=a)
-        c.save()
+        answer = Answer.objects.get(id=answer_id[0])
+        comment = Comment(content=request.POST['content'],
+                          owner=request.user, answer=answer)
+        comment.save()
     elif request.method == 'POST' and 'comment_form_question' in request.POST:
         # Commenting on the question
-        c = Comment(content=request.POST['content'],
-                    owner=request.user, question=q)
-        c.save()
+        comment = Comment(content=request.POST['content'],
+                          owner=request.user, question=question)
+        comment.save()
 
     # Ordering answers
     if request.method == 'POST' and 'sort_by_form_select' in request.POST:
         initial_select_value = request.POST['sort_by_form_select']
         if request.POST['sort_by_form_select'] == 'lowestScore':
-            q_answers = Answer.objects.filter(question=q,
-                                              correct_answer=False).annotate(
-                points=F('upvotes') - F('downvotes')).order_by('points')
+            q_answers = Answer.objects.filter(question=question,
+                                              correct_answer=False)\
+                .annotate(points=F('upvotes') - F('downvotes'))\
+                .order_by('points')
         elif request.POST['sort_by_form_select'] == 'highestScore':
-            q_answers = Answer.objects.filter(question=q,
-                                              correct_answer=False).annotate(
-                points=F('upvotes') - F('downvotes')).order_by('-points')
+            q_answers = Answer.objects.filter(question=question,
+                                              correct_answer=False)\
+                .annotate(points=F('upvotes') - F('downvotes'))\
+                .order_by('-points')
         elif request.POST['sort_by_form_select'] == 'leastRecent':
             q_answers = Answer.objects.filter(
-                question=q, correct_answer=False).order_by('creation_date')
+                question=question, correct_answer=False) \
+                .order_by('creation_date')
         else:  # Most Recent
             q_answers = Answer.objects.filter(
-                question=q, correct_answer=False).order_by('-creation_date')
+                question=question, correct_answer=False) \
+                .order_by('-creation_date')
     else:
         initial_select_value = "highestScore"
-        q_answers = Answer.objects.filter(question=q,
-                                          correct_answer=False).annotate(
-            points=F('upvotes') - F('downvotes')).order_by('-points')
+        q_answers = Answer.objects.filter(question=question,
+                                          correct_answer=False)\
+            .annotate(points=F('upvotes') - F('downvotes')).order_by('-points')
 
-    q_best_answer = Answer.objects.filter(question=q, correct_answer=True)
-    q_comments = Comment.objects.filter(question=q)
-    a_comments = Comment.objects.filter(answer__question=q)
+    q_best_answer = Answer.objects.filter(question=question,
+                                          correct_answer=True)
+    q_comments = Comment.objects.filter(question=question)
+    a_comments = Comment.objects.filter(answer__question=question)
 
     # Voting indicators
     if request.user.is_authenticated:
-        vote_on_q = Vote.objects.filter(user=request.user, question=q)
+        vote_on_q = Vote.objects.filter(user=request.user, question=question)
         votes_on_answers = Vote.objects.filter(user=request.user,
                                                answer__in=q_answers)
         vote_on_best_answer = Vote.objects.filter(user=request.user,
@@ -117,13 +127,13 @@ def answers(request, id_):
 
     # Increment the visits counter of the question by one
     if request.user.is_authenticated:
-        q.visits += 1
-        q.save()
+        question.visits += 1
+        question.save()
 
     if len(q_best_answer) > 0:
         q_best_answer = q_best_answer.last()
     return render(request, 'qa_web/question_thread.html',
-                  {'currentQuestion': q, 'answers': q_answers,
+                  {'currentQuestion': question, 'answers': q_answers,
                    'bestAnswer': q_best_answer, 'q_comments': q_comments,
                    'a_comments': a_comments,
                    'initial_select_value': initial_select_value,

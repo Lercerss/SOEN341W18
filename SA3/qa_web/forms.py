@@ -7,6 +7,7 @@ from qa_web.models import User
 
 
 class CustomUserCreationForm(UserCreationForm):
+    """Custom form extension of the already-implemented UserCreationForm"""
     class Meta(UserCreationForm.Meta):
         model = User
         fields = UserCreationForm.Meta.fields

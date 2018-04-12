@@ -1,3 +1,7 @@
+"""
+Controller for profile page operations
+"""
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from qa_web.forms import UserProfile
