@@ -14,71 +14,65 @@
 {% block header %}
     <div class="masthead-content">
         <div class="container" id="question">
-            <h1 class="masthead-heading mb-0">
+            <h1  class='a-head_q' class="masthead-heading mb-0">
                 <span id="title_question">
                     <b>{{ currentQuestion.title }}</b>
                 </span> &nbsp; 
-                <span class="label label-primary">
+                <span class='a-head_v' class="label label-primary">
                     {{ currentQuestion.visits }} visits
                 </span>
             </h1>
             <h5 class="masthead-subheading mb-0">
-                <p><span class="marked" id="content_question">{{ currentQuestion.content }}</span></p>
+                <p><span class='a-head_d' class="marked" id="content_question">{{ currentQuestion.content }}</span></p>
             </h5>
-            <h6>
+            <h6 class='a-head_o'>
                 Question by {{ currentQuestion.owner }} on 
                 {{ currentQuestion.creation_date }}
             </h6>
-            <table>
-                <tr>
-                    <td>
-                        <a id='upvote_{{ currentQuestion.id }}_question'
-                            class="{% if pos_v_q %}voted{% endif %}">
-                             <button class="btn btn-primary btn-xl
-                             rounded-pill mt-5">Upvote</button>
-                        </a>
-                        <span class="btn btn-primary btn-xl rounded-pill mt-5" 
-                            id='score_{{ currentQuestion.id }}_question'>
-                            {{ currentQuestion.score }}
-                        </span>
-                        <a id='downvote_{{ currentQuestion.id }}_question'
-                            class="{% if neg_v_q %}voted{% endif %}">
-                             <button class="btn btn-primary btn-xl
-                             rounded-pill mt-5">Downvote</button>
-                         </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        {% if user.is_authenticated and user.id == currentQuestion.owner_id %}
-                            <a href="./edit" class="btn btn-primary btn-xl
-                            rounded-pill mt-5">
-                                Edit
-                            </a>
-                            <a href="./delete/" class="btn btn-primary btn-xl
-                            rounded-pill mt-5"
-                                onclick="return confirm('Are you sure you want to delete')">
-                                Delete
-                            </a>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        {% if user.is_authenticated %}
-                            <button type="button" id="postCquestion" data-toggle="modal" 
-                             data-target="#formModal">Post comment!</button>
-                        {% endif %}
-                    </td>
-                </tr>
-            </table>
         </div>
     </div>
 {% endblock %}
 {% block content %}
     <br>
-    <hr>
-    <h3 class='h-questions'>Question Comments:</h3>
+    <h3 class='h-questions'>Question Properties:<hr></h3>
+    <table>
+        <tr>
+            <td>
+                <a id='upvote_{{ currentQuestion.id }}_question' class="{% if pos_v_q %}voted{% endif %}">
+                    <button class="btn btn-primary btn-xl
+                                 rounded-pill mt-5">Upvote</button>
+                </a>
+                <span class="btn btn-primary btn-xl rounded-pill mt-5" id='score_{{ currentQuestion.id }}_question'>
+                    {{ currentQuestion.score }}
+                </span>
+                <a id='downvote_{{ currentQuestion.id }}_question' class="{% if neg_v_q %}voted{% endif %}">
+                    <button class="btn btn-primary btn-xl
+                                 rounded-pill mt-5">Downvote</button>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td align='center'>
+                {% if user.is_authenticated and user.id == currentQuestion.owner_id %}
+                <a href="./edit" class="btn btn-primary btn-xl
+                                rounded-pill mt-5">
+                    Edit
+                </a>
+                <a href="./delete/" class="btn btn-primary btn-xl
+                                rounded-pill mt-5" onclick="return confirm('Are you sure you want to delete')">
+                    Delete
+                </a>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td align='center'>
+                {% if user.is_authenticated %}
+                <br><button type="button" id="postCquestion" data-toggle="modal" data-target="#formModal">Post comment!</button>
+                {% endif %}
+            </td>
+        </tr>
+    </table><br>
     <div class='comments'>
         {% for comment in q_comments %}
             <p>
@@ -98,47 +92,47 @@
             </p>
         {% endfor %}
     </div>
-
-    <div id="answers">
+    <div>
     {% if bestAnswer %}
         <form class='answers' id="deselect_form" method="post">
             {% csrf_token %}
             {% if user == currentQuestion.owner %}
-                <h3 class="good-answer">
+                <h3 class="good-answer"><hr>
                     You have selected this as the best answer!
                 </h3>
             {% else %}
-                <h3 class="good-answer">
+                <h3 class="good-answer"><hr>
                     {{ currentQuestion.owner }} has selected this as the 
                     best answer!
                 </h3>
             {% endif %}
-            <p><span class="marked" id="content_answer_{{ bestAnswer.id }}">{{ bestAnswer.content }}</span></p>
-            {% if user.is_authenticated and user == currentQuestion.owner %}
-                <input type = "submit" name="deselect" 
-                    value="Deselect as Best Answer"/>
-            {% endif %}
-            <h6>
-                Answer by {{ bestAnswer.owner }} on 
-                {{ bestAnswer.creation_date }}
-            </h6>
-        </form>
-         <a id='upvote_{{ bestAnswer.id }}_answer'
-            class="{% if bestAnswer.id in pos_v_a %}voted{% endif %}">
-             <button>Upvote</button>
-         </a>
-        <span id='score_{{ bestAnswer.id }}_answer'>
-            {{ bestAnswer.score }}
-        </span>
-        <a id='downvote_{{ bestAnswer.id }}_answer'
-           class="{% if bestAnswer.id in neg_v_a %}voted{% endif %}">
-            <button>Downvote</button>
-        </a><br><br>
-        {% if user.is_authenticated and bestAnswer.owner.id == user.id %}
-            <a href="./edit_answers/{{ bestAnswer.id }}">
-                <button>Edit Answer</button>
-            </a>
-        {% endif %}
+            <div class='all-answers'>
+                <p>
+                    <span class="marked" id="content_answer_{{ bestAnswer.id }}">{{ bestAnswer.content }}</span>
+                </p>
+                {% if user.is_authenticated and user == currentQuestion.owner %}
+                <input type="submit" name="deselect" value="Deselect as Best Answer" /> {% endif %}
+                <h6>
+                    Answer by {{ bestAnswer.owner }} on {{ bestAnswer.creation_date }}
+                </h6>
+                </form>
+                <a id='upvote_{{ bestAnswer.id }}_answer' class="{% if bestAnswer.id in pos_v_a %}voted{% endif %}">
+                    <button>Upvote</button>
+                </a>
+                <span id='score_{{ bestAnswer.id }}_answer'>
+                    {{ bestAnswer.score }}
+                </span>
+                <a id='downvote_{{ bestAnswer.id }}_answer' class="{% if bestAnswer.id in neg_v_a %}voted{% endif %}">
+                    <button>Downvote</button>
+                </a>
+                <br>
+                <br> {% if user.is_authenticated and bestAnswer.owner.id == user.id %}
+                <a href="./edit_answers/{{ bestAnswer.id }}">
+                    <button>Edit Answer</button>
+                </a>
+                {% endif %}
+                <hr>
+            </div>
         {% for comment in a_comments %}
             {% if comment.answer.id == bestAnswer.id %}
             <div class='comments'>
@@ -265,10 +259,12 @@
     </div>
     {# Display the answering form for logged in users #}
     {% if user.is_authenticated %}
+    <div class='a-button'>
         <button type="button" id="postA" data-toggle="modal" 
             data-target="#formModal">
             Got Answers!? Click here to share them!
-        </button>
+        </button>    
+    </div><br>     
     {% else %}
         <p>To answer this question, 
             <a href="/login">login</a> or <a href="/signup">sign up</a>!

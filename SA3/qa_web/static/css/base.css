@@ -80,9 +80,10 @@ table {
 
 header.masthead {
     height: 100px;
-    padding: 100px;
-    padding-bottom: 60%;
-    border: 1px solid;
+    padding: 100px; 
+    padding-bottom: 200px;
+    padding-top: 50px;
+    border: 1px transparent;
     display: block;
     font-size: 2em;
     margin-left: 0;
@@ -102,10 +103,14 @@ table {
 }
 
 .h-questions{
-    background-color: #ffff00ab;
+    background-color: #ff88008c;
 }
 
-.answers{
+.good-answer{
+background-color: #ff88008c;
+}
+
+.all-answers{
     background-color: #ed1476c4;
     width: 500px;
 }
@@ -113,4 +118,16 @@ table {
 .comments{
     background-color: #eef0f1;
     width: 500px;
+}
+
+.a-head_q{
+    font-size: 40px;
+}
+
+.a-head_v, .a-head_d{
+    font-size: 20px;
+}
+
+.a-head_o{
+    font-size: 15px;
 }
