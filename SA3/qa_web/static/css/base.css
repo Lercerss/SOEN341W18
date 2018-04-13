@@ -105,6 +105,7 @@ table {
 .all-answers{
     background-color: #ed1476c4;
     width: 500px;
+    padding: 1em 0 1em 0;
 }
 
 .comments{
