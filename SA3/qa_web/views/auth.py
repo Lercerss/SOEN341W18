@@ -1,3 +1,7 @@
+"""
+Controller for registration and authentication operations
+"""
+
 from django.contrib import auth
 from django.shortcuts import render, render_to_response, \
     HttpResponseRedirect

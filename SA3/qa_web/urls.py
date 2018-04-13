@@ -1,9 +1,10 @@
 """Url configuration for qa_web website."""
+
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
-from qa_web import views
-from django.conf import settings
 from django.conf.urls.static import static
+from qa_web import views
 
 urlpatterns = [
     path(r'search/', include('haystack.urls')),

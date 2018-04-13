@@ -26,3 +26,11 @@ User can enable search index automatically updated by setting `HAYSTACK_SIGNAL_P
 Username|Password
 --------|---------
 admin   |SA3qa_web
+
+## Static analysis
+This project uses a tool called **Pylint** to check the code quality of the Python source files. Pylint will use a plugin called `pylint-django` that adapts the bug/quality checker to Django-specific commands.
+
+To run this Python quality checker on our web application, run the following command:
+
+`pylint --load-plugins pylint_django SA3/qa_web`
+

@@ -1,0 +1,86 @@
+************* Module qa_web.search_indexes
+conventionqa_web.search_indexes90Trailing whitespace
+conventionqa_web.search_indexes120Wrong continued indentation (add 9 spaces).
+                    template_name='search/indexes/qa_web/questions_text.txt')
+                    ^        |
+
+************* Module qa_web.wsgi
+conventionqa_web.wsgi160Constant name "application" doesn't conform to UPPER_CASE naming style
+
+************* Module qa_web.apps
+conventionqa_web.appsQAWebConfig50Missing class docstring
+
+************* Module qa_web.models
+conventionqa_web.modelsQuestion.get_answer_queryset604Missing method docstring
+
+************* Module qa_web.forms
+warningqa_web.formsLoginForm.clean3412Attribute 'cleaned_data' defined outside __init__
+
+************* Module qa_web.admin
+conventionqa_web.admin50Trailing whitespace
+conventionqa_web.admin100third party import "from django.contrib.auth.admin import UserAdmin" should be placed before "from .models import Question, Answer, Comment, User"
+
+************* Module qa_web.views.auth
+refactorqa_web.views.authlogin224Unnecessary "else" after "return"
+refactorqa_web.views.authlogin278Unnecessary "else" after "return"
+refactorqa_web.views.authlogin3112Unnecessary "else" after "return"
+
+************* Module qa_web.views
+warningqa_web.views60Wildcard import add_content
+warningqa_web.views70Wildcard import auth
+warningqa_web.views80Wildcard import home
+warningqa_web.views90Wildcard import profile
+warningqa_web.views100Wildcard import question_operations
+
+************* Module qa_web.views.profile
+refactorqa_web.views.profileedit_profile224Unnecessary "else" after "return"
+refactorqa_web.views.profileedit_profile418Unnecessary "else" after "return"
+
+************* Module qa_web.views.add_content
+refactorqa_web.views.add_contentquestions234Unnecessary "else" after "return"
+refactorqa_web.views.add_contentquestions278Unnecessary "else" after "return"
+
+************* Module qa_web.views.question_operations
+refactorqa_web.views.question_operationsanswers170Too many local variables (24/15)
+conventionqa_web.views.question_operationsanswers10657Do not use `len(SEQUENCE)` to determine if a sequence is empty
+conventionqa_web.views.question_operationsanswers1337Do not use `len(SEQUENCE)` to determine if a sequence is empty
+refactorqa_web.views.question_operationsanswers170Too many branches (16/12)
+refactorqa_web.views.question_operationsanswers170Too many statements (59/50)
+refactorqa_web.views.question_operationsQuestionDisplayView1960Too many ancestors (9/7)
+warningqa_web.views.question_operationsQuestionDisplayView.get_context_data2044Parameters differ from overridden 'get_context_data' method
+conventionqa_web.views.question_operationsQuestionDisplayView._pagination_data28015Do not use `len(SEQUENCE)` to determine if a sequence is empty
+conventionqa_web.views.question_operationsQuestionDisplayView._pagination_data29515Do not use `len(SEQUENCE)` to determine if a sequence is empty
+conventionqa_web.views.question_operationsQuestionDisplayView._pagination_data29815Do not use `len(SEQUENCE)` to determine if a sequence is empty
+conventionqa_web.views.question_operationsQuestionDisplayView._pagination_data31111Do not use `len(SEQUENCE)` to determine if a sequence is empty
+conventionqa_web.views.question_operationsQuestionDisplayView._pagination_data31311Do not use `len(SEQUENCE)` to determine if a sequence is empty
+refactorqa_web.views.question_operationsQuestionDisplayView._pagination_data2564Method could be a function
+refactorqa_web.views.question_operationsQuestionDisplayView._pagination_data2564Too many branches (13/12)
+refactorqa_web.views.question_operationsQuestionsByTagView3280Too many ancestors (9/7)
+warningqa_web.views.question_operationsQuestionsByTagView.get_queryset3354Parameters differ from overridden 'get_queryset' method
+warningqa_web.views.question_operationsQuestionsByTagView.get_queryset3350Unused argument 'kwargs'
+warningqa_web.views.question_operationsQuestionsByTagView.get_context_data3404Parameters differ from overridden 'get_context_data' method
+conventionqa_web.views.question_operationsquick_search3580Missing function docstring
+refactorqa_web.views.question_operationsquick_search3580Either all return statements in a function should return an expression, or none of them should.
+warningqa_web.views.question_operations120Unused login_required imported from django.contrib.auth.decorators
+
+************* Module qa_web.templatetags.utils
+refactorqa_web.templatetags.utilsget_comment_question_id304Unnecessary "else" after "return"
+refactorqa_web.templatetags.utilsget_comment_parent454Unnecessary "else" after "return"
+
+************* Module qa_web.tests.test_views
+conventionqa_web.tests.test_views110Constant name "credentials" doesn't conform to UPPER_CASE naming style
+warningqa_web.tests.test_viewsViewTest.test_questions_view_count28212Unused variable 'i'
+warningqa_web.tests.test_viewsQuestionDisplayViewTest.test_pagination52012Unused variable 'i'
+
+************* Module qa_web.tests.test_models
+conventionqa_web.tests.test_models90Constant name "credentials" doesn't conform to UPPER_CASE naming style
+conventionqa_web.tests.test_modelsCommentModel.test_question_comment_instantiation674Method name "test_question_comment_instantiation" doesn't conform to snake_case naming style
+conventionqa_web.tests.test_modelsCommentModel.test_question_answer_instantiation864Method name "test_question_answer_instantiation" doesn't conform to snake_case naming style
+errorqa_web.tests.test_modelsVoteModel.test_voting_score14220Non-iterable value User.objects.all() is used in an iterating context
+
+************* Module qa_web.tests.test_forms
+conventionqa_web.tests.test_forms100Constant name "credentials" doesn't conform to UPPER_CASE naming style
+
+------------------------------------------------------------------
+Your code has been rated at 9.37/10 (previous run: 9.37/10, +0.00)
+

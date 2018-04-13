@@ -1,3 +1,7 @@
+"""
+Controller for home page operations
+"""
+
 from django.shortcuts import render
 
 def homepage(request):

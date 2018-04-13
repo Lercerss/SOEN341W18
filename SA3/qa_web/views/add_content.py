@@ -1,3 +1,8 @@
+"""
+Controller for Q&A website core features operations
+involving post creation, edit or deletion
+"""
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from django.http import HttpResponseForbidden
@@ -24,16 +29,16 @@ def questions(request):
             title = request.POST['title']
             tag = request.POST['tag'].split(';')
             owner = request.user
-            q = Question(content=content, title=title, owner=owner)
-            q.save()
+            question = Question(content=content, title=title, owner=owner)
+            question.save()
 
             # Since a question can be submitted with no tag, filtering empty
             # and blank strings.
             for each_tag in tag:
                 if each_tag.strip() != '':
-                    q.tag.add(each_tag)
+                    question.tag.add(each_tag)
 
-            return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
+            return HttpResponseRedirect('/questions/{q.id}/'.format(q=question))
         else:
             return render(request, 'qa_web/posting_question.html', context={})
 
@@ -50,19 +55,19 @@ def edit(request, id_):
             or unsuccessful validation, else redirects to the question's
             answers page.
     """
-    q = get_object_or_404(Question, pk=id_)
-    if q.owner != request.user:
+    question = get_object_or_404(Question, pk=id_)
+    if question.owner != request.user:
         return HttpResponseForbidden()
 
     form = EditForm(request.POST)
     if request.POST and form.is_valid():
-        q.content = request.POST['content']
-        q.title = request.POST['title']
-        q.owner = request.user
-        q.save()
-        return HttpResponseRedirect('/questions/{q.id}/'.format(q=q))
+        question.content = request.POST['content']
+        question.title = request.POST['title']
+        question.owner = request.user
+        question.save()
+        return HttpResponseRedirect('/questions/{q.id}/'.format(q=question))
     return render(request, 'qa_web/edit_post.html',
-                  context={'post': q, 'is_answer': False})
+                  context={'post': question, 'is_answer': False})
 
 
 @login_required(login_url='/login/')
@@ -74,10 +79,10 @@ def delete(request, id_):
     :param id_: The question's id
     :return: Redirects to the question index
     """
-    q = get_object_or_404(Question, pk=id_)
-    if q.owner != request.user:
+    question = get_object_or_404(Question, pk=id_)
+    if question.owner != request.user:
         return HttpResponseForbidden()
-    q.delete()
+    question.delete()
     return HttpResponseRedirect('/question_index/')
 
 
@@ -94,15 +99,15 @@ def edit_answers(request, id_, a_id):
             or unsuccessful validation, else redirects to the question's
             answers page.
     """
-    a = get_object_or_404(Answer, pk=a_id)
-    if a.owner != request.user:
+    answer = get_object_or_404(Answer, pk=a_id)
+    if answer.owner != request.user:
         return HttpResponseForbidden()
 
     form = EditForm(request.POST)
     if request.POST and form.is_valid():
-        a.content = request.POST['content']
-        a.owner = request.user
-        a.save()
+        answer.content = request.POST['content']
+        answer.owner = request.user
+        answer.save()
         return HttpResponseRedirect('/questions/{id}/'.format(id=id_))
     return render(request, 'qa_web/edit_post.html',
-                  context={'post': a, 'is_answer': True})
+                  context={'post': answer, 'is_answer': True})
