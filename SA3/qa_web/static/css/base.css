@@ -69,3 +69,58 @@ a.voted button{
     background-color: #ee0979 !important;
     border-color: #ee0979 !important;
 }
+
+html, body {
+    width: 100%;
+}
+
+table {
+    margin: auto;
+}
+
+header.masthead {
+    height: 100px;
+    padding: 100px; 
+    padding-bottom: 200px;
+    padding-top: 50px;
+    border: 1px transparent;
+    display: block;
+    font-size: 2em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+html, body {
+    width: 100%;
+}
+
+table {
+    margin: auto;
+}
+
+.h-answers, .h-questions, .good-answer{
+    background-color: #ff88008c;
+}
+
+.all-answers{
+    background-color: #ed1476c4;
+    width: 500px;
+    padding: 1em 0 1em 0;
+}
+
+.comments{
+    background-color: #eef0f1;
+    width: 500px;
+}
+
+.a-head_q{
+    font-size: 40px;
+}
+
+.a-head_v, .a-head_d{
+    font-size: 20px;
+}
+
+.a-head_o{
+    font-size: 15px;
+}

@@ -1,6 +1,25 @@
 {% extends 'qa_web/base.html' %}
+{% block header %}
+    <style>
+        header.masthead{
+            height: 100px ;
+            padding: 100px;
+            padding-bottom: 150px;
+            border: 1px solid;
+            display: block;
+            font-size: 2em;
+            margin-left: 0;
+            margin-right: 0;
+            font-weight: bold;
+        }
+    </style>
+    <div class="masthead-content">
+        <div class="container">
+            <h1 class="masthead-heading mb-0">Search</h1>
+        </div>
+    </div>
+{% endblock %}
 {% block content %}
-    <h2>Search</h2>
     <form method="get" action=".">
         {% if not query %}
             <table>
