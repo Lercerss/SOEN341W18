@@ -34,7 +34,7 @@
 {% endblock %}
 {% block content %}
     <br>
-    <h3 class='h-questions'>Question Properties:<hr></h3>
+    <h3 class='h-questions'><hr>Question Properties:<hr></h3>
     <table>
         <tr>
             <td>
@@ -97,13 +97,13 @@
         <form class='answers' id="deselect_form" method="post">
             {% csrf_token %}
             {% if user == currentQuestion.owner %}
-                <h3 class="good-answer"><hr>
-                    You have selected this as the best answer!
+                <h3 class="good-answer">
+                    <hr>You have selected this as the best answer!<hr>
                 </h3>
             {% else %}
-                <h3 class="good-answer"><hr>
-                    {{ currentQuestion.owner }} has selected this as the 
-                    best answer!
+                <h3 class="good-answer">
+                    <hr>{{ currentQuestion.owner }} has selected this as 
+                    the best answer!<hr>
                 </h3>
             {% endif %}
             <div class='all-answers'>

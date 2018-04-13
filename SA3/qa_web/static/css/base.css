@@ -98,16 +98,8 @@ table {
     margin: auto;
 }
 
-.h-answers{
+.h-answers, .h-questions, .good-answer{
     background-color: #ff88008c;
-}
-
-.h-questions{
-    background-color: #ff88008c;
-}
-
-.good-answer{
-background-color: #ff88008c;
 }
 
 .all-answers{
