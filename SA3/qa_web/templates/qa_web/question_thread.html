@@ -14,11 +14,11 @@
 {% block header %}
     <div class="masthead-content">
         <div class="container" id="question">
-            <h1  class="masthead-heading mb-0 a-head_q">
+            <h1  class="a-head_q">
                 <span id="title_question">
                     <b>{{ currentQuestion.title }}</b>
                 </span> &nbsp; 
-                <span class="label label-primary a-head_v">
+                <span class="a-head_v">
                     {{ currentQuestion.visits }} visits
                 </span>
             </h1>
@@ -259,7 +259,7 @@
     </div>
     {# Display the answering form for logged in users #}
     {% if user.is_authenticated %}
-    <div class='a-button'>
+    <div align='center'>
         <button type="button" id="postA" data-toggle="modal" 
             data-target="#formModal">
             Got Answers!? Click here to share them!
