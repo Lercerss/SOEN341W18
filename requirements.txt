@@ -3,7 +3,7 @@ certifi==2018.1.18
 chardet==3.0.4
 codecov==2.0.15
 coverage==4.5.1
-Django==2.0
+Django==2.2.24
 django-haystack==2.8.0
 django-taggit==0.22.2
 idna==2.6
